@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\F1Manager.Abstractions\F1Manager.Abstractions.csproj" />
     <ProjectReference Include="..\F1Manager.Shared\F1Manager.Shared.csproj" />
   </ItemGroup>
 

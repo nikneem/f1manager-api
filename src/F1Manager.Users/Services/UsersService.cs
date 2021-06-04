@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using F1Manager.Abstractions.Users.DataTransferObjects;
-using F1Manager.Abstractions.Users.Services;
 using F1Manager.Users.Abstractions;
+using F1Manager.Users.DataTransferObjects;
 using F1Manager.Users.Domain;
 using F1Manager.Users.Exceptions;
 using Microsoft.Extensions.Logging;

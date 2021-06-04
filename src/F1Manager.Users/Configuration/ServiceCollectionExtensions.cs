@@ -1,5 +1,4 @@
-﻿using F1Manager.Abstractions.Users.Services;
-using F1Manager.Shared.ServiceCollectionExtensions;
+﻿using F1Manager.Shared.ServiceCollectionExtensions;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.Repositories;
 using F1Manager.Users.Services;

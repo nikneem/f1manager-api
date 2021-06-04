@@ -8,5 +8,6 @@ namespace F1Manager.Shared.Constants
         [Description("This is a regular expression to test passwords. At least 8 characters, one upper, one lower and one digit")]
         public const string UpperLowedDigit = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
         public const string Username = "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._@]+(?<![_.])$";
+        public const string Teamname = "^([\\w\\s\\d]){1,100}$";
     }
 }

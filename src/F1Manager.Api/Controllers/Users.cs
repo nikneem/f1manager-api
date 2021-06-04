@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using F1Manager.Abstractions.Users.DataTransferObjects;
-using F1Manager.Abstractions.Users.Services;
+using F1Manager.Users.Abstractions;
+using F1Manager.Users.DataTransferObjects;
 
 namespace F1Manager.Api.Controllers
 {

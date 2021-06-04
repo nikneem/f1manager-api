@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace F1Manager.Abstractions.Users.DataTransferObjects
+namespace F1Manager.Users.DataTransferObjects
 {
     public class UserDetailsDto
     {
