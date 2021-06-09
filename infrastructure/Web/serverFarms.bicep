@@ -16,8 +16,8 @@ param azureRegion string = 'weu'
 param kind string = 'app'
 
 param sku object = {
-  name: 'Y1'
-  capacity: 0
+  name: 'B1'
+  capacity: 1
 }
 
 var servicePlanName = toLower('${systemName}-${environmentName}-${azureRegion}-plan')

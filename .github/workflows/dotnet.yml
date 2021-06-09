@@ -42,7 +42,7 @@ jobs:
           path: infrastructure/
 
   infrastructure-incremental-dev:
-    needs: [publish-bicep, compile-api]
+    needs: publish-bicep
     runs-on: ubuntu-latest
 
     steps:
@@ -71,7 +71,7 @@ jobs:
           inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
 
   deploy-api-dev:
-    needs: infrastructure-incremental-dev
+    needs: [infrastructure-incremental-dev, compile-api]
     runs-on: ubuntu-latest
 
     steps:
