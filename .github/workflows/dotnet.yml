@@ -22,3 +22,5 @@ jobs:
         run: dotnet build ./src --no-restore
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal
+      - name: Publish
+        run: dotnet publish ./src --configuration Release --no-restore --nologo --output ./published
