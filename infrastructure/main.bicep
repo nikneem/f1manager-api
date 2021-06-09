@@ -161,3 +161,5 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
     principalId: developer
   }
 }]
+
+output webAppName string = webAppModule.outputs.webAppName

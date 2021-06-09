@@ -41,11 +41,17 @@ jobs:
           name: bicep-templates
           path: infrastructure/
 
-  deploy-dev:
-    needs: publish-bicep
+  infrastructure-incremental-dev:
+    needs: [publish-bicep, compile-api]
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: bicep-templates
+          path: ./infrastructure
+
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -57,14 +63,53 @@ jobs:
           azcliversion: 2.23.0
           inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
 
+      - name: Deploy Infrastructure
+        id: arm
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
+
+  deploy-api-dev:
+    needs: infrastructure-incremental-dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get FunctionApp publish profile
+        id: publishprofile
+        uses: aliencube/publish-profile-actions@v1
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_TEST }}
+        with:
+          resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+          appName: ${{ steps.arm.output.webAppName }}
+
+      - name: Deploy FunctionApp
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ steps.arm.output.webAppName }}
+          package: published
+          publish-profile: ${{ steps.publishprofile.outputs.profile }}
+
+  infrastructure-complete-dev:
+    needs: deploy-api-dev
+
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: bicep-templates
           path: ./infrastructure
 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_TEST }}
+
       - name: Deploy infrastrucutre
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete

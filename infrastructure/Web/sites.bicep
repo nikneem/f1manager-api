@@ -30,3 +30,4 @@ resource webApp 'Microsoft.Web/sites@2020-12-01' = {
 }
 
 output servicePrincipal string = webApp.identity.principalId
+output webAppName string = webAppName

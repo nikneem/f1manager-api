@@ -1,0 +1,32 @@
+inputs:
+  azureSecrets:
+    description: "Secrets used to log in to this azure environment"
+    required: true
+  azureResourceGroup:
+    description: "Resource group to deploy to"
+    required: true
+  mode:
+    description: "Deployment mode, can be Validate, Incremental or Complete"
+    required: false
+    default: "Incremental"
+
+steps:
+  - name: Azure Login
+    uses: azure/login@v1
+    with:
+      creds: ${{ inputs.azureSecrets }}
+  - name: Azure Create Resource Group
+    uses: Azure/cli@1.0.4
+    with:
+      azcliversion: 2.23.0
+      inlineScript: az group create -l westeurope -n ${{ inputs.azureResourceGroup }}
+  - name: Download Artifact
+    uses: actions/download-artifact@v2
+    with:
+      name: bicep-templates
+      path: ./infrastructure
+  - name: Deploy infrastrucutre
+    uses: Azure/cli@1.0.4
+    with:
+      azcliversion: 2.23.0
+      inlineScript: az deployment group create --resource-group ${{ inputs.azureResourceGroup }} --template-file ./infrastructure/main.bicep --mode ${{ inputs.mode }}
