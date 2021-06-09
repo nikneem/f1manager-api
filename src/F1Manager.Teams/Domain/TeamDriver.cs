@@ -8,7 +8,10 @@ namespace F1Manager.Teams.Domain
     public sealed class TeamDriver : DomainModel<Guid>
     {
         public Guid DriverId { get; }
-        public string DriverName { get; }
+        public string Name { get; }
+        public string PictureUrl { get; }
+        public string Country { get; }
+        public DateTimeOffset BirthDate { get; }
         public decimal BoughtFor { get; }
         public decimal? SoldFor { get; private set; }
         public int TotalPointsGained { get; private set; }
@@ -31,7 +34,10 @@ namespace F1Manager.Teams.Domain
 
         public TeamDriver(Guid id,
             Guid driverId, 
-            string driverName, 
+            string name, 
+            string pictureUrl,
+            string country,
+            DateTimeOffset birthDate,
             decimal boughtFor, 
             decimal? soldFor, 
             int totalPointsGained, 
@@ -39,7 +45,7 @@ namespace F1Manager.Teams.Domain
             DateTimeOffset? soldOn) : base(id)
         {
             DriverId = driverId;
-            DriverName = driverName;
+            Name = name;
             BoughtFor = boughtFor;
             SoldFor = soldFor;
             TotalPointsGained = totalPointsGained;
@@ -48,11 +54,11 @@ namespace F1Manager.Teams.Domain
         }
 
         public TeamDriver(Guid driverId,
-            string driverName,
+            string name,
             decimal boughtFor) : base(Guid.NewGuid(), TrackingState.New)
         {
             DriverId = driverId;
-            DriverName = driverName;
+            Name = name;
             BoughtFor = boughtFor;
             TotalPointsGained = 0;
             BoughtOn = DateTimeOffset.UtcNow;

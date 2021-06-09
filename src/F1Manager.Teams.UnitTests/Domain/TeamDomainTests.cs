@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using F1Manager.Shared.Enums;
 using F1Manager.Teams.Abstractions;
 using F1Manager.Teams.DataTransferObjects;
@@ -80,7 +76,7 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.FirstDriver);
             Assert.Equal(team.FirstDriver.BoughtFor, driver.Value);
-            Assert.Equal(team.FirstDriver.DriverName, driver.Name);
+            Assert.Equal(team.FirstDriver.Name, driver.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }
@@ -95,7 +91,7 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.SecondDriver);
             Assert.Equal(driver.Value, team.SecondDriver.BoughtFor);
-            Assert.Equal(driver.Name, team.SecondDriver.DriverName);
+            Assert.Equal(driver.Name, team.SecondDriver.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }

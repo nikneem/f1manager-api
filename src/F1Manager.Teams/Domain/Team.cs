@@ -5,6 +5,7 @@ using F1Manager.Shared.Base;
 using F1Manager.Shared.Constants;
 using F1Manager.Shared.Enums;
 using F1Manager.Teams.Abstractions;
+using F1Manager.Teams.DataTransferObjects;
 using F1Manager.Teams.Enums;
 using F1Manager.Teams.Exceptions;
 
@@ -14,11 +15,12 @@ namespace F1Manager.Teams.Domain
     {
 
 
-        public Guid SeasonId { get; }
+        public int SeasonId { get; }
         public Guid OwnerId { get; }
         public string Name { get; private set; }
         public int Points { get; private set; }
         public decimal Money { get; private set; }
+        public bool IsPublic { get; private set; }
         public TeamDriver FirstDriver { get; private set; }
         public TeamDriver SecondDriver { get; private set; }
         public TeamEngine Engine { get; private set; }
@@ -62,6 +64,11 @@ namespace F1Manager.Teams.Domain
                 throw new TeamComponentNotFoundException(TeamComponent.FirstDriver, id);
             }
 
+            if (SecondDriver != null && SecondDriver.DriverId.Equals(id))
+            {
+                throw new F1ManagerTeamException(TeamErrorCode.DriverAlreadyInTeam, "You already own this driver");
+            }
+
             if (driver.Value > Money)
             {
                 throw new InsufficientFundsException(TeamComponent.FirstDriver,
@@ -89,6 +96,12 @@ namespace F1Manager.Teams.Domain
                 throw new TeamComponentNotFoundException(TeamComponent.SecondDriver, id);
             }
 
+            if (FirstDriver != null && FirstDriver.DriverId.Equals(id))
+            {
+                throw new F1ManagerTeamException(TeamErrorCode.DriverAlreadyInTeam, "You already own this driver");
+            }
+
+
             if (driver.Value > Money)
             {
                 throw new InsufficientFundsException(TeamComponent.SecondDriver,
@@ -103,7 +116,7 @@ namespace F1Manager.Teams.Domain
             Money -= driver.Value;
             SetState(TrackingState.Modified);
         }
-        public async Task BuyEngine(Guid id, ITeamsDomainService domainService)
+        public async Task<EngineDto> BuyEngine(Guid id, ITeamsDomainService domainService)
         {
             if (Engine != null)
             {
@@ -129,8 +142,9 @@ namespace F1Manager.Teams.Domain
             Engine = teamEngine;
             Money -= engine.Value;
             SetState(TrackingState.Modified);
+            return engine;
         }
-        public async Task BuyChassis(Guid id, ITeamsDomainService domainService)
+        public async Task<ChassisDto> BuyChassis(Guid id, ITeamsDomainService domainService)
         {
             if (Chassis != null)
             {
@@ -156,6 +170,7 @@ namespace F1Manager.Teams.Domain
             Chassis = teamChassis;
             Money -= chassis.Value;
             SetState(TrackingState.Modified);
+            return chassis;
         }
 
         public async Task SellFirstDriver(ITeamsDomainService domainService)
@@ -223,22 +238,41 @@ namespace F1Manager.Teams.Domain
             SetState(TrackingState.Modified);
         }
 
-        public Team(Guid id, Guid seasonId, Guid ownerId, string name, int points, decimal money) : base(id)
+        public Team(Guid id, 
+            int seasonId, 
+            Guid ownerId,
+            string name, 
+            int points,
+            decimal money,
+            TeamDriver firstDriver,
+            TeamDriver secondDriver,
+            TeamEngine engine,
+            TeamChassis chassis
+            ) : base(id)
         {
             SeasonId = seasonId;
             OwnerId = ownerId;
             Name = name;
             Points = points;
             Money = money;
+            FirstDriver = firstDriver;
+            SecondDriver = secondDriver;
+            Engine = engine;
+            Chassis = chassis;
         }
-
-        public Team(Guid seasonId, Guid ownerId, string name) : base(Guid.NewGuid(), TrackingState.New)
+        private Team(int seasonId, Guid ownerId) : base(Guid.NewGuid(), TrackingState.New)
         {
             SeasonId = seasonId;
             OwnerId = ownerId;
-            Name = name;
             Points = 0;
             Money = 120000000M;
+        }
+
+        public static async Task<Team> Create(int seasonId, Guid ownerId, string name, ITeamsDomainService service) 
+        {
+            var team = new Team(seasonId, ownerId);
+            await team.SetName(name, service);
+            return team;
         }
     }
 }

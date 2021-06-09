@@ -9,6 +9,9 @@ namespace F1Manager.Teams.Domain
     {
         public Guid EngineId { get; }
         public string Name { get; }
+        public string PictureUrl { get; }
+        public string Manufacturer { get; }
+        public string Model { get; }
         public decimal BoughtFor { get; }
         public decimal? SoldFor { get; private set; }
         public int TotalPointsGained { get; private set; }
@@ -24,20 +27,23 @@ namespace F1Manager.Teams.Domain
                 throw new F1ManagerTeamException(TeamErrorCode.InvalidTransfer, "Team component is already sold");
             }
 
-            SoldFor = GetSellPrice(price);
+            SoldFor = GetSellingPrice(price);
             SoldOn = DateTimeOffset.UtcNow;
             SetState(TrackingState.Modified);
             return SoldFor.GetValueOrDefault();
         }
 
-        public decimal GetSellPrice(decimal currentValue)
+        public decimal GetSellingPrice(decimal currentValue)
         {
-            return currentValue - (currentValue * WarnOffPercentage / 100);
+            return currentValue - currentValue * WarnOffPercentage / 100;
         }
 
         public TeamEngine(Guid id,
             Guid engineId,
             string name,
+            string pictureUrl,
+            string manufacturer,
+            string model,
             decimal boughtFor,
             decimal? soldFor,
             int totalPointsGained,
@@ -47,6 +53,9 @@ namespace F1Manager.Teams.Domain
         {
             EngineId = engineId;
             Name = name;
+            PictureUrl = pictureUrl;
+            Manufacturer = manufacturer;
+            Model = model;
             BoughtFor = boughtFor;
             SoldFor = soldFor;
             TotalPointsGained = totalPointsGained;
@@ -66,5 +75,7 @@ namespace F1Manager.Teams.Domain
             WarnOffPercentage = 0M;
             BoughtOn = DateTimeOffset.UtcNow;
         }
+
+
     }
 }

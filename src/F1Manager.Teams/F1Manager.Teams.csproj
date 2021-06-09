@@ -6,10 +6,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\F1Manager.Shared\F1Manager.Shared.csproj" />
+    <ProjectReference Include="..\F1Manager.SqlData\F1Manager.SqlData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="Mappings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

@@ -34,12 +34,12 @@ namespace F1Manager.Teams.UnitTests.Factories
             UsersGenerator = new Faker<Team>()
                 .CustomInstantiator(f => new Team(
                     f.Random.Guid(),
-                    f.Random.Guid(),
+                    f.Random.Int(),
                     f.Random.Guid(),
                     f.Person.FullName,
                     f.Random.Int(120, 600),
-                    f.Random.Decimal(60000000, 120000000)
-                ));
+                    f.Random.Decimal(60000000, 120000000),
+                    null, null, null, null));
 
             DriverGenerator = new Faker<DriverDto>()
                 .RuleFor(x => x.Id, x => x.Random.Guid())
@@ -54,8 +54,8 @@ namespace F1Manager.Teams.UnitTests.Factories
                 .RuleFor(x => x.Id, x => x.Random.Guid())
                 .RuleFor(x => x.Name, x => x.Person.FullName)
                 .RuleFor(x => x.Manufacturer, x => x.Company.CompanyName())
-                .RuleFor(x => x.WeeklyWearDown, x => x.Random.Decimal(1M, 3M))
-                .RuleFor(x => x.MaximumWearDown, x => x.Random.Decimal(10M, 12M))
+                .RuleFor(x => x.WeeklyWearOff, x => x.Random.Decimal(1M, 3M))
+                .RuleFor(x => x.MaximumWearOff, x => x.Random.Decimal(10M, 12M))
                 .RuleFor(x => x.PictureUrl, x => x.Internet.Url())
                 .RuleFor(x => x.Value, x => x.Random.Decimal(12000000, 60000000));
 
@@ -63,8 +63,8 @@ namespace F1Manager.Teams.UnitTests.Factories
                 .RuleFor(x => x.Id, x => x.Random.Guid())
                 .RuleFor(x => x.Name, x => x.Person.FullName)
                 .RuleFor(x => x.Manufacturer, x => x.Company.CompanyName())
-                .RuleFor(x => x.WeeklyWearDown, x => x.Random.Decimal(1M, 3M))
-                .RuleFor(x => x.MaximumWearDown, x => x.Random.Decimal(10M, 12M))
+                .RuleFor(x => x.WeeklyWearOff, x => x.Random.Decimal(1M, 3M))
+                .RuleFor(x => x.MaximumWearOff, x => x.Random.Decimal(10M, 12M))
                 .RuleFor(x => x.PictureUrl, x => x.Internet.Url())
                 .RuleFor(x => x.Value, x => x.Random.Decimal(12000000, 60000000));
 

@@ -4,15 +4,21 @@ namespace F1Manager.Teams.Exceptions
 {
     public abstract class TeamErrorCode : ErrorCode
     {
-        public static TeamErrorCode NameNullOrEmpty;
-        public static TeamErrorCode InvalidName;
-        public static TeamErrorCode NameAlreadyTaken;
+        public static readonly TeamErrorCode NameNullOrEmpty;
+        public static readonly TeamErrorCode InvalidName;
+        public static readonly TeamErrorCode NameAlreadyTaken;
 
-        public static TeamErrorCode NotEnoughMoney;
-        public static TeamErrorCode InvalidTransfer;
-        public static TeamErrorCode DriverAlreadyInTeam;
-        public static TeamErrorCode ComponentNotFound;
-        public static TeamErrorCode ComponentAlreadyFilled;
+        public static readonly TeamErrorCode NotYourTeam;
+        public static readonly TeamErrorCode UserAlreadyHasTeam;
+
+        public static readonly TeamErrorCode NotEnoughMoney;
+        public static readonly TeamErrorCode InvalidTransfer;
+        public static readonly TeamErrorCode DriverAlreadyInTeam;
+        public static readonly TeamErrorCode ComponentNotFound;
+        public static readonly TeamErrorCode ComponentAlreadyFilled;
+        public static readonly TeamErrorCode ComponentNotInPosession;
+
+        public static readonly TeamErrorCode PersistenceFailed;
 
         static TeamErrorCode()
         {
@@ -20,11 +26,17 @@ namespace F1Manager.Teams.Exceptions
             NameAlreadyTaken = new NameAlreadyTaken();
             InvalidName = new InvalidName();
 
+            NotYourTeam = new NotYourTeam();
+            UserAlreadyHasTeam = new UserAlreadyHasTeam();
+
             NotEnoughMoney = new NotEnoughMoney();
             InvalidTransfer = new InvalidTransfer();
             DriverAlreadyInTeam = new DriverAlreadyInTeam();
             ComponentNotFound = new ComponentNotFound();
             ComponentAlreadyFilled = new ComponentAlreadyFilled();
+            ComponentNotInPosession = new ComponentNotInPosession();
+
+            PersistenceFailed = new PersistenceFailed();
         }
     }
 
@@ -42,6 +54,16 @@ namespace F1Manager.Teams.Exceptions
     {
         public override string Code => "Teams.Errors.InvalidName";
         public override string TranslationKey => "Teams.Errors.InvalidName";
+    }
+    public class UserAlreadyHasTeam : TeamErrorCode
+    {
+        public override string Code => "Teams.Errors.UserAlreadyHasTeam";
+        public override string TranslationKey => "Teams.Errors.UserAlreadyHasTeam";
+    }
+    public class NotYourTeam : TeamErrorCode
+    {
+        public override string Code => "Teams.Errors.NotYourTeam";
+        public override string TranslationKey => "Teams.Errors.NotYourTeam";
     }
     public class NotEnoughMoney : TeamErrorCode
     {
@@ -68,4 +90,17 @@ namespace F1Manager.Teams.Exceptions
         public override string Code => "Teams.Errors.ComponentAlreadyFilled";
         public override string TranslationKey => "Teams.Errors.ComponentAlreadyFilled";
     }
+    public class ComponentNotInPosession : TeamErrorCode
+    {
+        public override string Code => "Teams.Errors.ComponentNotInPosession";
+        public override string TranslationKey => "Teams.Errors.ComponentNotInPosession";
+    }
+    
+    public class PersistenceFailed : TeamErrorCode
+    {
+        public override string Code => "Teams.Errors.PersistenceFailed";
+        public override string TranslationKey => "Teams.Errors.PersistenceFailed";
+    }
+
+    
 }

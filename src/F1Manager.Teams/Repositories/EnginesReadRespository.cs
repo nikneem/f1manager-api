@@ -32,8 +32,8 @@ namespace F1Manager.Teams.Repositories
                     Manufacturer = entity.Manufacturer,
                     Value = entity.Value,
                     PictureUrl = entity.PictureUrl,
-                    WeeklyWearDown = entity.WeeklyWearDown,
-                    MaximumWearDown = entity.MaximumWearDown
+                    WeeklyWearOff = entity.WeeklyWearDown,
+                    MaximumWearOff = entity.MaximumWearDown
                 };
             }
 
