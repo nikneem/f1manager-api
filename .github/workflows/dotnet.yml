@@ -52,9 +52,9 @@ jobs:
           creds: ${{ secrets.AZURE_TEST }}
 
       - name: Azure Create Resource Group
-        uses: azure/CLI@v1
+        uses: Azure/cli@1.0.4
         with:
-          azcliversion: 2.0.72
+          azcliversion: 2.23.0
           inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_TEST_RESOURCE_GROUP }}
 
       - name: Download Artifact
@@ -64,7 +64,7 @@ jobs:
           path: ./infrastructure
 
       - name: Deploy infrastrucutre
-        uses: azure/CLI@v1
+        uses: Azure/cli@1.0.4
         with:
-          azcliversion: 2.0.72
+          azcliversion: 2.23.0
           inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_TEST_RESOURCE_GROUP }} --template-file ./ininfrastructure/main.bicep --parameters --parameters environmentName=test
