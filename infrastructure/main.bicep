@@ -5,7 +5,7 @@ param systemName string = 'f1man'
   'acc'
   'prod'
 ])
-param environmentName string = 'prod'
+param environmentName string = 'dev'
 param azureRegion string = 'weu'
 
 param developerObjectIds array = [
