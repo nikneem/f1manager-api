@@ -41,7 +41,7 @@ jobs:
           name: bicep-templates
           path: infrastructure/
 
-  deploy-test:
+  deploy-dev:
     needs: publish-bicep
     runs-on: ubuntu-latest
 
@@ -55,7 +55,7 @@ jobs:
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_TEST_RESOURCE_GROUP }}
+          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
 
       - name: Download Artifact
         uses: actions/download-artifact@v2
@@ -67,4 +67,4 @@ jobs:
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_TEST_RESOURCE_GROUP }} --template-file ./ininfrastructure/main.bicep --parameters --parameters environmentName=test
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./ininfrastructure/main.bicep --parameters --parameters ./infrastructure/parameters.dev.json
