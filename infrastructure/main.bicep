@@ -12,6 +12,8 @@ param developerObjectIds array = [
   'de55357b-c155-4de7-916f-ff12755cf5fb'
 ]
 
+var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
+
 module redisCacheModule 'Cache/redis.bicep' = {
   name: 'redisCacheModule'
   params: {
@@ -89,9 +91,7 @@ module webAppModule 'Web/sites.bicep' = {
   ]
   name: 'webAppModule'
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    webAppName: webAppName
     appServicePlanId: appServicePlanModule.outputs.id
   }
 }
@@ -114,7 +114,7 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
     webAppModule
     keyVaultSecrets
   ]
-  name: '${webAppModule.outputs.webAppName}/web'
+  name: '${webAppName}/web'
   properties: {
     appSettings: [
       {

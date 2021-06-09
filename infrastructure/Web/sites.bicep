@@ -1,15 +1,5 @@
-param systemName string = 'f1man'
-@allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
-])
-param environmentName string = 'prod'
-param azureRegion string = 'weu'
+param webAppName string
 param appServicePlanId string
-
-var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
 
 resource webApp 'Microsoft.Web/sites@2020-12-01' = {
   name: webAppName
