@@ -122,7 +122,11 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
         value: applicationInsightsModule.outputs.instrumentationKey
       }
       {
-        name: 'AzureWebJobsStorage'
+        name: 'Users:AzureStorageAccount'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
+      }
+      {
+        name: 'Teams:AzureStorageAccount'
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
       }
       {
