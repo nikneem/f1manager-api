@@ -29,3 +29,12 @@ jobs:
         with:
           name: api-artifact
           path: ./published
+
+  deploy-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_TEST }}
