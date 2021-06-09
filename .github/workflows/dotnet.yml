@@ -47,7 +47,6 @@ jobs:
 
     outputs:
       webAppName:
-        description: "Name of the web app on Azure created by the ARM template"
         value: ${{ steps.arm.outputs.webAppName }}
 
     steps:
