@@ -130,24 +130,8 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
       }
       {
-        name: 'FUNCTIONS_EXTENSION_VERSION'
-        value: '~3'
-      }
-      {
-        name: 'FUNCTIONS_WORKER_RUNTIME'
-        value: 'dotnet'
-      }
-      {
-        name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
-      }
-      {
-        name: 'ComponentImagesStorageAccount'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
-      }
-      {
-        name: 'WEBSITE_CONTENTSHARE'
-        value: 'azure-function'
+        name: 'WEBSITE_RUN_FROM_PACKAGE'
+        value: '1'
       }
     ]
   }
