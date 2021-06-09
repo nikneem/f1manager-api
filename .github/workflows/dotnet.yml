@@ -49,37 +49,37 @@ jobs:
           name: bicep-templates
           path: infrastructure/
 
-  infrastructure-incremental-dev:
-    needs: publish-bicep
-    runs-on: ubuntu-latest
+  # infrastructure-incremental-dev:
+  #   needs: publish-bicep
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bicep-templates
-          path: ./infrastructure
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: ./infrastructure
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_TEST }}
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_TEST }}
 
-      - name: Azure Create Resource Group
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+  #     - name: Azure Create Resource Group
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
 
-      - name: Deploy Infrastructure
-        id: arm
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
+  #     - name: Deploy Infrastructure
+  #       id: arm
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
 
   deploy-api-dev:
-    needs: [infrastructure-incremental-dev, compile-api]
+    needs: [compile-api]
     runs-on: ubuntu-latest
 
     steps:
@@ -97,12 +97,12 @@ jobs:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
           appName: "f1man-dev-weu-app"
 
-      - name: Deploy FunctionApp
-        uses: Azure/functions-action@v1
+      - name: "Deploy web app"
+        uses: azure/webapps-deploy@v2
         with:
           app-name: "f1man-dev-weu-app"
-          package: artifact.zip
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
+          package: "artifact.zip"
 
   infrastructure-complete-dev:
     needs: deploy-api-dev
