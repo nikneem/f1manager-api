@@ -77,7 +77,7 @@ module serviceBusListenerSecret 'KeyVault/vaults/secrets.bicep' = {
     secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret)
   }
 }
-module appServicePlanModule 'Web/serverfarms.bicep' = {
+module appServicePlanModule 'Web/serverFarms.bicep' = {
   name: 'appServicePlanDeploy'
   params: {
     systemName: systemName
