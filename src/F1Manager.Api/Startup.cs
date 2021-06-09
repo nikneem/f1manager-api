@@ -27,7 +27,7 @@ namespace F1Manager.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddHealthChecks();
             services.AddControllers();
             services.ConfigureUsers();
             services.AddSwaggerGen(c =>
@@ -54,6 +54,7 @@ namespace F1Manager.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
         }
