@@ -114,7 +114,7 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
     webAppModule
     keyVaultSecrets
   ]
-  name: '${webAppModule.name}/web'
+  name: '${webAppModule.outputs.webAppName}/web'
   properties: {
     appSettings: [
       {
