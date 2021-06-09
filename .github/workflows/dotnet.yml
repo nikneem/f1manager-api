@@ -45,6 +45,11 @@ jobs:
     needs: publish-bicep
     runs-on: ubuntu-latest
 
+    outputs:
+      webAppName:
+        description: "Name of the web app on Azure created by the ARM template"
+        value: ${{ steps.arm.outputs.webAppName }}
+
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v2
@@ -82,12 +87,12 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_TEST }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-          appName: ${{ steps.arm.output.webAppName }}
+          appName: ${{needs.infrastructure-incremental-dev.outputs.webAppName}}
 
       - name: Deploy FunctionApp
         uses: Azure/functions-action@v1
         with:
-          app-name: ${{ steps.arm.output.webAppName }}
+          app-name: ${{needs.infrastructure-incremental-dev.outputs.webAppName}}
           package: published
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
 
