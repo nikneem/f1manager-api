@@ -85,12 +85,12 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_TEST }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-          appName: ${{needs.infrastructure-incremental-dev.outputs.webAppName}}
+          appName: "f1man-dev-weu-app"
 
       - name: Deploy FunctionApp
         uses: Azure/functions-action@v1
         with:
-          app-name: ${{needs.infrastructure-incremental-dev.outputs.webAppName}}
+          app-name: "f1man-dev-weu-app"
           package: published
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
 

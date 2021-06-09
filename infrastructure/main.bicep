@@ -70,7 +70,7 @@ module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
     storageAccountModule
     sqlServerModule
   ]
-  name: 'serviceBusListenerSecretDeploy'
+  name: 'keyVaultSecrets'
   params: {
     keyVault: keyVaultModule.outputs.keyVaultName
     secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret)
@@ -162,4 +162,4 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
   }
 }]
 
-output webAppName string = webAppModule.outputs.webAppName
+output webAppName string = webAppName
