@@ -9,7 +9,6 @@ on:
 jobs:
   compile-api:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET
@@ -24,14 +23,12 @@ jobs:
         run: dotnet test ./src --no-build --verbosity normal
       - name: Publish
         run: dotnet publish ./src --configuration Release --no-restore --nologo --output ./published
-
       - name: "Zip published content"
         uses: papeloto/action-zip@v1
         with:
           files: ./published/
           recursive: true
           dest: artifact.zip
-
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -40,7 +37,6 @@ jobs:
 
   publish-bicep:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Publish Artifact
@@ -49,45 +45,39 @@ jobs:
           name: bicep-templates
           path: infrastructure/
 
-  # infrastructure-incremental-dev:
-  #   needs: publish-bicep
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: bicep-templates
-  #         path: ./infrastructure
-
-  #     - name: Azure Login
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_TEST }}
-
-  #     - name: Azure Create Resource Group
-  #       uses: Azure/cli@1.0.4
-  #       with:
-  #         azcliversion: 2.23.0
-  #         inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-
-  #     - name: Deploy Infrastructure
-  #       id: arm
-  #       uses: Azure/cli@1.0.4
-  #       with:
-  #         azcliversion: 2.23.0
-  #         inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
+  infrastructure-incremental-dev:
+    needs: publish-bicep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: bicep-templates
+          path: ./infrastructure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_TEST }}
+      - name: Azure Create Resource Group
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+      - name: Deploy Infrastructure
+        id: arm
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
 
   deploy-api-dev:
-    needs: [compile-api]
+    needs: [compile-api, infrastructure-incremental-dev]
     runs-on: ubuntu-latest
-
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: api-artifact
-
       - name: Get FunctionApp publish profile
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
@@ -96,7 +86,6 @@ jobs:
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
           appName: "f1man-dev-weu-app"
-
       - name: "Deploy web app"
         uses: azure/webapps-deploy@v2
         with:
