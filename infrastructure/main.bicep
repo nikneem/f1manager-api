@@ -9,10 +9,7 @@ param environmentName string = 'dev'
 param azureRegion string = 'weu'
 
 param developerObjectIds array = [
-  'ce00c98d-c389-47b0-890e-7f156f136ebd'
-  '4511674d-9538-4852-a05d-4416c894aeb8'
-  'ad7deb2e-6a44-4309-a037-6f0ff6b273b2'
-  'f2256599-cbea-44ae-aa54-2daafaac605a'
+  'de55357b-c155-4de7-916f-ff12755cf5fb'
 ]
 
 module redisCacheModule 'Cache/redis.bicep' = {
@@ -65,7 +62,7 @@ module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
     sqlServerName: sqlServerModule.outputs.sqlServerName
   }
 }
-module serviceBusListenerSecret 'KeyVault/vaults/secrets.bicep' = {
+module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
   dependsOn: [
     keyVaultModule
     storageAccountModule
@@ -85,24 +82,20 @@ module appServicePlanModule 'Web/serverFarms.bicep' = {
     azureRegion: azureRegion
   }
 }
-resource webAppModule 'Microsoft.Web/sites@2020-12-01' = {
+
+module webAppModule 'Web/sites.bicep' = {
   dependsOn: [
     appServicePlanModule
-    applicationInsightsModule
-    storageAccountModule
   ]
-  name: '${systemName}-${environmentName}-${azureRegion}-app'
-  location: resourceGroup().location
-  kind: 'functionapp'
-  properties: {
-    serverFarmId: appServicePlanModule.outputs.id
-    httpsOnly: true
-    clientAffinityEnabled: false
-  }
-  identity: {
-    type: 'SystemAssigned'
+  name: 'webAppModule'
+  params: {
+    systemName: systemName
+    environmentName: environmentName
+    azureRegion: azureRegion
+    appServicePlanId: appServicePlanModule.outputs.id
   }
 }
+
 module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
   name: 'keyVaultAccessPolicyDeploy'
   dependsOn: [
@@ -111,14 +104,15 @@ module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
   ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    principalId: webAppModule.identity.principalId
+    principalId: webAppModule.outputs.servicePrincipal
   }
 }
+
 resource config 'Microsoft.Web/sites/config@2020-12-01' = {
   dependsOn: [
     keyVaultAccessPolicyModule
     webAppModule
-    serviceBusListenerSecret
+    keyVaultSecrets
   ]
   name: '${webAppModule.name}/web'
   properties: {
