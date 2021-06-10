@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Claims;
-using F1Manager.Api.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace F1Manager.Api.Base
