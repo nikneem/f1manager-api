@@ -182,4 +182,18 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
   }
 }]
 
+resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
+  dependsOn: [
+    webAppModule
+    keyVaultModule
+  ]
+  name: 'certificateModule'
+  location: resourceGroup().location
+  properties: {
+    keyVaultId: keyVaultModule.outputs.keyVaultName
+    keyVaultSecretName: 'f1mgr'
+    serverFarmId: appServicePlanModule.outputs.id
+  }
+}
+
 output webAppName string = webAppName

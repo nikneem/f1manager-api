@@ -17,6 +17,7 @@ resource keyVaultAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-04-
           certificates: [
             'get'
             'list'
+            'create'
           ]
         }
       }
