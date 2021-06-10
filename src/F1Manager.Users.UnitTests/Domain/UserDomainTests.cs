@@ -63,7 +63,7 @@ namespace F1Manager.Users.UnitTests.Domain
             Assert.Equal(TrackingState.Pristine, user.TrackingState);
         }
         [Theory]
-        [InlineData("tooshrt")]
+        [InlineData("toosh")]
         [InlineData("thisusernameistoolong")]
         [InlineData("__banana__")]
         public async void WhenUsernameIsInvalid_ItThrowsF1ManagerUserException(string username)
