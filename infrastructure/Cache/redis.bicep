@@ -21,3 +21,12 @@ resource redisCache 'Microsoft.Cache/redis@2020-12-01' = {
     }
   }
 }
+
+output primaryKey string = listKeys(redisCache.id, redisCache.apiVersion).primaryKey
+output secretName string = cacheName
+output secret array = [
+  {
+    name: cacheName
+    value: '${cacheName}.redis.cache.windows.net:6380,password=${listKeys(redisCache.id, redisCache.apiVersion).primaryKey},ssl=True,abortConnect=False'
+  }
+]

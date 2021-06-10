@@ -69,11 +69,12 @@ module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
     keyVaultModule
     storageAccountModule
     sqlServerModule
+    redisCacheModule
   ]
   name: 'keyVaultSecrets'
   params: {
     keyVault: keyVaultModule.outputs.keyVaultName
-    secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret)
+    secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret, redisCacheModule.outputs.secret)
   }
 }
 module appServicePlanModule 'Web/serverFarms.bicep' = {
@@ -113,6 +114,7 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
     keyVaultAccessPolicyModule
     webAppModule
     keyVaultSecrets
+    redisCacheModule
   ]
   name: '${webAppName}/web'
   properties: {
@@ -128,6 +130,10 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
       {
         name: 'Teams:AzureStorageAccount'
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
+      }
+      {
+        name: 'Teams:CacheConnectionString'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${redisCacheModule.outputs.secretName})'
       }
       {
         name: 'WEBSITE_RUN_FROM_PACKAGE'
