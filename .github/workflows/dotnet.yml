@@ -22,7 +22,7 @@ jobs:
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal
       - name: Publish
-        run: dotnet publish ./src --configuration Release --no-restore --nologo --output ./published
+        run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
       - name: "Zip published content"
         uses: papeloto/action-zip@v1
         with:

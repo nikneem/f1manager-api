@@ -12,6 +12,8 @@ resource webApp 'Microsoft.Web/sites@2020-12-01' = {
     siteConfig: {
       alwaysOn: true
       ftpsState: 'Disabled'
+      netFrameworkVersion: 'v5.0'
+      http20Enabled: true
     }
   }
   identity: {
