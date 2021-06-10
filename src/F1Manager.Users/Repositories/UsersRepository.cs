@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace F1Manager.Users.Repositories
 {
-    public sealed class UsersRepository: IUsersRepository
+    public sealed class UsersRepository : IUsersRepository
     {
 
         private const string UsersTableName = "Users";
@@ -47,9 +47,9 @@ namespace F1Manager.Users.Repositories
             return false;
         }
 
-            public UsersRepository(IOptions<UsersOptions> config)
+        public UsersRepository(IOptions<UsersOptions> config)
         {
-            var storageAccountConnectionString = config.Value.AzureStorageConnectionString;
+            var storageAccountConnectionString = config.Value.AzureStorageAccount;
             var storageAccount = TableStorageHelper.CreateStorageAccountFromConnectionString(storageAccountConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
             _table = tableClient.GetTableReference(UsersTableName);
