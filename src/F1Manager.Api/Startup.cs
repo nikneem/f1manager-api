@@ -47,6 +47,7 @@ namespace F1Manager.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "F1Manager.Api", Version = "v1"});
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +59,18 @@ namespace F1Manager.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "F1Manager.Api v1"));
             }
-
+            app.UseCors(builder =>
+            {
+                builder
+                    .WithOrigins("http://localhost:4200",
+                        "http://localhost",
+                        "https://app.f1mgr.com",
+                        "https://dev-app.f1mgr.com",
+                        "https://test-app.f1mgr.com")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
             app.UseAuthentication();
             app.UseHttpsRedirection();
 
