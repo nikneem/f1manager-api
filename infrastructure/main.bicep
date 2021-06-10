@@ -7,10 +7,11 @@ param systemName string = 'f1man'
 ])
 param environmentName string = 'dev'
 param azureRegion string = 'weu'
-
 param developerObjectIds array = [
   'de55357b-c155-4de7-916f-ff12755cf5fb'
 ]
+@secure()
+param jwtSignatureSecret string = newGuid()
 
 var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
 
@@ -137,7 +138,7 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
       }
       {
         name: 'Users:Secret'
-        value: '${newGuid()}'
+        value: jwtSignatureSecret
       }
       {
         name: 'Teams:AzureStorageAccount'
