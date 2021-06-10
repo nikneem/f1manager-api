@@ -12,12 +12,6 @@ namespace F1Manager.Users.Configuration
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
 
-            if (options.CacheConnectionString == default)
-            {
-                var optionName = $"{UsersOptions.SectionName}.{nameof(options.CacheConnectionString)}";
-                return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
-            }
-
             return ValidateOptionsResult.Success;
         }
     }

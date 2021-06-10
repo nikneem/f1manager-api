@@ -5,7 +5,6 @@
         public const string SectionName = "Users";
 
         public string AzureStorageAccount { get; set; }
-        public string CacheConnectionString { get; set; }
     }
 }
 

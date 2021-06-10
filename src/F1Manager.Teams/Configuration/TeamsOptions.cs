@@ -5,6 +5,6 @@
         public const string SectionName = "Teams";
 
         public string AzureStorageConnectionString { get; set; }
-        public string RedisCacheConnectionString { get; set; }
+        public string CacheConnectionString { get; set; }
     }
 }

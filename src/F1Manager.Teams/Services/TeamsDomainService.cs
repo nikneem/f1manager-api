@@ -18,7 +18,7 @@ namespace F1Manager.Teams.Services
         private readonly IChassisReadRespository _chassisRepository;
         private readonly ITeamsRepository _teamsRepository;
 
-        public  Task<DriverDto> GetDriverById(Guid id)
+        public Task<DriverDto> GetDriverById(Guid id)
         {
             var cacheKey = $"Drivers-{id}";
             return GetFromCache(cacheKey, () => _driversRepository.GetById(id));
@@ -42,12 +42,12 @@ namespace F1Manager.Teams.Services
         }
 
         public TeamsDomainService(
-            IDriversReadRepository driversRepository, 
+            IDriversReadRepository driversRepository,
             IEnginesReadRespository enginesRepository,
             IChassisReadRespository chassisRepository,
             ITeamsRepository teamsRepository,
             ILogger<TeamsDomainService> logger,
-            IOptions<TeamsOptions> options) : base(options.Value.RedisCacheConnectionString, logger)
+            IOptions<TeamsOptions> options) : base(options.Value.CacheConnectionString, logger)
         {
             _driversRepository = driversRepository;
             _enginesRepository = enginesRepository;
