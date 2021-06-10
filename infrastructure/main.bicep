@@ -202,4 +202,17 @@ resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
   }
 }
 
+resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2021-01-01' = {
+  dependsOn: [
+    certificate
+  ]
+  name: '${webAppName}/${environmentName}-api.f1mgr.com'
+  properties: {
+    siteName: webAppName
+    hostNameType: 'Verified'
+    sslState: 'SniEnabled'
+    thumbprint: certificate.properties.thumbprint
+  }
+}
+
 output webAppName string = webAppName
