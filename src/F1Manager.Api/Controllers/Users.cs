@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using F1Manager.Api.Base;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace F1Manager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Users : ControllerBase
+    public class Users : F1ManagerApiControllerBase
     {
         private readonly IUsersService _service;
 
@@ -18,6 +20,20 @@ namespace F1Manager.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLoginRequestDto dto)
+        {
+            var response = await _service.Login(dto);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Get()
+        {
+            var userId = GetUserId();
+            return Ok();
+        }
 
         public Users(IUsersService service)
         {

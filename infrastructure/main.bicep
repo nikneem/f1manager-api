@@ -128,6 +128,18 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
       }
       {
+        name: 'Users:Issuer'
+        value: 'https://${environmentName}-api.f1mgr.com'
+      }
+      {
+        name: 'Users:Audience'
+        value: 'https://${environmentName}-api.f1mgr.com'
+      }
+      {
+        name: 'Users:Secret'
+        value: '${newGuid()}'
+      }
+      {
         name: 'Teams:AzureStorageAccount'
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
       }

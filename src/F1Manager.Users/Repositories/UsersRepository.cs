@@ -33,6 +33,29 @@ namespace F1Manager.Users.Repositories
             return true;
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+            var loweredUsername = username.ToLower();
+            var retrieveOperation = TableOperation.Retrieve<UserEntity>(PartitionKey, loweredUsername);
+            var result = await _table.ExecuteAsync(retrieveOperation);
+            if (result.Result is UserEntity entity)
+            {
+                return new User(entity.SubjectId,
+                    entity.DisplayName,
+                    entity.RowKey,
+                    entity.Password,
+                    entity.EmailAddress,
+                    entity.DateEmailVerified,
+                    entity.DueDateEmailVerified,
+                    entity.LockoutReason,
+                    entity.IsAdministrator,
+                    entity.RegisteredOn,
+                    entity.LastLoginOn);
+            }
+
+            return null;
+        }
+
         public async Task<bool> Insert(User userDomainModel)
         {
             await _table.CreateIfNotExistsAsync();

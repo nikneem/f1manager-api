@@ -112,7 +112,7 @@ namespace F1Manager.Users.Domain
             string username,
             string password,
             string emailAddress,
-            DateTimeOffset emailVerified,
+            DateTimeOffset? emailVerified,
             DateTimeOffset dueEmailVerification,
             string lockoutReason,
             bool isAdmin,
