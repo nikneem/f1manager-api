@@ -8,7 +8,6 @@ using F1Manager.Users.Domain;
 using F1Manager.Users.Entities;
 using F1Manager.Users.Mappings;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace F1Manager.Users.Repositories
@@ -58,7 +57,6 @@ namespace F1Manager.Users.Repositories
 
         public async Task<bool> Insert(User userDomainModel)
         {
-            await _table.CreateIfNotExistsAsync();
             if (userDomainModel.TrackingState == TrackingState.New)
             {
                 var userEntity = userDomainModel.ToEntity();

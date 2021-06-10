@@ -19,9 +19,11 @@ namespace F1Manager.Users.Configuration
             serviceCollection.ConfigureAndValidate<UsersOptions, UsersOptionsValidator>(configuration.GetSection(UsersOptions.SectionName));
 
             serviceCollection.AddScoped<IUsersService, UsersService>();
+            serviceCollection.AddScoped<ILoginService, LoginService>();
             serviceCollection.AddTransient<IUsersDomainService, UsersDomainService>();
 
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
+            serviceCollection.AddScoped<ILoginRepository, LoginRepository>();
         }
     }
 }

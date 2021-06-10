@@ -16,7 +16,7 @@ param jwtSignatureSecret string = newGuid()
 var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
 var tables = [
   'Users'
-  'Login'
+  'Logins'
 ]
 module redisCacheModule 'Cache/redis.bicep' = {
   name: 'redisCacheModule'
