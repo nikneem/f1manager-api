@@ -14,7 +14,10 @@ param developerObjectIds array = [
 param jwtSignatureSecret string = newGuid()
 
 var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
-
+var tables = [
+  'Users'
+  'Login'
+]
 module redisCacheModule 'Cache/redis.bicep' = {
   name: 'redisCacheModule'
   params: {
@@ -29,6 +32,16 @@ module storageAccountModule 'Storage/storageAccounts.bicep' = {
     systemName: systemName
     environmentName: environmentName
     azureRegion: azureRegion
+  }
+}
+module storageAccountTables 'Storage/tableServices/tables.bicep' = {
+  dependsOn: [
+    storageAccountModule
+  ]
+  name: 'storageAccountTables'
+  params: {
+    storageAccountName: storageAccountModule.outputs.storageAccountName
+    tableNames: tables
   }
 }
 module applicationInsightsModule 'Insights/components.bicep' = {

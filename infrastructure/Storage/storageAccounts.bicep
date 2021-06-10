@@ -46,3 +46,4 @@ output secret array = [
   }
 ]
 output secretName string = storageAccountName
+output storageAccountName string = storageAccountName
