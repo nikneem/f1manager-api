@@ -190,7 +190,7 @@ resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
   name: 'certificateModule'
   location: resourceGroup().location
   properties: {
-    keyVaultId: keyVaultModule.outputs.keyVaultName
+    keyVaultId: resourceId('DeployTime', 'Microsoft.Vaults/KeyVault', 'DeployTimeKeyVault')
     keyVaultSecretName: 'f1mgr'
     serverFarmId: appServicePlanModule.outputs.id
   }
