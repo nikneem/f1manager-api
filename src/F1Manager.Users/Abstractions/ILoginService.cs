@@ -7,6 +7,6 @@ namespace F1Manager.Users.Abstractions
     {
 
         Task<LoginAttemptDto> RequestLogin();
-
+        Task<UserLoginRequestDto> ValidateLogin(UserLoginRequestDto id);
     }
 }

@@ -46,6 +46,25 @@ namespace F1Manager.Users.Repositories
                 "Failed to persist new login attempt. Login cannot take place");
         }
 
+        public async Task<LoginAttemptDto> ValidateLoginAttempt(Guid loginAttempt)
+        {
+            var operation = TableOperation.Retrieve<LoginAttemptEntity>(PartitionKey, loginAttempt.ToString());
+            var result = await _table.ExecuteAsync(operation);
+            if (result.HttpStatusCode.IsSuccess())
+            {
+                var entity = result.Result as LoginAttemptEntity;
+                return new LoginAttemptDto
+                {
+                    Id = Guid.Parse(entity.RowKey),
+                    Key = entity.SecurityKey,
+                    Vector = entity.SecurityVector
+                };
+            }
+            throw new F1ManagerLoginException(LoginErrorCode.LoginAttemptFailedOrExpired,
+                "The login attempt could not be validated. It either does not exist, or is expired.");
+
+        }
+
 
         public LoginRepository(IOptions<UsersOptions> config)
         {
