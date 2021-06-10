@@ -18,6 +18,12 @@ var tables = [
   'Users'
   'Logins'
 ]
+
+resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
+  name: 'DeployTimeKeyVault'
+  scope: resourceGroup('DeployTime')
+}
+
 module redisCacheModule 'Cache/redis.bicep' = {
   name: 'redisCacheModule'
   params: {
@@ -190,7 +196,7 @@ resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
   name: 'certificateModule'
   location: resourceGroup().location
   properties: {
-    keyVaultId: resourceId('DeployTime', 'Microsoft.Vaults/KeyVault', 'DeployTimeKeyVault')
+    keyVaultId: deployTimeKeyVault.id
     keyVaultSecretName: 'f1mgr'
     serverFarmId: appServicePlanModule.outputs.id
   }
