@@ -6,6 +6,5 @@ namespace F1Manager.Users.Abstractions
     public interface IUsersService
     {
         Task<UserDetailsDto> Register(UserRegistrationDto dto);
-        Task<UserLoginResponseDto> Login(UserLoginRequestDto dto);
     }
 }

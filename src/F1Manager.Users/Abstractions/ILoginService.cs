@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using F1Manager.Users.DataTransferObjects;
 
 namespace F1Manager.Users.Abstractions
@@ -7,6 +8,8 @@ namespace F1Manager.Users.Abstractions
     {
 
         Task<LoginAttemptDto> RequestLogin();
-        Task<UserLoginRequestDto> ValidateLogin(UserLoginRequestDto id);
+        Task<UserLoginResponseDto> Login(UserLoginRequestDto dto);
+
+        Task<UserLoginResponseDto> Recover(Guid userId);
     }
 }

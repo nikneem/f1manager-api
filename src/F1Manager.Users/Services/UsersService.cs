@@ -34,36 +34,6 @@ namespace F1Manager.Users.Services
             _logger.LogError("Failed to register user '{username}' as new user due to an unknown reason", dto.Username);
             throw new F1ManagerUserException(UserErrorCode.UserRegistrationFailed, "Failed to register new user");
         }
-        public async Task<UserLoginResponseDto> Login(UserLoginRequestDto dto)
-        {
-            var user = await _repository.GetUserByUsername(dto.Username);
-            if (user != null)
-            {
-                if (user.Password.Validate(dto.Password))
-                {
-                    if (!user.IsLockedOut)
-                    {
-                        return new UserLoginResponseDto
-                        {
-                            Success = true,
-                            JwtToken = GenerateJwtTokenForUser(user.Id, user.IsAdministrator)
-                        };
-                    }
-
-                    return new UserLoginResponseDto
-                    {
-                        Success = false,
-                        ErrorMessage = user.LockoutReason
-                    };
-                }
-            }
-
-            return new UserLoginResponseDto
-            {
-                Success = false,
-                ErrorMessage = "UserNotFound"
-            };
-        }
 
         private static UserDetailsDto ToUserDetailsDto(User domainModel)
         {
@@ -77,34 +47,6 @@ namespace F1Manager.Users.Services
                 RegisteredOn = domainModel.RegisteredOn,
                 LastLoginOn = domainModel.LastLoginOn
             };
-        }
-
-        private  string GenerateJwtTokenForUser(Guid userId, bool isAdmin = false)
-        {
-
-            var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_userOptions.Value.Secret));
-            var signingCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                Issuer = _userOptions.Value.Issuer,
-                Audience = _userOptions.Value.Audience,
-                SigningCredentials = signingCredentials
-            };
-            if (isAdmin)
-            {
-                tokenDescriptor.Claims.Add("Admin", isAdmin.ToString());
-            }
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
         

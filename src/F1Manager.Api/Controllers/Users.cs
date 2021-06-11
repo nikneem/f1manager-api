@@ -20,12 +20,7 @@ namespace F1Manager.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginRequestDto dto)
-        {
-            var response = await _service.Login(dto);
-            return Ok(response);
-        }
+
 
         [HttpGet]
         [Authorize]
