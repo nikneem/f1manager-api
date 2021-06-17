@@ -9,7 +9,7 @@ namespace F1Manager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Users : F1ManagerApiControllerBase
+    public class UsersController : F1ManagerApiControllerBase
     {
         private readonly IUsersService _service;
 
@@ -30,7 +30,7 @@ namespace F1Manager.Api.Controllers
             return Ok();
         }
 
-        public Users(IUsersService service)
+        public UsersController(IUsersService service)
         {
             _service = service;
         }

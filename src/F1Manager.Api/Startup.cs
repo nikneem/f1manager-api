@@ -1,4 +1,5 @@
 using System.Text;
+using F1Manager.Api.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +42,8 @@ namespace F1Manager.Api
                         };
                     });
             services.AddHealthChecks();
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new F1ManagerExceptionFilter()));
             services.ConfigureUsers();
             services.AddSwaggerGen(c =>
             {

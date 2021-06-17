@@ -12,6 +12,7 @@ namespace F1Manager.Shared.Helpers
         private static readonly string AlphaPool = "abcdefghijklmnopqrstuvwxyz";
         private static readonly string NumericPool = "0123456789";
         private static readonly string AlphaNumericPool = AlphaPool + NumericPool;
+        private static readonly string CaseSensitiveAlphaNumericPool = AlphaPool + NumericPool + Capitals;
 
         public static string GenerateEmailVerificationCode()
         {
@@ -23,6 +24,18 @@ namespace F1Manager.Shared.Helpers
 
             return secret.ToString();
         }
+
+        public static string GenerateRefreshToken()
+        {
+            var refreshToken = new StringBuilder();
+            do
+            {
+                refreshToken.Append(CaseSensitiveAlphaNumericPool.Substring(Random.Next(CaseSensitiveAlphaNumericPool.Length), 1));
+            } while (refreshToken.Length < Defaults.RefreshTokenLength);
+
+            return refreshToken.ToString();
+        }
+
 
         static Randomize()
         {

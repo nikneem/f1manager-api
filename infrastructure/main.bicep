@@ -17,6 +17,7 @@ var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
 var tables = [
   'Users'
   'Logins'
+  'RefreshTokens'
 ]
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
@@ -72,6 +73,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
     systemName: systemName
     environmentName: environmentName
     azureRegion: azureRegion
+    sqlServerPassword: deployTimeKeyVault.getSecret('sql-server-password', 'verion')
   }
 }
 module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
@@ -84,6 +86,7 @@ module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
     sqlServerName: sqlServerModule.outputs.sqlServerName
   }
 }
+
 module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
   dependsOn: [
     keyVaultModule

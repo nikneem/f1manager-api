@@ -11,32 +11,30 @@ namespace F1Manager.Api.Controllers
     [ApiController]
     public class LoginController : F1ManagerApiControllerBase
     {
-        private readonly ILoginService _loginService;
+        private readonly ILoginsService _loginsService;
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var loginAttempt = await _loginService.RequestLogin();
+            var loginAttempt = await _loginsService.RequestLogin();
             return Ok(loginAttempt);
         }
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginRequestDto dto)
         {
-            var response = await _loginService.Login(dto);
+            var response = await _loginsService.Login(dto, GetIpAddress());
             return Ok(response);
         }
-        [HttpGet("recover")]
-        [Authorize]
-        public async Task<IActionResult> Recover()
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(RefreshTokenDto dto)
         {
-            var userId = GetUserId().GetValueOrDefault();
-            var response = await _loginService.Recover(userId);
+            var response = await _loginsService.Refresh(dto.Token, GetIpAddress());
             return Ok(response);
         }
 
-        public LoginController(ILoginService loginService)
+        public LoginController(ILoginsService loginsService)
         {
-            _loginService = loginService;
+            _loginsService = loginsService;
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,15 @@ namespace F1Manager.Api.Base
             }
 
             return null;
+        }
+
+        protected IPAddress GetIpAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For") &&
+                IPAddress.TryParse(Request.Headers["X-Forwarded-For"], out IPAddress address))
+                return address;
+
+            return HttpContext.Connection.RemoteIpAddress;
         }
 
     }

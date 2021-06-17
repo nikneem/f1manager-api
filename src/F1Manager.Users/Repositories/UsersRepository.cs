@@ -16,7 +16,7 @@ namespace F1Manager.Users.Repositories
     public sealed class UsersRepository : IUsersRepository
     {
 
-        private const string UsersTableName = "Users";
+        private const string TableName = "Users";
         public const string PartitionKey = "user";
         private CloudTable _table;
 
@@ -94,7 +94,7 @@ namespace F1Manager.Users.Repositories
             var storageAccountConnectionString = config.Value.AzureStorageAccount;
             var storageAccount = TableStorageHelper.CreateStorageAccountFromConnectionString(storageAccountConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
-            _table = tableClient.GetTableReference(UsersTableName);
+            _table = tableClient.GetTableReference(TableName);
         }
     }
 }
