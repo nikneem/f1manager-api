@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F1Manager.Leagues", "F1Mana
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F1Manager.SqlData", "F1Manager.SqlData\F1Manager.SqlData.csproj", "{EA6B64B7-7ADD-4DE0-A3F7-1EE6B91AFFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "F1Manager.Functions", "F1Manager.Functions\F1Manager.Functions.csproj", "{7A2A1B3A-EDBC-444C-B081-DEA18D5702AF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,10 +65,6 @@ Global
 		{EA6B64B7-7ADD-4DE0-A3F7-1EE6B91AFFBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA6B64B7-7ADD-4DE0-A3F7-1EE6B91AFFBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA6B64B7-7ADD-4DE0-A3F7-1EE6B91AFFBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A2A1B3A-EDBC-444C-B081-DEA18D5702AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A2A1B3A-EDBC-444C-B081-DEA18D5702AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A2A1B3A-EDBC-444C-B081-DEA18D5702AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A2A1B3A-EDBC-444C-B081-DEA18D5702AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
