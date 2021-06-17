@@ -170,6 +170,10 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
         value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${redisCacheModule.outputs.secretName})'
       }
       {
+        name: 'Teams:SqlConnectionString'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${sqlServerModule.outputs.secretName})'
+      }
+      {
         name: 'WEBSITE_RUN_FROM_PACKAGE'
         value: '1'
       }

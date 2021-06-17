@@ -1,5 +1,7 @@
 using System.Text;
 using F1Manager.Api.Filters;
+using F1Manager.SqlData;
+using F1Manager.Teams.Health;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using F1Manager.Users.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace F1Manager.Api
@@ -29,6 +32,11 @@ namespace F1Manager.Api
             var audience = Configuration["Users:Audience"];
             var secret = Configuration["Users:Secret"];
 
+            var connectionString = Configuration["Teams:SqlConnectionString"];
+
+            services.AddDbContext<F1ManagerDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
                     options =>
@@ -41,7 +49,10 @@ namespace F1Manager.Api
                                 new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret))
                         };
                     });
-            services.AddHealthChecks();
+
+            services.AddHealthChecks()
+                .AddCheck<RedisCacheHealthCheck>("RedisCache");
+
             services.AddControllers(options =>
                 options.Filters.Add(new F1ManagerExceptionFilter()));
             services.ConfigureUsers();

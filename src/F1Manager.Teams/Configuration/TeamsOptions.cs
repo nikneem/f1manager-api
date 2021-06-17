@@ -4,7 +4,7 @@
     {
         public const string SectionName = "Teams";
 
-        public string AzureStorageConnectionString { get; set; }
+        public string AzureStorageAccount { get; set; }
         public string CacheConnectionString { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace F1Manager.Teams.Repositories
 
         public DriversReadRepository(IOptions<TeamsOptions> config)
         {
-            var storageAccountConnectionString = config.Value.AzureStorageConnectionString;
+            var storageAccountConnectionString = config.Value.AzureStorageAccount;
             var storageAccount = TableStorageHelper.CreateStorageAccountFromConnectionString(storageAccountConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
             _table = tableClient.GetTableReference(TableName);

@@ -9,6 +9,10 @@ namespace F1Manager.SqlData
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
+        public F1ManagerDbContext() 
+        {
+            
+        }
 
         public DbSet<CircuitEntity> Circuits { get; set; }
 

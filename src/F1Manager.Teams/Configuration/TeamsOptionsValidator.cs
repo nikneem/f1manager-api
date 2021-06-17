@@ -6,9 +6,9 @@ namespace F1Manager.Teams.Configuration
     {
         public ValidateOptionsResult Validate(string name, TeamsOptions options)
         {
-            if (options.AzureStorageConnectionString == default)
+            if (options.AzureStorageAccount == default)
             {
-                var optionName = $"{TeamsOptions.SectionName}.{nameof(options.AzureStorageConnectionString)}";
+                var optionName = $"{TeamsOptions.SectionName}.{nameof(options.AzureStorageAccount)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
 
