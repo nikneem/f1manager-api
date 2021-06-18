@@ -73,6 +73,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
     systemName: systemName
     environmentName: environmentName
     azureRegion: azureRegion
+    sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
   }
 }
 module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
