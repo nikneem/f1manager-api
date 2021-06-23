@@ -2,7 +2,7 @@
   "profiles": {
     "F1Manager.Migrations": {
       "commandName": "Project",
-      "commandLineArgs": "migrate -n \"f1man-dev-weu-database\" -s \"f1man-dev-weu-sqlserver\" -u \"f1mandevweu-admin\" -p \"391b94cc-4921-4d37-9839-499f427ec621\""
+      "commandLineArgs": "migrate -n \"f1man-dev-weu-database\" -s \"f1man-dev-weu-sqlserver\" -u \"f1mandevweu-admin\" -p \"AeSD78oi2jjGa1HtY2lq\""
     }
   }
 }

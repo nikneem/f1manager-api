@@ -68,6 +68,9 @@ module keyVaultModule 'KeyVault/vaults.bicep' = {
   }
 }
 module sqlServerModule 'Sql/servers.bicep' = {
+  dependsOn: [
+    deployTimeKeyVault
+  ]
   name: 'sqlServerModule'
   params: {
     systemName: systemName
