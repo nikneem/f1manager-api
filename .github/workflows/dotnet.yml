@@ -160,7 +160,7 @@ jobs:
           inlineScript: az sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-dev-weu-sqlserver"
       - name: Execute database migrations
         run: |
-          dotnet ./Migrations migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+          ./Migrations migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
   # infrastructure-complete-dev:
   #   needs: [deploy-api-dev, migrate-sql-database]
