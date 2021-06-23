@@ -151,7 +151,9 @@ jobs:
           keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
       - name: Execute database migrations
-        shell: Migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+        shell: cmd
+        run: |
+          shell: Migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
   # infrastructure-complete-dev:
   #   needs: [deploy-api-dev, migrate-sql-database]
