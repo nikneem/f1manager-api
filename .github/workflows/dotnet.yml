@@ -150,6 +150,14 @@ jobs:
         with:
           keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+      - name: Azure Create Resource Group
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-dev-weu-sqlserver"
       - name: Execute database migrations
         run: |
           Migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
