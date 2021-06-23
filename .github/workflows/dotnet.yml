@@ -7,33 +7,33 @@ on:
     branches: [main]
 
 jobs:
-  compile-api:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-      - name: Restore dependencies
-        run: dotnet restore ./src
-      - name: Build
-        run: dotnet build ./src --no-restore
-      - name: Test
-        run: dotnet test ./src --no-build --verbosity normal
-      - name: Publish
-        run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
-      - name: "Zip published content"
-        uses: papeloto/action-zip@v1
-        with:
-          files: ./published/
-          recursive: true
-          dest: artifact.zip
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: api-artifact
-          path: artifact.zip
+  # compile-api:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: 5.0.x
+  #     - name: Restore dependencies
+  #       run: dotnet restore ./src
+  #     - name: Build
+  #       run: dotnet build ./src --no-restore
+  #     - name: Test
+  #       run: dotnet test ./src --no-build --verbosity normal
+  #     - name: Publish
+  #       run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
+  #     - name: "Zip published content"
+  #       uses: papeloto/action-zip@v1
+  #       with:
+  #         files: ./published/
+  #         recursive: true
+  #         dest: artifact.zip
+  #     - name: Publish Artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: api-artifact
+  #         path: artifact.zip
 
   compile-migrations:
     runs-on: ubuntu-latest
@@ -47,135 +47,135 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./src
       - name: Build
-        run: dotnet build ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./Migrations
+        run: dotnet build ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./migrations-artifact
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
           name: migrations-artifact
-          path: ./Migrations
+          path: ./migrations-artifact
 
-  publish-bicep:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: bicep-templates
-          path: infrastructure/
+  # publish-bicep:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Publish Artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: infrastructure/
 
-  infrastructure-incremental-dev:
-    needs: publish-bicep
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bicep-templates
-          path: ./infrastructure
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_DEV }}
-      - name: Get secrets
-        id: getsecretsdevinc
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
-      - name: Azure Create Resource Group
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-      - name: Deploy Infrastructure
-        id: arm
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental  --parameters sqlServerPassword=${{ steps.getsecretsdevinc.outputs.SqlServerPassword }}
+  # infrastructure-incremental-dev:
+  #   needs: publish-bicep
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: ./infrastructure
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_DEV }}
+  #     - name: Get secrets
+  #       id: getsecretsdevinc
+  #       uses: Azure/get-keyvault-secrets@v1
+  #       with:
+  #         keyvault: "F1DeployTimeKeyVault"
+  #         secrets: "SqlServerPassword"
+  #     - name: Azure Create Resource Group
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+  #     - name: Deploy Infrastructure
+  #       id: arm
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental  --parameters sqlServerPassword=${{ steps.getsecretsdevinc.outputs.SqlServerPassword }}
 
-  deploy-api-dev:
-    needs: [compile-api, infrastructure-incremental-dev]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: api-artifact
-      - name: Get FunctionApp publish profile
-        id: publishprofile
-        uses: aliencube/publish-profile-actions@v1
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
-        with:
-          resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-          appName: "f1man-dev-weu-app"
-      - name: "Deploy web app"
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "f1man-dev-weu-app"
-          publish-profile: ${{ steps.publishprofile.outputs.profile }}
-          package: "artifact.zip"
+  # deploy-api-dev:
+  #   needs: [compile-api, infrastructure-incremental-dev]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: api-artifact
+  #     - name: Get FunctionApp publish profile
+  #       id: publishprofile
+  #       uses: aliencube/publish-profile-actions@v1
+  #       env:
+  #         AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
+  #       with:
+  #         resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+  #         appName: "f1man-dev-weu-app"
+  #     - name: "Deploy web app"
+  #       uses: azure/webapps-deploy@v2
+  #       with:
+  #         app-name: "f1man-dev-weu-app"
+  #         publish-profile: ${{ steps.publishprofile.outputs.profile }}
+  #         package: "artifact.zip"
 
-      - name: Check the deployed service URL
-        uses: jtalk/url-health-check-action@v1.5
-        with:
-          url: https://f1man-dev-weu-app.azurewebsites.net/health
-          follow-redirect: no
-          max-attempts: 3
-          retry-delay: 5s
+  #     - name: Check the deployed service URL
+  #       uses: jtalk/url-health-check-action@v1.5
+  #       with:
+  #         url: https://f1man-dev-weu-app.azurewebsites.net/health
+  #         follow-redirect: no
+  #         max-attempts: 3
+  #         retry-delay: 5s
 
-  migrate-sql-database:
-    needs: [compile-migrations, infrastructure-incremental-dev]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: migrations-artifact
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_DEV }}
-      - name: Get secrets
-        id: getsecretsdevmig
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
-      - name: Execute database migrations
-        run: |
-          migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+  # migrate-sql-database:
+  #   needs: [compile-migrations] #, infrastructure-incremental-dev]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: migrations-artifact
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: 5.0.x
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_DEV }}
+  #     - name: Get secrets
+  #       id: getsecretsdevmig
+  #       uses: Azure/get-keyvault-secrets@v1
+  #       with:
+  #         keyvault: "F1DeployTimeKeyVault"
+  #         secrets: "SqlServerPassword"
+  #     - name: Execute database migrations
+  #       run: |
+  #         migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
-  infrastructure-complete-dev:
-    needs: [deploy-api-dev, migrate-sql-database]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bicep-templates
-          path: ./infrastructure
+  # infrastructure-complete-dev:
+  #   needs: [deploy-api-dev, migrate-sql-database]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: ./infrastructure
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_DEV }}
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_DEV }}
 
-      - name: Get secretss
-        id: getsecretsdevcomp
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
+  #     - name: Get secretss
+  #       id: getsecretsdevcomp
+  #       uses: Azure/get-keyvault-secrets@v1
+  #       with:
+  #         keyvault: "F1DeployTimeKeyVault"
+  #         secrets: "SqlServerPassword"
 
-      - name: Deploy infrastrucutre
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getsecretsdevcomp.outputs.SqlServerPassword }}
+  #     - name: Deploy infrastrucutre
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getsecretsdevcomp.outputs.SqlServerPassword }}
