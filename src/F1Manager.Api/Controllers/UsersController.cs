@@ -16,7 +16,7 @@ namespace F1Manager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(UserRegistrationDto dto)
         {
-            var response = await _service.Register(dto);
+            var response = await _service.Register(dto, GetIpAddress());
             return Ok(response);
         }
 

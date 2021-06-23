@@ -1,6 +1,7 @@
 using System.Text;
 using F1Manager.Api.Filters;
 using F1Manager.SqlData;
+using F1Manager.Teams.Configuration;
 using F1Manager.Teams.Health;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,6 +57,7 @@ namespace F1Manager.Api
             services.AddControllers(options =>
                 options.Filters.Add(new F1ManagerExceptionFilter()));
             services.ConfigureUsers();
+            services.ConfigureTeams();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "F1Manager.Api", Version = "v1"});

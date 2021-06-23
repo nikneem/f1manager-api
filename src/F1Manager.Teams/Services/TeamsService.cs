@@ -11,7 +11,7 @@ using Microsoft.OData.Edm;
 
 namespace F1Manager.Teams.Services
 {
-    public class TeamsService
+    public class TeamsService : ITeamsService
     {
         private readonly ITeamsRepository _teamsRepository;
         private readonly ITeamsDomainService _domainService;
@@ -50,7 +50,7 @@ namespace F1Manager.Teams.Services
             var teamId = await _teamsRepository.GetTeamId(SeasonsHelper.GetSeasonId(), userId);
             return await _teamsRepository.IsUniqueName(teamId.GetValueOrDefault(), name);
         }
-        public async Task<TeamDetailsDto> GetByPlayer( Guid userId)
+        public async Task<TeamDetailsDto> GetByUserId( Guid userId)
         {
             var teamId = await GetTeamId(SeasonsHelper.GetSeasonId(), userId);
             return await GetById(teamId.GetValueOrDefault(), userId);

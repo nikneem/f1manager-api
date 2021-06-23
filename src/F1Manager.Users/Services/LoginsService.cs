@@ -45,7 +45,7 @@ namespace F1Manager.Users.Services
             {
                 if (user.Password.Validate(dto.Password))
                 {
-                    return await Generate(user, ipAddress) ??
+                    return await GenerateUserLoginSuccessResponse(user, ipAddress) ??
                            new UserLoginResponseDto
                            {
                                Success = false,
@@ -64,14 +64,14 @@ namespace F1Manager.Users.Services
         {
             var userId = await _refreshTokensRepository.ValidateRefreshToken(token);
             var user = await _usersRepository.GetById(userId);
-            return await Generate(user, ipAddress) ??
+            return await GenerateUserLoginSuccessResponse(user, ipAddress) ??
                    new UserLoginResponseDto
                    {
                        Success = false,
                        ErrorMessage = user.LockoutReason
                    };
         }
-        private async Task<UserLoginResponseDto> Generate(User user, IPAddress ipAddress)
+        public async Task<UserLoginResponseDto> GenerateUserLoginSuccessResponse(User user, IPAddress ipAddress)
         {
             if (!user.IsLockedOut)
             {
@@ -85,7 +85,6 @@ namespace F1Manager.Users.Services
 
             return null;
         }
-
         private async Task<UserLoginRequestDto> ValidateLogin(UserLoginRequestDto dto)
         {
             var attempt = await _loginsRepository.ValidateLoginAttempt(dto.Id);
