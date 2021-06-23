@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using F1Manager.SqlData;
-using F1Manager.SqlData.Entities;
-using F1Manager.SqlData.Entities.BaseData.Circuits;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.CommandLineUtils;
@@ -76,13 +72,11 @@ namespace F1Manager.Migrations
                             Console.WriteLine("Done. Database updated successfully");
                         }
 
-                        Console.ReadKey();
                         return 0;
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("Update database failed! {0}", ex);
-                        Console.ReadKey();
                         return -1;
                     }
 

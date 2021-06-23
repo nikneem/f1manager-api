@@ -25,7 +25,7 @@ namespace F1Manager.Api.Controllers
             var team = await _teamsService.GetByUserId(userId.GetValueOrDefault());
             return team == null ? NotFound() : Ok(team);
         }
-
+        
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post(TeamCreateDto dto)

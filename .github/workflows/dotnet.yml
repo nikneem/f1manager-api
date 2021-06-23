@@ -35,6 +35,25 @@ jobs:
           name: api-artifact
           path: artifact.zip
 
+  compile-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies
+        run: dotnet restore ./src
+      - name: Build
+        run: dotnet build ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./Migrations
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: migrations-artifact
+          path: ./Migrations
+
   publish-bicep:
     runs-on: ubuntu-latest
     steps:
@@ -58,7 +77,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_DEV }}
-      - name: Get secretss
+      - name: Get secrets
         id: getsecretsdevinc
         uses: Azure/get-keyvault-secrets@v1
         with:
@@ -106,6 +125,28 @@ jobs:
           follow-redirect: no
           max-attempts: 3
           retry-delay: 5s
+
+  migrate-sql-database:
+    needs: [compile-migrations, infrastructure-incremental-dev]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: migrations-artifact
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Get secrets
+        id: getsecretsdevmig
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "F1DeployTimeKeyVault"
+          secrets: "SqlServerPassword"
+      - name: Execute database migrations
+        run: |
+          migrations.exe migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
   infrastructure-complete-dev:
     needs: deploy-api-dev
