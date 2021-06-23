@@ -57,7 +57,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_TEST }}
+          creds: ${{ secrets.AZURE_DEV }}
       - name: Azure Create Resource Group
         uses: Azure/cli@1.0.4
         with:
@@ -82,7 +82,7 @@ jobs:
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_TEST }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
           appName: "f1man-dev-weu-app"
@@ -116,7 +116,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_TEST }}
+          creds: ${{ secrets.AZURE_DEV }}
 
       - name: Deploy infrastrucutre
         uses: Azure/cli@1.0.4
