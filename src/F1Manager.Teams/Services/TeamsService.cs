@@ -53,7 +53,12 @@ namespace F1Manager.Teams.Services
         public async Task<TeamDetailsDto> GetByUserId( Guid userId)
         {
             var teamId = await GetTeamId(SeasonsHelper.GetSeasonId(), userId);
-            return await GetById(teamId.GetValueOrDefault(), userId);
+            if (teamId.HasValue)
+            {
+                return await GetById(teamId.GetValueOrDefault(), userId);
+            }
+
+            return null;
         }
         public async Task<TeamDetailsDto> GetById(Guid teamId, Guid userId)
         {

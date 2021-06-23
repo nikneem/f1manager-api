@@ -19,7 +19,6 @@ namespace F1Manager.Api.Base
 
             return null;
         }
-
         protected IPAddress GetIpAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For") &&
@@ -29,5 +28,9 @@ namespace F1Manager.Api.Base
             return HttpContext.Connection.RemoteIpAddress;
         }
 
+        protected string GetBasePath(Guid? includeId)
+        {
+            return $"{Request.Scheme}://{Request.Host}{Request.PathBase}{includeId}";
+        }
     }
 }
