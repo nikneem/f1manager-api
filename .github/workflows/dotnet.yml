@@ -62,7 +62,7 @@ jobs:
         id: getsecretsdevinc
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: "DeployTimeKeyVault"
+          keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
       - name: Azure Create Resource Group
         uses: Azure/cli@1.0.4
@@ -128,7 +128,7 @@ jobs:
         id: getsecretsdevcomp
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: "DeployTimeKeyVault"
+          keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
 
       - name: Deploy infrastrucutre
