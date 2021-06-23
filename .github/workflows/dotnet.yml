@@ -45,7 +45,7 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: Restore dependencies
-        run: dotnet restore ./src
+        run: dotnet restore ./src/F1Manager.Migrations/F1Manager.Migrations.csproj
       - name: Build
         run: dotnet build ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./migrations-artifact
       - name: Publish Artifact
@@ -128,7 +128,7 @@ jobs:
 
   migrate-sql-database:
     needs: [compile-migrations] #, infrastructure-incremental-dev]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v2
@@ -150,10 +150,10 @@ jobs:
         with:
           keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
-      - name: Public IP
+      - name: Get Public IP address
         id: ip
         uses: haythem/public-ip@v1.2
-      - name: Azure Create Resource Group
+      - name: Register IP address in FW
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
