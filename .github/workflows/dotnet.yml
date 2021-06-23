@@ -58,6 +58,12 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_DEV }}
+      - name: Get secretss
+        id: getsecretsdevinc
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "DeployTimeKeyVault"
+          secrets: "SqlServerPassword"
       - name: Azure Create Resource Group
         uses: Azure/cli@1.0.4
         with:
@@ -68,7 +74,7 @@ jobs:
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental  --parameters sqlServerPassword=${{ steps.getsecretsdevinc.outputs.SqlServerPassword }}
 
   deploy-api-dev:
     needs: [compile-api, infrastructure-incremental-dev]
@@ -119,7 +125,7 @@ jobs:
           creds: ${{ secrets.AZURE_DEV }}
 
       - name: Get secretss
-        id: getsecrets
+        id: getsecretsdevcomp
         uses: Azure/get-keyvault-secrets@v1
         with:
           keyvault: "DeployTimeKeyVault"
@@ -129,4 +135,4 @@ jobs:
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getsecrets.outputs.SqlServerPassword }}
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getsecretsdevcomp.outputs.SqlServerPassword }}
