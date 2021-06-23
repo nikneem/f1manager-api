@@ -36,6 +36,7 @@ module redisCacheModule 'Cache/redis.bicep' = {
     azureRegion: azureRegion
   }
 }
+
 module storageAccountModule 'Storage/storageAccounts.bicep' = {
   name: 'storageAccountModule'
   params: {
@@ -44,6 +45,7 @@ module storageAccountModule 'Storage/storageAccounts.bicep' = {
     azureRegion: azureRegion
   }
 }
+
 module storageAccountTables 'Storage/tableServices/tables.bicep' = {
   dependsOn: [
     storageAccountModule
@@ -54,6 +56,7 @@ module storageAccountTables 'Storage/tableServices/tables.bicep' = {
     tableNames: tables
   }
 }
+
 module applicationInsightsModule 'Insights/components.bicep' = {
   name: 'applicationInsightsDeploy'
   params: {
@@ -62,6 +65,7 @@ module applicationInsightsModule 'Insights/components.bicep' = {
     azureRegion: azureRegion
   }
 }
+
 module keyVaultModule 'KeyVault/vaults.bicep' = {
   name: 'keyVaultDeploy'
   params: {
@@ -70,6 +74,7 @@ module keyVaultModule 'KeyVault/vaults.bicep' = {
     azureRegion: azureRegion
   }
 }
+
 module sqlServerModule 'Sql/servers.bicep' = {
   name: 'sqlServerModule'
   params: {
@@ -79,6 +84,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
     sqlServerPassword: sqlServerPassword
   }
 }
+
 module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
   dependsOn: [
     sqlServerModule
