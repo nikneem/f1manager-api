@@ -119,11 +119,11 @@ jobs:
           creds: ${{ secrets.AZURE_DEV }}
 
       - name: Get secretss
+        id: getsecrets
         uses: Azure/get-keyvault-secrets@v1
         with:
           keyvault: "DeployTimeKeyVault"
-        secrets: "SqlServerPassword"
-        id: getsecrets
+          secrets: "SqlServerPassword"
 
       - name: Deploy infrastrucutre
         uses: Azure/cli@1.0.4
