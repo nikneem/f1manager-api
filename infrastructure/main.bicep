@@ -24,8 +24,8 @@ var tables = [
 ]
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  name: 'DeployTimeKeyVault'
-  scope: resourceGroup('DeployTime')
+  name: 'F1DeployTimeKeyVault'
+  scope: resourceGroup('F1-Manager-DeployTime')
 }
 
 module redisCacheModule 'Cache/redis.bicep' = {
@@ -198,31 +198,31 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
   }
 }]
 
-// resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
-//   dependsOn: [
-//     webAppModule
-//     keyVaultModule
-//   ]
-//   name: 'certificateModule'
-//   location: resourceGroup().location
-//   properties: {
-//     keyVaultId: deployTimeKeyVault.id
-//     keyVaultSecretName: 'f1mgr'
-//     serverFarmId: appServicePlanModule.outputs.id
-//   }
-// }
+resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
+  dependsOn: [
+    webAppModule
+    keyVaultModule
+  ]
+  name: 'certificateModule'
+  location: resourceGroup().location
+  properties: {
+    keyVaultId: deployTimeKeyVault.id
+    keyVaultSecretName: 'f1mgr'
+    serverFarmId: appServicePlanModule.outputs.id
+  }
+}
 
-// resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2021-01-01' = {
-//   dependsOn: [
-//     certificate
-//   ]
-//   name: '${webAppName}/${environmentName}-api.f1mgr.com'
-//   properties: {
-//     siteName: webAppName
-//     hostNameType: 'Verified'
-//     sslState: 'SniEnabled'
-//     thumbprint: certificate.properties.thumbprint
-//   }
-// }
+resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2021-01-01' = {
+  dependsOn: [
+    certificate
+  ]
+  name: '${webAppName}/${environmentName}-api.f1mgr.com'
+  properties: {
+    siteName: webAppName
+    hostNameType: 'Verified'
+    sslState: 'SniEnabled'
+    thumbprint: certificate.properties.thumbprint
+  }
+}
 
 output webAppName string = webAppName
