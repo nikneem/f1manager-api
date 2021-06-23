@@ -200,8 +200,7 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
 
 resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
   dependsOn: [
-    webAppModule
-    keyVaultModule
+    appServicePlanModule
   ]
   name: 'certificateModule'
   location: resourceGroup().location
@@ -215,6 +214,7 @@ resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
 resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2021-01-01' = {
   dependsOn: [
     certificate
+    webAppModule
   ]
   name: '${webAppName}/${environmentName}-api.f1mgr.com'
   properties: {
