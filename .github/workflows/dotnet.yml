@@ -138,6 +138,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_DEV }}
       - name: Get secrets
         id: getsecretsdevmig
         uses: Azure/get-keyvault-secrets@v1
