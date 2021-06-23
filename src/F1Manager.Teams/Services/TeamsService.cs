@@ -308,7 +308,7 @@ namespace F1Manager.Teams.Services
             _logger.LogInformation("No engine found for team {teamId}", teamId);
             return null;
         }
-        public async Task<TeamEngineDetailsDto> PurchaseEngine(Guid userId, Guid engineId)
+        public async Task<TeamEngineDetailsDto> BuyEngine(Guid userId, Guid engineId)
         {
             _logger.LogInformation("Purchasing engine for player '{userId}'", userId);
             var team = await _teamsRepository.GetByUserId(SeasonsHelper.GetSeasonId(), userId);
@@ -431,7 +431,7 @@ namespace F1Manager.Teams.Services
             return null;
         }
 
-        public async Task<TeamChassisDetailsDto> PurchaseChassis(Guid userId,  Guid chassisId)
+        public async Task<TeamChassisDetailsDto> BuyChassis(Guid userId,  Guid chassisId)
         {
             _logger.LogInformation("Purchasing engine for player '{userId}'", userId);
             var team = await _teamsRepository.GetByUserId(SeasonsHelper.GetSeasonId(), userId);

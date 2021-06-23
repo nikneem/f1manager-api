@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
+using System.Security.Authentication;
 using System.Security.Claims;
+using F1Manager.Shared.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace F1Manager.Api.Base
@@ -9,7 +11,7 @@ namespace F1Manager.Api.Base
     public abstract class F1ManagerApiControllerBase : ControllerBase
     {
 
-        protected Guid? GetUserId()
+        protected Guid GetUserId()
         {
             var userIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             if (Guid.TryParse(userIdClaim?.Value, out Guid userId))
@@ -17,7 +19,7 @@ namespace F1Manager.Api.Base
                 return userId;
             }
 
-            return null;
+            throw new AuthenticationException("Failed to find user id from token");
         }
         protected IPAddress GetIpAddress()
         {
