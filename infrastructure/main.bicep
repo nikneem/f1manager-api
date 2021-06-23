@@ -13,6 +13,9 @@ param developerObjectIds array = [
 @secure()
 param jwtSignatureSecret string = newGuid()
 
+@secure()
+param sqlServerPassword string
+
 var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
 var tables = [
   'Users'
@@ -73,7 +76,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
     systemName: systemName
     environmentName: environmentName
     azureRegion: azureRegion
-    sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
+    sqlServerPassword: sqlServerPassword
   }
 }
 module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {

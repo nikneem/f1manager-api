@@ -118,8 +118,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_DEV }}
 
+      - name: Get secrets from KV
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "DeployTimeKeyVault"
+        secrets: "SqlServerPassword" # comma separated list of secret keys that need to be fetched from the Key Vault
+        id: getSecrets
+
       - name: Deploy infrastrucutre
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete
+          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getSecrets.outputs.SqlServerPassword }}
