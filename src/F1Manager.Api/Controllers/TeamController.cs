@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using F1Manager.Api.Base;
 using F1Manager.Teams.Abstractions;
@@ -99,7 +96,7 @@ namespace F1Manager.Api.Controllers
         }
 
 
-        [HttpGet("driver/{teamDriverId:guid}/sell")]
+        [HttpDelete("driver/{teamDriverId:guid}")]
         [Authorize]
         public async Task<IActionResult> SellDriver(Guid teamDriverId)
         {
@@ -107,7 +104,7 @@ namespace F1Manager.Api.Controllers
             var component = await _teamsService.SellDriver(userId, teamDriverId);
             return component ? Ok() : NotFound();
         }
-        [HttpGet("engine/{teamEngineId:guid}/sell")]
+        [HttpDelete("engine/{teamEngineId:guid}")]
         [Authorize]
         public async Task<IActionResult> SellEngine(Guid teamEngineId)
         {
@@ -115,7 +112,7 @@ namespace F1Manager.Api.Controllers
             var component = await _teamsService.SellEngine(userId, teamEngineId);
             return component ? Ok() : NotFound();
         }
-        [HttpGet("chassis/{teamChassisId:guid}/sell")]
+        [HttpDelete("chassis/{teamChassisId:guid}")]
         [Authorize]
         public async Task<IActionResult> SellChassis(Guid teamChassisId)
         {

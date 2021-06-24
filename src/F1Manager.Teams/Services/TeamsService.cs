@@ -106,11 +106,11 @@ namespace F1Manager.Teams.Services
 
                 return new TeamDriverDetailsDto
                 {
-                    Id = team.Id,
+                    Id = team.FirstDriver.Id,
                     Name = team.FirstDriver.Name,
-                    PictureUrl = team.Engine.PictureUrl,
-                    BoughtOn = team.Engine.BoughtOn,
-                    BoughtFor = team.Engine.BoughtFor,
+                    PictureUrl = team.FirstDriver.PictureUrl,
+                    BoughtOn = team.FirstDriver.BoughtOn,
+                    BoughtFor = team.FirstDriver.BoughtFor,
                     CurrentPrice = driver.Value,
                     PointsGained = 0, 
                     IsFirstDriver=true
@@ -127,12 +127,12 @@ namespace F1Manager.Teams.Services
 
             if (team?.SecondDriver != null)
             {
-                var driver = await _domainService.GetDriverById(team.FirstDriver.DriverId);
+                var driver = await _domainService.GetDriverById(team.SecondDriver.DriverId);
                 _logger.LogInformation("Team second driver was found, returning detailed information");
 
                 return new TeamDriverDetailsDto
                 {
-                    Id = team.Id,
+                    Id = team.SecondDriver.Id,
                     Name = team.SecondDriver.Name,
                     PictureUrl = team.SecondDriver.PictureUrl,
                     BoughtOn = team.SecondDriver.BoughtOn,

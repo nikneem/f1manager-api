@@ -125,8 +125,8 @@ namespace F1Manager.Teams.Repositories
             var drivers = await GetDriverEntity(domainModel.Id, context);
             var engine = await GetEngineEntity(domainModel.Id, context);
             var chassis = await GetChassisEntity(domainModel.Id, context);
-            var firstDriver = drivers.Count > 0 ? drivers.First() : null;
-            var secondDriver = drivers.Count > 1 ? drivers.Skip(1).FirstOrDefault() : null;
+            var firstDriver = drivers.FirstOrDefault(x => x.IsFirstDriver);
+            var secondDriver = drivers.FirstOrDefault(x => !x.IsFirstDriver);
 
             if (domainModel.TrackingState == TrackingState.Modified)
             {

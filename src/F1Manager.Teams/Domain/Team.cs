@@ -78,7 +78,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.Value);
+            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.PictureUrl, driver.Country, driver.DateOfBirth, driver.Value, true);
             FirstDriver = teamDriver;
             Money -= driver.Value;
             SetState(TrackingState.Modified);
@@ -111,7 +111,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.Value);
+            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.PictureUrl, driver.Country, driver.DateOfBirth, driver.Value, false);
             SecondDriver = teamDriver;
             Money -= driver.Value;
             SetState(TrackingState.Modified);

@@ -13,6 +13,7 @@ namespace F1Manager.Teams.Domain
         public string Country { get; }
         public DateTimeOffset BirthDate { get; }
         public decimal BoughtFor { get; }
+        public bool IsFirstDriver { get; }
         public decimal? SoldFor { get; private set; }
         public int TotalPointsGained { get; private set; }
         public DateTimeOffset BoughtOn { get; }
@@ -40,7 +41,8 @@ namespace F1Manager.Teams.Domain
             DateTimeOffset birthDate,
             decimal boughtFor, 
             decimal? soldFor, 
-            int totalPointsGained, 
+            int totalPointsGained,
+            bool isFirstDriver,
             DateTimeOffset boughtOn, 
             DateTimeOffset? soldOn) : base(id)
         {
@@ -51,15 +53,27 @@ namespace F1Manager.Teams.Domain
             TotalPointsGained = totalPointsGained;
             BoughtOn = boughtOn;
             SoldOn = soldOn;
+            IsFirstDriver = isFirstDriver;
+            PictureUrl = pictureUrl;
+            Country = country;
+            BirthDate = birthDate;
         }
 
-        public TeamDriver(Guid driverId,
+        public TeamDriver(
+            Guid driverId,
             string name,
-            decimal boughtFor) : base(Guid.NewGuid(), TrackingState.New)
+            string pictureUrl,
+            string country,
+            DateTimeOffset birthDate,
+            decimal boughtFor, bool isFirstDriver) : base(Guid.NewGuid(), TrackingState.New)
         {
             DriverId = driverId;
             Name = name;
+            PictureUrl = pictureUrl;
+            Country = country;
+            BirthDate = birthDate;
             BoughtFor = boughtFor;
+            IsFirstDriver = isFirstDriver;
             TotalPointsGained = 0;
             BoughtOn = DateTimeOffset.UtcNow;
         }

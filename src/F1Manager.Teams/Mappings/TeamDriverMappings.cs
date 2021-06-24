@@ -23,6 +23,7 @@ namespace F1Manager.Teams.Mappings
                 entity.PurchasePrice,
                 entity.SellingPrice,
                 entity.PointsGained,
+                entity.IsFirstDriver,
                 entity.BoughtOn,
                 entity.SoldOn);
         }
@@ -40,6 +41,7 @@ namespace F1Manager.Teams.Mappings
                 BirthDate = domainModel.BirthDate,
                 Name = domainModel.Name,
                 PictureUrl = domainModel.PictureUrl,
+                IsFirstDriver = domainModel.IsFirstDriver,
             };
             entity.SellingPrice = domainModel.SoldFor;
             entity.SoldOn = domainModel.SoldOn;

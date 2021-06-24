@@ -32,10 +32,10 @@ namespace F1Manager.Teams.Repositories
                     Id = id,
                     Name = entity.Name,
                     Manufacturer = entity.Manufacturer,
-                    Value = entity.Value,
+                    Value = Convert.ToDecimal(entity.Value),
                     PictureUrl = entity.PictureUrl,
-                    WeeklyWearOff = entity.WeeklyWearDown,
-                    MaximumWearOff = entity.MaximumWearDown
+                    WeeklyWearOff = Convert.ToDecimal(entity.WeeklyWearDown),
+                    MaximumWearOff = Convert.ToDecimal(entity.MaximumWearDown)
                 };
             }
 

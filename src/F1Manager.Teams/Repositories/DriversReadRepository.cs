@@ -32,7 +32,7 @@ namespace F1Manager.Teams.Repositories
                     Name = entity.Name,
                     Country = entity.Country,
                     DateOfBirth = entity.DateOfBirth,
-                    Value = entity.Value,
+                    Value = Convert.ToDecimal(entity.Value),
                     PictureUrl = entity.PictureUrl
                 };
             }
