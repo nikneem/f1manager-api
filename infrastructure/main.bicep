@@ -21,6 +21,7 @@ var tables = [
   'Users'
   'Logins'
   'RefreshTokens'
+  'Components'
 ]
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
