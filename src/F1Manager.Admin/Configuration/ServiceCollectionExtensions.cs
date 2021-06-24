@@ -1,6 +1,8 @@
-﻿using F1Manager.Admin.Drivers.Abstractions;
+﻿using F1Manager.Admin.Abstractions;
+using F1Manager.Admin.Drivers.Abstractions;
 using F1Manager.Admin.Drivers.Repositories;
 using F1Manager.Admin.Drivers.Services;
+using F1Manager.Admin.Services;
 using F1Manager.Shared.ServiceCollectionExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,7 @@ namespace F1Manager.Admin.Configuration
             serviceCollection.ConfigureAndValidate<AdminOptions, AdminOptionsValidator>(
                 configuration.GetSection(AdminOptions.SectionName));
 
+            serviceCollection.AddScoped<IUploadService, UploadService>();
             serviceCollection.AddScoped<IDriversService, DriversService>();
 
             serviceCollection.AddScoped<IDriversRepository, DriversRepository>();

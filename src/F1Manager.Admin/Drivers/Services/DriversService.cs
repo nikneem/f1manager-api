@@ -135,7 +135,7 @@ namespace F1Manager.Admin.Drivers.Services
             var claimsPrincipal = _httpContextAccessor.HttpContext?.User;
             if (claimsPrincipal != null)
             {
-                if (claimsPrincipal.HasClaim("Admin", "true"))
+                if (claimsPrincipal.HasClaim("admin", "true"))
                 {
                     return;
                 }

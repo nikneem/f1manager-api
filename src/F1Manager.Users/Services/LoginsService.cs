@@ -109,11 +109,12 @@ namespace F1Manager.Users.Services
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _userOptions.Value.Issuer,
                 Audience = _userOptions.Value.Audience,
-                SigningCredentials = signingCredentials
+                SigningCredentials = signingCredentials,
+                Claims = new Dictionary<string, object>()
             };
             if (isAdmin)
             {
-                tokenDescriptor.Claims.Add("Admin", true);
+                tokenDescriptor.Claims.Add("admin", true);
             }
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

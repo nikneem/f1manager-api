@@ -57,6 +57,8 @@ namespace F1Manager.Api
 
             services.AddControllers(options =>
                 options.Filters.Add(new F1ManagerExceptionFilter()));
+            services.AddHttpContextAccessor();
+
             services.ConfigureAdministration();
             services.ConfigureUsers();
             services.ConfigureTeams();

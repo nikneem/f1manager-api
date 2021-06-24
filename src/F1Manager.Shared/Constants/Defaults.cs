@@ -8,5 +8,7 @@
         public const int EmailVerificationLength = 6;
         public const int EmailVerificationPeriodInDays = 7;
 
+        public const string BlobStorageUploadContainer = "uploads";
+
     }
 }
