@@ -102,6 +102,7 @@ namespace F1Manager.Users.Repositories
             {
                 var segment = await _table.ExecuteQuerySegmentedAsync(query, ct);
                 userRefreshTokens.AddRange(segment.Results);
+                ct = segment.ContinuationToken;
             } while (ct != null);
 
             var batch = new TableBatchOperation();

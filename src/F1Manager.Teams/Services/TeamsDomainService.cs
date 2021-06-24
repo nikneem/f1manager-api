@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using F1Manager.Shared.Base;
+using F1Manager.Shared.Constants;
+using F1Manager.Shared.Helpers;
 using F1Manager.Teams.Abstractions;
 using F1Manager.Teams.Configuration;
 using F1Manager.Teams.DataTransferObjects;
@@ -20,19 +22,19 @@ namespace F1Manager.Teams.Services
 
         public Task<DriverDto> GetDriverById(Guid id)
         {
-            var cacheKey = $"Drivers-{id}";
+            var cacheKey = $"{CacheKeyPrefixes.Drivers}-{id}";
             return GetFromCache(cacheKey, () => _driversRepository.GetById(id));
         }
 
         public Task<EngineDto> GetEngineById(Guid id)
         {
-            var cacheKey = $"Engines-{id}";
+            var cacheKey = $"{CacheKeyPrefixes.Engines}-{id}";
             return GetFromCache(cacheKey, () => _enginesRepository.GetById(id));
         }
 
         public Task<ChassisDto> GetChassisById(Guid id)
         {
-            var cacheKey = $"Chassis-{id}";
+            var cacheKey = $"{CacheKeyPrefixes.Chassis}-{id}";
             return GetFromCache(cacheKey, () => _chassisRepository.GetById(id));
         }
 

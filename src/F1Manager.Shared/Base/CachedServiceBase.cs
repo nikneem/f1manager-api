@@ -49,6 +49,26 @@ namespace F1Manager.Shared.Base
             return initializedObject;
         }
 
+        protected async Task<bool> InvalidateCache(string cacheKey)
+        {
+            if (!_cacheIsAvailable)
+            {
+                await Connect();
+            }
+
+            try
+            {
+                return await _database.KeyDeleteAsync(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Failed to remove value from cache", ex);
+                _cacheIsAvailable = false;
+            }
+
+            return false;
+        }
+
         private async Task Connect()
         {
             try

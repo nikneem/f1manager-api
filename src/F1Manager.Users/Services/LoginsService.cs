@@ -113,7 +113,7 @@ namespace F1Manager.Users.Services
             };
             if (isAdmin)
             {
-                tokenDescriptor.Claims.Add("Admin", isAdmin.ToString());
+                tokenDescriptor.Claims.Add("Admin", true);
             }
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

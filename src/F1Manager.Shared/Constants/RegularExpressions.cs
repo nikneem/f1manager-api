@@ -9,5 +9,7 @@ namespace F1Manager.Shared.Constants
         public const string UpperLowedDigit = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
         public const string Username = "^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._@]+(?<![_.])$";
         public const string Teamname = "^([\\w\\s\\d]){1,100}$";
+        public const string UniqueResourceLocation = "(?<Protocol>\\w+):\\/\\/(?<Domain>[\\w@][\\w.:@]+)\\/?[\\w\\.?=%&=\\-@/$,]*";
+
     }
 }

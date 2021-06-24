@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\F1Manager.Admin\F1Manager.Admin.csproj" />
     <ProjectReference Include="..\F1Manager.Teams\F1Manager.Teams.csproj" />
     <ProjectReference Include="..\F1Manager.Users\F1Manager.Users.csproj" />
   </ItemGroup>
