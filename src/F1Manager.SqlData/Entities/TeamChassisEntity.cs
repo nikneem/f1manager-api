@@ -17,6 +17,8 @@ namespace F1Manager.SqlData.Entities
         public string Manufacturer { get; set; }
         public string Model { get; set; }  
         public int PointsGained { get; set; }
+        
+        [Column(TypeName = "decimal(5,2)")]
         public decimal WarnOffPercentage { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]

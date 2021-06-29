@@ -291,7 +291,7 @@ namespace F1Manager.Teams.Services
 
                 return new TeamEngineDetailsDto
                 {
-                    Id = team.Id,
+                    Id = team.Engine.Id,
                     Name = team.Engine.Name,
                     Manufacturer = engine.Manufacturer,
                     Model = engine.Model,

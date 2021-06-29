@@ -11,7 +11,11 @@ namespace F1Manager.Admin.Exceptions
         public static MaintenanceErrorCode ValueOutOfRange;
         public static MaintenanceErrorCode ObjectActiveRangeInvalid;
         public static MaintenanceErrorCode PictureUrlInvalid;
-        
+        public static MaintenanceErrorCode ManufacturerNullOrEmpty;
+        public static MaintenanceErrorCode ModelNullOrEmpty;
+        public static MaintenanceErrorCode WeeklyWearOffInvalid;
+        public static MaintenanceErrorCode MaxWearOffInvalid;
+
 
         static MaintenanceErrorCode()
         {
@@ -22,6 +26,10 @@ namespace F1Manager.Admin.Exceptions
             ValueOutOfRange = new ValueOutOfRange();
             ObjectActiveRangeInvalid = new ObjectActiveRangeInvalid();
             PictureUrlInvalid = new PictureUrlInvalid();
+            ManufacturerNullOrEmpty = new ManufacturerNullOrEmpty();
+            ModelNullOrEmpty = new ModelNullOrEmpty();
+            WeeklyWearOffInvalid  =new WeeklyWearOffInvalid();
+            MaxWearOffInvalid = new MaxWearOffInvalid();
         }
     }
 
@@ -61,4 +69,30 @@ namespace F1Manager.Admin.Exceptions
         public override string Code => "Maintenance.Errors.PictureUrlInvalid";
         public override string TranslationKey => "Maintenance.Errors.PictureUrlInvalid";
     }
+
+
+    public sealed class ManufacturerNullOrEmpty : MaintenanceErrorCode
+    {
+        public override string Code => "Maintenance.Errors.ManufacturerNullOrEmpty";
+        public override string TranslationKey => "Maintenance.Errors.ManufacturerNullOrEmpty";
+    }
+    public sealed class ModelNullOrEmpty : MaintenanceErrorCode
+    {
+        public override string Code => "Maintenance.Errors.ModelNullOrEmpty";
+        public override string TranslationKey => "Maintenance.Errors.ModelNullOrEmpty";
+    }
+    public sealed class WeeklyWearOffInvalid : MaintenanceErrorCode
+    {
+        public override string Code => "Maintenance.Errors.WeeklyWearOffInvalid";
+        public override string TranslationKey => "Maintenance.Errors.WeeklyWearOffInvalid";
+    }
+    public sealed class MaxWearOffInvalid : MaintenanceErrorCode
+    {
+        public override string Code => "Maintenance.Errors.MaxWearOffInvalid";
+        public override string TranslationKey => "Maintenance.Errors.MaxWearOffInvalid";
+    }
+
+
 }
+
+

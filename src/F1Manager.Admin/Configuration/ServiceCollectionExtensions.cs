@@ -2,6 +2,9 @@
 using F1Manager.Admin.Drivers.Abstractions;
 using F1Manager.Admin.Drivers.Repositories;
 using F1Manager.Admin.Drivers.Services;
+using F1Manager.Admin.Engines.Abstractions;
+using F1Manager.Admin.Engines.Repositories;
+using F1Manager.Admin.Engines.Services;
 using F1Manager.Admin.Services;
 using F1Manager.Shared.ServiceCollectionExtensions;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +27,10 @@ namespace F1Manager.Admin.Configuration
 
             serviceCollection.AddScoped<IUploadService, UploadService>();
             serviceCollection.AddScoped<IDriversService, DriversService>();
+            serviceCollection.AddScoped<IEnginesService, EnginesService>();
 
             serviceCollection.AddScoped<IDriversRepository, DriversRepository>();
+            serviceCollection.AddScoped<IEnginesRepository, EnginesRepository>();
 
         }
 
