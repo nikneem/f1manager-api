@@ -84,8 +84,9 @@ namespace F1Manager.Api
                     .WithOrigins("http://localhost:4200",
                         "http://localhost",
                         "https://app.f1mgr.com",
-                        "https://dev-app.f1mgr.com",
-                        "https://test-app.f1mgr.com")
+                        "https://app-dev.f1mgr.com",
+                        "https://app-tst.f1mgr.com",
+                        "https://app-test.f1mgr.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
