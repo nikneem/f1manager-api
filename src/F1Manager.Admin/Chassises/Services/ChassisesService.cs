@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using F1Manager.Admin.Chassises.Abstractions;
+using F1Manager.Admin.Chassises.DataTransferObjects;
+using F1Manager.Admin.Chassises.DomainModels;
 using F1Manager.Admin.Configuration;
-using F1Manager.Admin.Engines.Abstractions;
-using F1Manager.Admin.Engines.DataTransferObjects;
-using F1Manager.Admin.Engines.DomainModels;
 using F1Manager.Admin.Exceptions;
 using F1Manager.Shared.Base;
 using F1Manager.Shared.Constants;
@@ -13,40 +13,40 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace F1Manager.Admin.Engines.Services
+namespace F1Manager.Admin.Chassises.Services
 {
-    public sealed class EnginesService : CachedServiceBase<EnginesService>, IEnginesService
+    public sealed class ChassisesService : CachedServiceBase<ChassisesService>, IChassisesService
     {
-        private readonly IChassisRepository _enginesRepository;
+        private readonly IChassisesRepository _chassisRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public Task<List<EngineDetailsDto>> GetActive()
+        public Task<List<ChassisDetailsDto>> GetActive()
         {
             var cacheKey = CacheKeyPrefixes.ActiveEnginesList;
             return GetFromCache(cacheKey, GetActiveEnginesFromTableStorage);
         }
 
-        private Task<List<EngineDetailsDto>> GetActiveEnginesFromTableStorage()
+        private Task<List<ChassisDetailsDto>> GetActiveEnginesFromTableStorage()
         {
-            return _enginesRepository.GetActive();
+            return _chassisRepository.GetActive();
         }
 
-        public Task<List<EngineDetailsDto>> List(EnginesListFilterDto filter)
+        public Task<List<ChassisDetailsDto>> List(ChassisListFilterDto filter)
         {
-            return _enginesRepository.GetList(filter);
+            return _chassisRepository.GetList(filter);
         }
 
-        public Task<EngineDetailsDto> Get(Guid id)
+        public Task<ChassisDetailsDto> Get(Guid id)
         {
-            return _enginesRepository.GetById(id);
+            return _chassisRepository.GetById(id);
         }
 
-        public async Task<EngineDetailsDto> Create(EngineDetailsDto dto)
+        public async Task<ChassisDetailsDto> Create(ChassisDetailsDto dto)
         {
             AssertPlayerIsAdministrator();
-            var domainModel = new Engine();
+            var domainModel = new Chassis();
             MapDtoToDomainModel(dto, domainModel);
-            if (await _enginesRepository.Create(domainModel))
+            if (await _chassisRepository.Create(domainModel))
             {
                 await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
                 return DomainModelToDto(domainModel);
@@ -55,12 +55,12 @@ namespace F1Manager.Admin.Engines.Services
             return null;
         }
 
-        public async Task<EngineDetailsDto> Update(Guid id, EngineDetailsDto dto)
+        public async Task<ChassisDetailsDto> Update(Guid id, ChassisDetailsDto dto)
         {
             AssertPlayerIsAdministrator();
-            var domainModel = await _enginesRepository.Get(id);
+            var domainModel = await _chassisRepository.Get(id);
             MapDtoToDomainModel(dto, domainModel);
-            if (await _enginesRepository.Update(domainModel))
+            if (await _chassisRepository.Update(domainModel))
             {
                 await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
                 await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
@@ -73,9 +73,9 @@ namespace F1Manager.Admin.Engines.Services
         public async Task<bool> Delete(Guid id)
         {
             AssertPlayerIsAdministrator();
-            var domainModel = await _enginesRepository.Get(id);
+            var domainModel = await _chassisRepository.Get(id);
             domainModel.Delete();
-            if (await _enginesRepository.Update(domainModel))
+            if (await _chassisRepository.Update(domainModel))
             {
                 await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
                 await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
@@ -88,9 +88,9 @@ namespace F1Manager.Admin.Engines.Services
         public async Task<bool> Undelete(Guid id)
         {
             AssertPlayerIsAdministrator();
-            var domainModel = await _enginesRepository.Get(id);
+            var domainModel = await _chassisRepository.Get(id);
             domainModel.Undelete();
-            if (await _enginesRepository.Update(domainModel))
+            if (await _chassisRepository.Update(domainModel))
             {
                 await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
                 await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
@@ -100,7 +100,7 @@ namespace F1Manager.Admin.Engines.Services
             return false;
         }
 
-        private static void MapDtoToDomainModel(EngineDetailsDto dto, Engine domainModel)
+        private static void MapDtoToDomainModel(ChassisDetailsDto dto, Chassis domainModel)
         {
             domainModel.SetName(dto.Name);
             domainModel.SetPictureUrl(dto.PictureUrl);
@@ -114,9 +114,9 @@ namespace F1Manager.Admin.Engines.Services
             domainModel.SetActiveDates(new DateRange(dto.ActiveFrom, dto.ActiveUntil));
         }
 
-        private static EngineDetailsDto DomainModelToDto(Engine domainModel)
+        private static ChassisDetailsDto DomainModelToDto(Chassis domainModel)
         {
-            return new EngineDetailsDto
+            return new ChassisDetailsDto
             {
                 Id = domainModel.Id,
                 Name = domainModel.Name,
@@ -150,13 +150,13 @@ namespace F1Manager.Admin.Engines.Services
 
 
 
-        public EnginesService(IChassisRepository enginesRepository,
-            ILogger<EnginesService> logger,
+        public ChassisesService(IChassisesRepository chassisRepository,
+            ILogger<ChassisesService> logger,
             IOptions<AdminOptions> options,
             IHttpContextAccessor httpContextAccessor)
             : base(options.Value.CacheConnectionString, logger)
         {
-            _enginesRepository = enginesRepository;
+            _chassisRepository = chassisRepository;
             _httpContextAccessor = httpContextAccessor;
         }
     }

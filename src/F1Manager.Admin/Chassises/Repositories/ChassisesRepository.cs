@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using F1Manager.Admin.Chassises.Abstractions;
+using F1Manager.Admin.Chassises.DataTransferObjects;
+using F1Manager.Admin.Chassises.DomainModels;
+using F1Manager.Admin.Chassises.Entities;
 using F1Manager.Admin.Configuration;
 using F1Manager.Admin.Engines.Abstractions;
 using F1Manager.Admin.Engines.DataTransferObjects;
@@ -13,28 +17,28 @@ using F1Manager.Shared.Helpers;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 
-namespace F1Manager.Admin.Engines.Repositories
+namespace F1Manager.Admin.Chassises.Repositories
 {
-    public sealed class EnginesRepository : IChassisRepository
+    public sealed class ChassisesRepository : IChassisesRepository
     {
 
         private const string TableName = "Components";
-        private const string PartitionKey = "engine";
+        private const string PartitionKey = "chassis";
 
         private readonly CloudTable _table;
 
-        public async Task<List<EngineDetailsDto>> GetActive()
+        public async Task<List<ChassisDetailsDto>> GetActive()
         {
             var now = DateTimeOffset.UtcNow;
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(EngineEntity.PartitionKey),
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(ChassisEntity.PartitionKey),
                 QueryComparisons.Equal, PartitionKey);
             var availableFilter =
-                TableQuery.GenerateFilterConditionForBool(nameof(EngineEntity.IsAvailable), QueryComparisons.Equal,
+                TableQuery.GenerateFilterConditionForBool(nameof(ChassisEntity.IsAvailable), QueryComparisons.Equal,
                     true);
             var deletedFilter =
-                TableQuery.GenerateFilterConditionForBool(nameof(EngineEntity.IsDeleted), QueryComparisons.Equal,
+                TableQuery.GenerateFilterConditionForBool(nameof(ChassisEntity.IsDeleted), QueryComparisons.Equal,
                     false);
-            var activeFromFilter = TableQuery.GenerateFilterConditionForDate(nameof(EngineEntity.ActiveFrom),
+            var activeFromFilter = TableQuery.GenerateFilterConditionForDate(nameof(ChassisEntity.ActiveFrom),
                 QueryComparisons.LessThanOrEqual, now);
 
             var filter = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And,
@@ -42,10 +46,10 @@ namespace F1Manager.Admin.Engines.Repositories
                     TableQuery.CombineFilters(deletedFilter, TableOperators.And, activeFromFilter)));
 
 
-            var query = new TableQuery<EngineEntity>().Where(filter);
+            var query = new TableQuery<ChassisEntity>().Where(filter);
 
             TableContinuationToken ct = null;
-            var driverEntities = new List<EngineEntity>();
+            var driverEntities = new List<ChassisEntity>();
             do
             {
                 var segment = await _table.ExecuteQuerySegmentedAsync(query, ct);
@@ -57,14 +61,14 @@ namespace F1Manager.Admin.Engines.Repositories
             return driverEntities.Select(ToDetailsDto).ToList();
         }
 
-        public async Task<List<EngineDetailsDto>> GetList(EnginesListFilterDto filter)
+        public async Task<List<ChassisDetailsDto>> GetList(ChassisListFilterDto filter)
         {
-            var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(EngineEntity.PartitionKey),
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(ChassisEntity.PartitionKey),
                 QueryComparisons.Equal, PartitionKey);
-            var query = new TableQuery<EngineEntity>().Where(partitionKeyFilter);
+            var query = new TableQuery<ChassisEntity>().Where(partitionKeyFilter);
 
             TableContinuationToken ct = null;
-            var driverEntities = new List<EngineEntity>();
+            var driverEntities = new List<ChassisEntity>();
             do
             {
                 var segment = await _table.ExecuteQuerySegmentedAsync(query, ct);
@@ -87,10 +91,10 @@ namespace F1Manager.Admin.Engines.Repositories
             return driverEntities.Select(ToDetailsDto).ToList();
         }
 
-        public async Task<Engine> Get(Guid id)
+        public async Task<Chassis> Get(Guid id)
         {
             var entity = await GetEntityById(id);
-            return new Engine(Guid.Parse(entity.RowKey),
+            return new Chassis(Guid.Parse(entity.RowKey),
                 entity.Name,
                 entity.Manufacturer,
                 entity.Model,
@@ -104,13 +108,13 @@ namespace F1Manager.Admin.Engines.Repositories
                 entity.IsDeleted);
         }
 
-        public async Task<EngineDetailsDto> GetById(Guid id)
+        public async Task<ChassisDetailsDto> GetById(Guid id)
         {
             var entity = await GetEntityById(id);
             return ToDetailsDto(entity);
         }
 
-        public async Task<bool> Create(Engine domainModel)
+        public async Task<bool> Create(Chassis domainModel)
         {
             if (domainModel.TrackingState == TrackingState.New)
             {
@@ -122,7 +126,7 @@ namespace F1Manager.Admin.Engines.Repositories
             return false;
         }
 
-        public async Task<bool> Update(Engine domainModel)
+        public async Task<bool> Update(Chassis domainModel)
         {
             if (domainModel.TrackingState == TrackingState.Modified)
             {
@@ -135,11 +139,11 @@ namespace F1Manager.Admin.Engines.Repositories
         }
 
 
-        private async Task<EngineEntity> GetEntityById(Guid id)
+        private async Task<ChassisEntity> GetEntityById(Guid id)
         {
-            var operation = TableOperation.Retrieve<EngineEntity>(PartitionKey, id.ToString());
+            var operation = TableOperation.Retrieve<ChassisEntity>(PartitionKey, id.ToString());
             var result = await _table.ExecuteAsync(operation);
-            if (result.Result is EngineEntity entity)
+            if (result.Result is ChassisEntity entity)
             {
                 return entity;
             }
@@ -147,9 +151,9 @@ namespace F1Manager.Admin.Engines.Repositories
             return null;
         }
 
-        private static EngineEntity ToEntity(Engine domainModel)
+        private static ChassisEntity ToEntity(Chassis domainModel)
         {
-            return new EngineEntity()
+            return new ChassisEntity()
             {
                 PartitionKey = PartitionKey,
                 RowKey = domainModel.Id.ToString(),
@@ -168,14 +172,14 @@ namespace F1Manager.Admin.Engines.Repositories
             };
         }
 
-        private static EngineDetailsDto ToDetailsDto(EngineEntity entity)
+        private static ChassisDetailsDto ToDetailsDto(ChassisEntity entity)
         {
             if (entity == null)
             {
                 return null;
             }
 
-            return new EngineDetailsDto
+            return new ChassisDetailsDto
             {
                 Id = Guid.Parse(entity.RowKey),
                 Name = entity.Name,
@@ -193,7 +197,7 @@ namespace F1Manager.Admin.Engines.Repositories
         }
 
 
-        public EnginesRepository(IOptions<AdminOptions> config)
+        public ChassisesRepository(IOptions<AdminOptions> config)
         {
             var storageAccountConnectionString = config.Value.AzureStorageAccount;
             var storageAccount =
