@@ -82,12 +82,6 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_DEV }}
-      - name: Get secrets
-        id: getsecretsdevinc
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
       - name: Deploy Infrastructure
         id: arm
         uses: Azure/cli@1.0.4
