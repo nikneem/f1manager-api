@@ -58,11 +58,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Compile infrastructure
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az bicep build --file ./infrastructure/main.bicep
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
           name: bicep-templates
-          path: infrastructure/
+          path: infrastructure/*.json
 
   infrastructure-incremental-dev:
     needs: publish-bicep
@@ -83,17 +88,12 @@ jobs:
         with:
           keyvault: "F1DeployTimeKeyVault"
           secrets: "SqlServerPassword"
-      - name: Azure Create Resource Group
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az group create -l westeurope -n ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
       - name: Deploy Infrastructure
         id: arm
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Incremental  --parameters sqlServerPassword=${{ steps.getsecretsdevinc.outputs.SqlServerPassword }}
+          inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json
 
   deploy-api-dev:
     needs: [compile-api, infrastructure-incremental-dev]
@@ -133,8 +133,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: migrations-artifact
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:

@@ -1,12 +1,16 @@
+targetScope = 'subscription'
+
 param systemName string = 'f1man'
 @allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
+  'Dev'
+  'Test'
+  'Acc'
+  'Prod'
 ])
-param environmentName string = 'dev'
-param azureRegion string = 'weu'
+param environmentName string = 'Dev'
+param azureRegion object = {
+  location: 'westeurope'
+}
 param developerObjectIds array = [
   'de55357b-c155-4de7-916f-ff12755cf5fb'
 ]
@@ -16,7 +20,13 @@ param jwtSignatureSecret string = newGuid()
 @secure()
 param sqlServerPassword string
 
-var webAppName = '${systemName}-${environmentName}-${azureRegion}-app'
+param basicAppSettings array = [
+  {
+    name: 'WEBSITE_RUN_FROM_PACKAGE'
+    value: '1'
+  }
+]
+
 var tables = [
   'Users'
   'Logins'
@@ -24,26 +34,37 @@ var tables = [
   'Components'
 ]
 
+var resourceGroupName = '${systemName}-${environmentName}-${azureRegion}'
+var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion}')
+
+resource targetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  location: deployment().location
+  name: resourceGroupName
+}
+
+resource eventGrid 'Microsoft.EventGrid/domains@2021-06-01-preview' existing = {
+  name: '${systemName}-${environmentName}-${azureRegion}-eg'
+  scope: resourceGroup('F1Manager-${environmentName}-Integration')
+}
+
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: 'F1DeployTimeKeyVault'
-  scope: resourceGroup('F1-Manager-DeployTime')
+  scope: resourceGroup('F1Manager-DeployTime')
 }
 
 module redisCacheModule 'Cache/redis.bicep' = {
   name: 'redisCacheModule'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
   }
 }
 
 module storageAccountModule 'Storage/storageAccounts.bicep' = {
   name: 'storageAccountModule'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
   }
 }
 
@@ -51,6 +72,7 @@ module storageAccountTables 'Storage/tableServices/tables.bicep' = {
   dependsOn: [
     storageAccountModule
   ]
+  scope: targetResourceGroup
   name: 'storageAccountTables'
   params: {
     storageAccountName: storageAccountModule.outputs.storageAccountName
@@ -60,28 +82,25 @@ module storageAccountTables 'Storage/tableServices/tables.bicep' = {
 
 module applicationInsightsModule 'Insights/components.bicep' = {
   name: 'applicationInsightsDeploy'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
   }
 }
 
 module keyVaultModule 'KeyVault/vaults.bicep' = {
   name: 'keyVaultDeploy'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
   }
 }
 
 module sqlServerModule 'Sql/servers.bicep' = {
   name: 'sqlServerModule'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
     sqlServerPassword: sqlServerPassword
   }
 }
@@ -91,13 +110,14 @@ module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
     sqlServerModule
   ]
   name: 'sqlServerDatabaseModule'
+  scope: targetResourceGroup
   params: {
     databaseName: sqlServerModule.outputs.databaseName
     sqlServerName: sqlServerModule.outputs.sqlServerName
   }
 }
 
-module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
+module keyVaultSecretsModule 'KeyVault/vaults/secrets.bicep' = {
   dependsOn: [
     keyVaultModule
     storageAccountModule
@@ -105,17 +125,18 @@ module keyVaultSecrets 'KeyVault/vaults/secrets.bicep' = {
     redisCacheModule
   ]
   name: 'keyVaultSecrets'
+  scope: targetResourceGroup
   params: {
     keyVault: keyVaultModule.outputs.keyVaultName
     secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret, redisCacheModule.outputs.secret)
   }
 }
+
 module appServicePlanModule 'Web/serverFarms.bicep' = {
   name: 'appServicePlanDeploy'
+  scope: targetResourceGroup
   params: {
-    systemName: systemName
-    environmentName: environmentName
-    azureRegion: azureRegion
+    standardAppName: standardAppName
   }
 }
 
@@ -124,8 +145,9 @@ module webAppModule 'Web/sites.bicep' = {
     appServicePlanModule
   ]
   name: 'webAppModule'
+  scope: targetResourceGroup
   params: {
-    webAppName: webAppName
+    standardAppName: standardAppName
     appServicePlanId: appServicePlanModule.outputs.id
   }
 }
@@ -136,67 +158,10 @@ module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
     keyVaultModule
     webAppModule
   ]
+  scope: targetResourceGroup
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     principalId: webAppModule.outputs.servicePrincipal
-  }
-}
-
-resource config 'Microsoft.Web/sites/config@2020-12-01' = {
-  dependsOn: [
-    keyVaultAccessPolicyModule
-    webAppModule
-    keyVaultSecrets
-    redisCacheModule
-  ]
-  name: '${webAppName}/web'
-  properties: {
-    appSettings: [
-      {
-        name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-        value: applicationInsightsModule.outputs.instrumentationKey
-      }
-      {
-        name: 'Users:AzureStorageAccount'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
-      }
-      {
-        name: 'Users:Issuer'
-        value: 'https://${environmentName}-api.f1mgr.com'
-      }
-      {
-        name: 'Users:Audience'
-        value: 'https://${environmentName}-api.f1mgr.com'
-      }
-      {
-        name: 'Users:Secret'
-        value: jwtSignatureSecret
-      }
-      {
-        name: 'Teams:AzureStorageAccount'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
-      }
-      {
-        name: 'Teams:CacheConnectionString'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${redisCacheModule.outputs.secretName})'
-      }
-      {
-        name: 'Teams:SqlConnectionString'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${sqlServerModule.outputs.secretName})'
-      }
-      {
-        name: 'Administration:AzureStorageAccount'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${storageAccountModule.outputs.secretName})'
-      }
-      {
-        name: 'Administration:CacheConnectionString'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVaultModule.outputs.keyVaultUrl}/secrets/${redisCacheModule.outputs.secretName})'
-      }
-      {
-        name: 'WEBSITE_RUN_FROM_PACKAGE'
-        value: '1'
-      }
-    ]
   }
 }
 
@@ -207,37 +172,23 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
     keyVaultModule
     keyVaultAccessPolicyModule
   ]
+  scope: targetResourceGroup
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     principalId: developer
   }
 }]
 
-resource certificate 'Microsoft.Web/certificates@2021-01-01' = {
+module websiteConfiguration 'Web/sites/config.bicep' = {
+  name: 'websiteConfiguration'
   dependsOn: [
-    appServicePlanModule
+    keyVaultModule
+    keyVaultAccessPolicyModule
+    keyVaultSecretsModule
   ]
-  name: 'certificateModule'
-  location: resourceGroup().location
-  properties: {
-    keyVaultId: deployTimeKeyVault.id
-    keyVaultSecretName: 'f1mgr'
-    serverFarmId: appServicePlanModule.outputs.id
+  scope: targetResourceGroup
+  params: {
+    webAppName: webAppModule.outputs.webAppName
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, keyVaultSecretsModule.outputs.keyVaultReferences)
   }
 }
-
-resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2021-01-01' = {
-  dependsOn: [
-    certificate
-    webAppModule
-  ]
-  name: '${webAppName}/${environmentName}-api.f1mgr.com'
-  properties: {
-    siteName: webAppName
-    hostNameType: 'Verified'
-    sslState: 'SniEnabled'
-    thumbprint: certificate.properties.thumbprint
-  }
-}
-
-output webAppName string = webAppName

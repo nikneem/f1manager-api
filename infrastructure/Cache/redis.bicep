@@ -1,18 +1,10 @@
-param systemName string = 'f1man'
-@allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
-])
-param environmentName string = 'prod'
-param azureRegion string = 'weu'
+param standardAppName string
 
-var cacheName = '${systemName}-${environmentName}-${azureRegion}-cache'
+var resourceName = '${standardAppName}-cache'
 
 resource redisCache 'Microsoft.Cache/redis@2020-12-01' = {
   location: resourceGroup().location
-  name: cacheName
+  name: resourceName
   properties: {
     sku: {
       name: 'Basic'
@@ -23,10 +15,9 @@ resource redisCache 'Microsoft.Cache/redis@2020-12-01' = {
 }
 
 output primaryKey string = listKeys(redisCache.id, redisCache.apiVersion).primaryKey
-output secretName string = cacheName
 output secret array = [
   {
-    name: cacheName
-    value: '${cacheName}.redis.cache.windows.net:6380,password=${listKeys(redisCache.id, redisCache.apiVersion).primaryKey},ssl=True,abortConnect=False'
+    name: redisCache.name
+    value: '${resourceName}.redis.cache.windows.net:6380,password=${listKeys(redisCache.id, redisCache.apiVersion).primaryKey},ssl=True,abortConnect=False'
   }
 ]

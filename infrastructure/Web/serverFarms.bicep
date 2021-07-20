@@ -1,12 +1,4 @@
-param systemName string = 'f1man'
-@allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
-])
-param environmentName string = 'prod'
-param azureRegion string = 'weu'
+param standardAppName string
 
 @allowed([
   'functionapp'
@@ -20,10 +12,10 @@ param sku object = {
   capacity: 1
 }
 
-var servicePlanName = toLower('${systemName}-${environmentName}-${azureRegion}-plan')
+var resourceName = '${standardAppName}-plan'
 
 resource appFarm 'Microsoft.Web/serverfarms@2020-12-01' = {
-  name: servicePlanName
+  name: resourceName
   location: resourceGroup().location
   kind: kind
   sku: {
@@ -32,5 +24,5 @@ resource appFarm 'Microsoft.Web/serverfarms@2020-12-01' = {
   }
 }
 
-output servicePlanName string = servicePlanName
+output servicePlanName string = appFarm.name
 output id string = appFarm.id

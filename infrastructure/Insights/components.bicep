@@ -1,23 +1,21 @@
-param systemName string = 'f1man'
-@allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
-])
-param environmentName string = 'prod'
-param azureRegion string = 'weu'
+param standardAppName string
 
-var applicationInsightsName = '${systemName}-${environmentName}-${azureRegion}-ai'
+var resourceName = '${standardAppName}-ai'
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   kind: 'web'
   location: resourceGroup().location
-  name: applicationInsightsName
+  name: resourceName
   properties: {
     Application_Type: 'web'
   }
 }
 
-output applicationInsightsName string = applicationInsightsName
+output applicationInsightsName string = applicationInsights.name
 output instrumentationKey string = applicationInsights.properties.InstrumentationKey
+output appConfiguration array = [
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    value: applicationInsights.properties.InstrumentationKey
+  }
+]
