@@ -17,9 +17,6 @@ param developerObjectIds array = [
 @secure()
 param jwtSignatureSecret string = newGuid()
 
-@secure()
-param sqlServerPassword string
-
 param basicAppSettings array = [
   {
     name: 'WEBSITE_RUN_FROM_PACKAGE'
@@ -101,7 +98,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
   scope: targetResourceGroup
   params: {
     standardAppName: standardAppName
-    sqlServerPassword: sqlServerPassword
+    sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
   }
 }
 
