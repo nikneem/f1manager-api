@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-param systemName string = 'f1man'
+param systemName string = 'F1Man-Api'
 @allowed([
   'Dev'
   'Test'
@@ -10,6 +10,7 @@ param systemName string = 'f1man'
 param environmentName string = 'Dev'
 param azureRegion object = {
   location: 'westeurope'
+  abbreviation: 'weu'
 }
 param developerObjectIds array = [
   'de55357b-c155-4de7-916f-ff12755cf5fb'
@@ -31,8 +32,8 @@ var tables = [
   'Components'
 ]
 
-var resourceGroupName = '${systemName}-${environmentName}-${azureRegion}'
-var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion}')
+var resourceGroupName = '${systemName}-${environmentName}-${azureRegion.abbreviation}'
+var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion.abbreviation}')
 
 resource targetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: deployment().location
