@@ -13,8 +13,6 @@ namespace F1Manager.Teams.Domain
 {
     public sealed class Team : DomainModel<Guid>
     {
-
-
         public int SeasonId { get; }
         public Guid OwnerId { get; }
         public string Name { get; private set; }

@@ -1,12 +1,4 @@
-param systemName string = 'f1man'
-@allowed([
-  'dev'
-  'test'
-  'acc'
-  'prod'
-])
-param environmentName string = 'prod'
-param azureRegion string = 'weu'
+param standardAppName string
 
 @allowed([
   'standard'
@@ -14,10 +6,10 @@ param azureRegion string = 'weu'
 ])
 param sku string = 'standard'
 
-var keyVaultName = '${systemName}-${environmentName}-${azureRegion}-kv'
+var resourceName = '${standardAppName}-kv'
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
-  name: keyVaultName
+  name: resourceName
   location: resourceGroup().location
   properties: {
     tenantId: subscription().tenantId

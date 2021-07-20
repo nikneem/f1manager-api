@@ -1,8 +1,10 @@
-param webAppName string
+param standardAppName string
 param appServicePlanId string
 
+var resourceName = '${standardAppName}-app'
+
 resource webApp 'Microsoft.Web/sites@2020-12-01' = {
-  name: webAppName
+  name: resourceName
   location: resourceGroup().location
   kind: 'app'
   properties: {
@@ -22,4 +24,4 @@ resource webApp 'Microsoft.Web/sites@2020-12-01' = {
 }
 
 output servicePrincipal string = webApp.identity.principalId
-output webAppName string = webAppName
+output webAppName string = webApp.name
