@@ -30,7 +30,7 @@ namespace F1Manager.Admin.Configuration
             serviceCollection.AddScoped<IEnginesService, EnginesService>();
 
             serviceCollection.AddScoped<IDriversRepository, DriversRepository>();
-            serviceCollection.AddScoped<IEnginesRepository, EnginesRepository>();
+            serviceCollection.AddScoped<IChassisRepository, EnginesRepository>();
 
         }
 
