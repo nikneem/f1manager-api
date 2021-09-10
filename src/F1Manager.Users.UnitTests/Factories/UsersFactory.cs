@@ -20,7 +20,7 @@ namespace F1Manager.Users.UnitTests.Factories
                 .CustomInstantiator(f => new User(
                     f.Random.Guid(),
                     f.Person.FullName,
-                    f.Person.Email,
+                    f.Person.UserName,
                     f.Random.String(8, 16),
                     f.Person.Email,
                     f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),

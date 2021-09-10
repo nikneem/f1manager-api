@@ -81,13 +81,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_DEV }}
-      - name: Get secrets
-        id: getsecretsdevinc
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
+          creds: ${{ secrets.AZURE_TEMP }}
       - name: Deploy Infrastructure
         id: arm
         uses: Azure/cli@1.0.4
@@ -107,20 +101,24 @@ jobs:
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_TEMP }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-          appName: "f1man-dev-weu-app"
+          appName: "f1man-api-dev-weu-app"
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_TEMP }}
       - name: "Deploy web app"
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "f1man-dev-weu-app"
+          app-name: "f1man-api-dev-weu-app"
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
           package: "artifact.zip"
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v1.5
         with:
-          url: https://f1man-dev-weu-app.azurewebsites.net/health
+          url: https://f1man-api-dev-weu-app.azurewebsites.net/health
           follow-redirect: no
           max-attempts: 3
           retry-delay: 5s
@@ -140,12 +138,12 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_DEV }}
+          creds: ${{ secrets.AZURE_TEMP }}
       - name: Get secrets
         id: getsecretsdevmig
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: "F1DeployTimeKeyVault"
+          keyvault: "f1man-deploytime-kv"
           secrets: "SqlServerPassword"
       - name: Get Public IP address
         id: ip
@@ -154,36 +152,28 @@ jobs:
         uses: Azure/cli@1.0.4
         with:
           azcliversion: 2.23.0
-          inlineScript: az sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-dev-weu-sqlserver"
+          inlineScript: az sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-api-dev-weu-sql"
       - name: Execute database migrations
         run: |
           chmod 777 ./Migrations
-          ./Migrations migrate -n "f1man-dev-weu-database" -s "f1man-dev-weu-sqlserver" -u "f1mandevweu-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+          ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "phfqommi7mbwg" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
-  infrastructure-complete-dev:
-    needs: [deploy-api-dev, migrate-sql-database]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bicep-templates
-          path: ./infrastructure
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_DEV }}
-
-      - name: Get secretss
-        id: getsecretsdevcomp
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "F1DeployTimeKeyVault"
-          secrets: "SqlServerPassword"
-
-      - name: Deploy infrastrucutre
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment group create --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --template-file ./infrastructure/main.bicep --mode Complete --parameters sqlServerPassword=${{ steps.getsecretsdevcomp.outputs.SqlServerPassword }}
+  # infrastructure-complete-dev:
+  #   needs: [deploy-api-dev, migrate-sql-database]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: ./infrastructure
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_TEMP }}
+  #     - name: Deploy Infrastructure
+  #       id: arm
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json

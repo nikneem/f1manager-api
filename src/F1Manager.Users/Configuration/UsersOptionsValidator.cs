@@ -8,22 +8,22 @@ namespace F1Manager.Users.Configuration
         {
             if (options.AzureStorageAccount == default)
             {
-                var optionName = $"{UsersOptions.SectionName}.{nameof(options.AzureStorageAccount)}";
+                var optionName = $"{nameof(options.AzureStorageAccount)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
             if (options.Secret == default)
             {
-                var optionName = $"{UsersOptions.SectionName}.{nameof(options.Secret)}";
+                var optionName = $"{nameof(options.Secret)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
             if (options.Issuer == default)
             {
-                var optionName = $"{UsersOptions.SectionName}.{nameof(options.Issuer)}";
+                var optionName = $"{nameof(options.Issuer)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
             if (options.Audience == default)
             {
-                var optionName = $"{UsersOptions.SectionName}.{nameof(options.Audience)}";
+                var optionName = $"{nameof(options.Audience)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
 

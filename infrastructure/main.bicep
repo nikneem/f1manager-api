@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-param systemName string = 'f1man'
+param systemName string = 'F1Man-Api'
 @allowed([
   'Dev'
   'Test'
@@ -10,20 +10,30 @@ param systemName string = 'f1man'
 param environmentName string = 'Dev'
 param azureRegion object = {
   location: 'westeurope'
+  abbreviation: 'weu'
 }
 param developerObjectIds array = [
-  'de55357b-c155-4de7-916f-ff12755cf5fb'
+  'ce00c98d-c389-47b0-890e-7f156f136ebd'
 ]
 @secure()
 param jwtSignatureSecret string = newGuid()
-
-@secure()
-param sqlServerPassword string
 
 param basicAppSettings array = [
   {
     name: 'WEBSITE_RUN_FROM_PACKAGE'
     value: '1'
+  }
+  {
+    name: 'Secret'
+    value: jwtSignatureSecret
+  }
+  {
+    name: 'Audience'
+    value: 'https://api-${environmentName}.f1mgr.com'
+  }
+  {
+    name: 'Issuer'
+    value: 'https://api-${environmentName}.f1mgr.com'
   }
 ]
 
@@ -34,8 +44,8 @@ var tables = [
   'Components'
 ]
 
-var resourceGroupName = '${systemName}-${environmentName}-${azureRegion}'
-var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion}')
+var resourceGroupName = '${systemName}-${environmentName}-${azureRegion.abbreviation}'
+var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion.abbreviation}')
 
 resource targetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: deployment().location
@@ -48,7 +58,7 @@ resource eventGrid 'Microsoft.EventGrid/domains@2021-06-01-preview' existing = {
 }
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  name: 'F1DeployTimeKeyVault'
+  name: 'f1man-deploytime-kv'
   scope: resourceGroup('F1Manager-DeployTime')
 }
 
@@ -101,7 +111,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
   scope: targetResourceGroup
   params: {
     standardAppName: standardAppName
-    sqlServerPassword: sqlServerPassword
+    sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
   }
 }
 
@@ -114,21 +124,6 @@ module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
   params: {
     databaseName: sqlServerModule.outputs.databaseName
     sqlServerName: sqlServerModule.outputs.sqlServerName
-  }
-}
-
-module keyVaultSecretsModule 'KeyVault/vaults/secrets.bicep' = {
-  dependsOn: [
-    keyVaultModule
-    storageAccountModule
-    sqlServerModule
-    redisCacheModule
-  ]
-  name: 'keyVaultSecrets'
-  scope: targetResourceGroup
-  params: {
-    keyVault: keyVaultModule.outputs.keyVaultName
-    secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret, redisCacheModule.outputs.secret)
   }
 }
 
@@ -179,16 +174,58 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
   }
 }]
 
+module storageAccountSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    storageAccountModule
+  ]
+  name: 'storageAccountSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: storageAccountModule.outputs.secret
+  }
+}
+
+module sqlServerSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    sqlServerModule
+  ]
+  name: 'sqlServerSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: sqlServerModule.outputs.secret
+  }
+}
+
+module redisCacheSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    redisCacheModule
+  ]
+  name: 'redisCacheSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: redisCacheModule.outputs.secret
+  }
+}
+
 module websiteConfiguration 'Web/sites/config.bicep' = {
   name: 'websiteConfiguration'
   dependsOn: [
     keyVaultModule
     keyVaultAccessPolicyModule
-    keyVaultSecretsModule
+    storageAccountSecretModule
+    sqlServerSecretModule
+    redisCacheSecretModule
+    applicationInsightsModule
   ]
   scope: targetResourceGroup
   params: {
     webAppName: webAppModule.outputs.webAppName
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, keyVaultSecretsModule.outputs.keyVaultReferences)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference)
   }
 }

@@ -27,6 +27,9 @@ namespace F1Manager.Users.Domain
         public bool IsLockedOut => !string.IsNullOrWhiteSpace(LockoutReason);
         public bool IsAdministrator { get; private set; }
 
+        public DateTimeOffset ActiveFrom { get; private set; }
+        public DateTimeOffset ActiveUntil { get; private set; }
+
         public DateTimeOffset RegisteredOn { get; private set; }
         public DateTimeOffset? LastLoginOn { get; private set; }
 
@@ -131,7 +134,7 @@ namespace F1Manager.Users.Domain
             LastLoginOn = lastLogin;
         }
 
-        public User() : base(Guid.NewGuid(), TrackingState.New)
+        internal User() : base(Guid.NewGuid(), TrackingState.New)
         {
             DueDateEmailVerified = DateTimeOffset.UtcNow.AddDays(Defaults.EmailVerificationPeriodInDays);
             RegisteredOn = DateTimeOffset.UtcNow;

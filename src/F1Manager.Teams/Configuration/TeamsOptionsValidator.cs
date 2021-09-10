@@ -8,13 +8,13 @@ namespace F1Manager.Teams.Configuration
         {
             if (options.AzureStorageAccount == default)
             {
-                var optionName = $"{TeamsOptions.SectionName}.{nameof(options.AzureStorageAccount)}";
+                var optionName = $"{nameof(options.AzureStorageAccount)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
 
             if (options.CacheConnectionString == default)
             {
-                var optionName = $"{TeamsOptions.SectionName}.{nameof(options.CacheConnectionString)}";
+                var optionName = $"{nameof(options.CacheConnectionString)}";
                 return ValidateOptionsResult.Fail($"Missing configuration setting for: {optionName}. The value may not be 0 or empty");
             }
 

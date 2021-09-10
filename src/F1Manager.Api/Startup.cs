@@ -30,11 +30,11 @@ namespace F1Manager.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var issuer = Configuration["Users:Issuer"];
-            var audience = Configuration["Users:Audience"];
-            var secret = Configuration["Users:Secret"];
+            var issuer = Configuration["Issuer"];
+            var audience = Configuration["Audience"];
+            var secret = Configuration["Secret"];
 
-            var connectionString = Configuration["Teams:SqlConnectionString"];
+            var connectionString = Configuration["SqlConnectionString"];
 
             services.AddDbContext<F1ManagerDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -54,7 +54,7 @@ namespace F1Manager.Api
 
             services.AddHealthChecks()
                 .AddCheck<RedisCacheHealthCheck>("RedisCache");
-
+            services.AddApplicationInsightsTelemetry();
             services.AddControllers(options =>
                 options.Filters.Add(new F1ManagerExceptionFilter()));
             services.AddHttpContextAccessor();
@@ -93,6 +93,7 @@ namespace F1Manager.Api
             });
             app.UseAuthentication();
             app.UseHttpsRedirection();
+            
 
             app.UseRouting();
 
