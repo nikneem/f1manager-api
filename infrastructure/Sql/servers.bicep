@@ -4,7 +4,7 @@ param standardAppName string
 param sqlServerPassword string = newGuid()
 
 var resourceName = '${standardAppName}-sql'
-var adminName = standardAppName
+var adminName = 'sql-server-admin'
 var dbName = '${standardAppName}-sqldb'
 var connectionString = 'DATA SOURCE=tcp:${resourceName}${environment().suffixes.sqlServerHostname},1433;USER ID=${adminName};PASSWORD=${sqlServerPassword};INITIAL CATALOG=${dbName};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
 

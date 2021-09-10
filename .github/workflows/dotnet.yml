@@ -156,7 +156,7 @@ jobs:
       - name: Execute database migrations
         run: |
           chmod 777 ./Migrations
-          ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "f1man-api-dev-weu" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+          ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "sql-server-admin" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
   infrastructure-complete-dev:
     needs: [deploy-api-dev, migrate-sql-database]
