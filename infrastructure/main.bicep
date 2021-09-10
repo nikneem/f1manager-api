@@ -229,5 +229,3 @@ module websiteConfiguration 'Web/sites/config.bicep' = {
     appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference)
   }
 }
-
-output sqlServerAdminName string = sqlServerModule.outputs.adminName

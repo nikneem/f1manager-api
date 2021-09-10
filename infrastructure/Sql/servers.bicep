@@ -4,7 +4,7 @@ param standardAppName string
 param sqlServerPassword string = newGuid()
 
 var resourceName = '${standardAppName}-sql'
-var adminName = uniqueString(resourceName)
+var adminName = standardAppName
 var dbName = '${standardAppName}-sqldb'
 var connectionString = 'DATA SOURCE=tcp:${resourceName}${environment().suffixes.sqlServerHostname},1433;USER ID=${adminName};PASSWORD=${sqlServerPassword};INITIAL CATALOG=${dbName};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
 
@@ -26,4 +26,3 @@ output secret object = {
 }
 
 output secretName string = sqlServer.name
-output adminName string = adminName
