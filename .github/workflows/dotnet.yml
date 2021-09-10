@@ -81,7 +81,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_DEV }}
+          creds: ${{ secrets.AZURE_TEMP }}
       - name: Deploy Infrastructure
         id: arm
         uses: Azure/cli@1.0.4
@@ -101,7 +101,7 @@ jobs:
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_TEMP }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
           appName: "f1man-dev-weu-app"
@@ -134,7 +134,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_DEV }}
+          creds: ${{ secrets.AZURE_TEMP }}
       - name: Get secrets
         id: getsecretsdevmig
         uses: Azure/get-keyvault-secrets@v1
@@ -167,7 +167,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_DEV }}
+          creds: ${{ secrets.AZURE_TEMP }}
 
       - name: Get secretss
         id: getsecretsdevcomp
