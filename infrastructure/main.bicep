@@ -195,7 +195,7 @@ module sqlServerSecretModule 'KeyVault/vaults/secrets.bicep' = {
 module redisCacheSecretModule 'KeyVault/vaults/secrets.bicep' = {
   dependsOn: [
     keyVaultModule
-    sqlServerModule
+    redisCacheModule
   ]
   name: 'redisCacheSecretModule'
   scope: targetResourceGroup
