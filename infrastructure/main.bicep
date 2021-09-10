@@ -27,6 +27,14 @@ param basicAppSettings array = [
     name: 'Secret'
     value: jwtSignatureSecret
   }
+  {
+    name: 'Audience'
+    value: 'https://api-${environmentName}.f1mgr.com'
+  }
+  {
+    name: 'Issuer'
+    value: 'https://api-${environmentName}.f1mgr.com'
+  }
 ]
 
 var tables = [
