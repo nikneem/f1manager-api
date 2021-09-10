@@ -21,7 +21,7 @@ output sqlServerName string = sqlServer.name
 output databaseName string = dbName
 output connectionString string = connectionString
 output secret object = {
-  name: sqlServer.name
+  name: 'SqlConnectionString'
   value: connectionString
 }
 
