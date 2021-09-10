@@ -158,30 +158,22 @@ jobs:
           chmod 777 ./Migrations
           ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "phfqommi7mbwg" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
 
-  infrastructure-complete-dev:
-    needs: [deploy-api-dev, migrate-sql-database]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bicep-templates
-          path: ./infrastructure
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_TEMP }}
-
-      - name: Get secretss
-        id: getsecretsdevcomp
-        uses: Azure/get-keyvault-secrets@v1
-        with:
-          keyvault: "f1man-deploytime-kv"
-          secrets: "SqlServerPassword"
-
-      - name: Deploy infrastrucutre
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json --mode Complete
+  # infrastructure-complete-dev:
+  #   needs: [deploy-api-dev, migrate-sql-database]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: bicep-templates
+  #         path: ./infrastructure
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_TEMP }}
+  #     - name: Deploy Infrastructure
+  #       id: arm
+  #       uses: Azure/cli@1.0.4
+  #       with:
+  #         azcliversion: 2.23.0
+  #         inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json
