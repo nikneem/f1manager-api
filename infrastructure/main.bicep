@@ -119,21 +119,6 @@ module sqlServerDatabaseModule 'Sql/servers/database.bicep' = {
   }
 }
 
-module keyVaultSecretsModule 'KeyVault/vaults/secrets.bicep' = {
-  dependsOn: [
-    keyVaultModule
-    storageAccountModule
-    sqlServerModule
-    redisCacheModule
-  ]
-  name: 'keyVaultSecrets'
-  scope: targetResourceGroup
-  params: {
-    keyVault: keyVaultModule.outputs.keyVaultName
-    secrets: union(storageAccountModule.outputs.secret, sqlServerModule.outputs.secret, redisCacheModule.outputs.secret)
-  }
-}
-
 module appServicePlanModule 'Web/serverFarms.bicep' = {
   name: 'appServicePlanDeploy'
   scope: targetResourceGroup
@@ -181,17 +166,58 @@ module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for dev
   }
 }]
 
+module storageAccountSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    storageAccountModule
+  ]
+  name: 'storageAccountSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: storageAccountModule.outputs.secret
+  }
+}
+
+module sqlServerSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    sqlServerModule
+  ]
+  name: 'sqlServerSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: sqlServerModule.outputs.secret
+  }
+}
+
+module redisCacheSecretModule 'KeyVault/vaults/secrets.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    sqlServerModule
+  ]
+  name: 'redisCacheSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    secret: redisCacheModule.outputs.secret
+  }
+}
+
 module websiteConfiguration 'Web/sites/config.bicep' = {
   name: 'websiteConfiguration'
   dependsOn: [
     keyVaultModule
     keyVaultAccessPolicyModule
-    keyVaultSecretsModule
+    storageAccountSecretModule
+    sqlServerSecretModule
+    redisCacheSecretModule
     applicationInsightsModule
   ]
   scope: targetResourceGroup
   params: {
     webAppName: webAppModule.outputs.webAppName
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, keyVaultSecretsModule.outputs.keyVaultReferences)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference)
   }
 }

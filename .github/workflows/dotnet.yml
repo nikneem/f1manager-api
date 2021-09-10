@@ -104,17 +104,17 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_TEMP }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
-          appName: "f1man-dev-weu-app"
+          appName: "f1man-api-dev-weu-app"
       - name: "Deploy web app"
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "f1man-dev-weu-app"
+          app-name: "f1man-api-dev-weu-app"
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
           package: "artifact.zip"
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v1.5
         with:
-          url: https://f1man-dev-weu-app.azurewebsites.net/health
+          url: https://f1man-api-dev-weu-app.azurewebsites.net/health
           follow-redirect: no
           max-attempts: 3
           retry-delay: 5s

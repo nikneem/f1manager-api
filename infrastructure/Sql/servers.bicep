@@ -20,10 +20,9 @@ resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
 output sqlServerName string = sqlServer.name
 output databaseName string = dbName
 output connectionString string = connectionString
-output secret array = [
-  {
-    name: sqlServer.name
-    value: connectionString
-  }
-]
+output secret object = {
+  name: sqlServer.name
+  value: connectionString
+}
+
 output secretName string = sqlServer.name
