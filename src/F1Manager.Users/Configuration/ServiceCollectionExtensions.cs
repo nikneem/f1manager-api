@@ -16,7 +16,7 @@ namespace F1Manager.Users.Configuration
                 .BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            serviceCollection.ConfigureAndValidate<UsersOptions, UsersOptionsValidator>(configuration.GetSection(UsersOptions.SectionName));
+            serviceCollection.ConfigureAndValidate<UsersOptions, UsersOptionsValidator>(configuration);
 
             serviceCollection.AddScoped<IUsersService, UsersService>();
             serviceCollection.AddScoped<ILoginsService, LoginsService>();

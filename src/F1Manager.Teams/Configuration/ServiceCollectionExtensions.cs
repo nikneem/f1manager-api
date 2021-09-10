@@ -17,8 +17,7 @@ namespace F1Manager.Teams.Configuration
                 .BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            serviceCollection.ConfigureAndValidate<TeamsOptions, TeamsOptionsValidator>(
-                configuration.GetSection(TeamsOptions.SectionName));
+            serviceCollection.ConfigureAndValidate<TeamsOptions, TeamsOptionsValidator>(configuration);
 
             serviceCollection.AddScoped<ITeamsService, TeamsService>();
             serviceCollection.AddScoped<ITeamsDomainService, TeamsDomainService>();

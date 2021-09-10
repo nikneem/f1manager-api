@@ -40,8 +40,8 @@ namespace F1Manager.Teams.UnitTests.Domain
         }
 
         [Theory]
-        [InlineData("Ban@nas")]
-        [InlineData("Fa#wakas")]
+        [InlineData("Ban$nas")]
+        [InlineData("Fa%wakas")]
         [InlineData("Dream;Team")]
         public async void WhenTeamNameIsInvalid_ItThrowsF1ManagerTeamException(string name)
         {

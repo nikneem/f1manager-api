@@ -22,8 +22,7 @@ namespace F1Manager.Admin.Configuration
                 .BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            serviceCollection.ConfigureAndValidate<AdminOptions, AdminOptionsValidator>(
-                configuration.GetSection(AdminOptions.SectionName));
+            serviceCollection.ConfigureAndValidate<AdminOptions, AdminOptionsValidator>(configuration);
 
             serviceCollection.AddScoped<IUploadService, UploadService>();
             serviceCollection.AddScoped<IDriversService, DriversService>();

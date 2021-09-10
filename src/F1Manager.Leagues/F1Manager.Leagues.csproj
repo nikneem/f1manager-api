@@ -8,4 +8,12 @@
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\F1Manager.Shared\F1Manager.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+  </ItemGroup>
+
 </Project>
