@@ -13,7 +13,7 @@ param azureRegion object = {
   abbreviation: 'weu'
 }
 param developerObjectIds array = [
-  'de55357b-c155-4de7-916f-ff12755cf5fb'
+  'ce00c98d-c389-47b0-890e-7f156f136ebd'
 ]
 @secure()
 param jwtSignatureSecret string = newGuid()
