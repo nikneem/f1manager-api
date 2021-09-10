@@ -26,3 +26,4 @@ output secret object = {
 }
 
 output secretName string = sqlServer.name
+output adminName string = adminName
