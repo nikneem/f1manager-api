@@ -139,7 +139,7 @@ jobs:
         id: getsecretsdevmig
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: "F1DeployTimeKeyVault"
+          keyvault: "f1man-deploytime-kv"
           secrets: "SqlServerPassword"
       - name: Get Public IP address
         id: ip
@@ -173,7 +173,7 @@ jobs:
         id: getsecretsdevcomp
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: "F1DeployTimeKeyVault"
+          keyvault: "f1man-deploytime-kv"
           secrets: "SqlServerPassword"
 
       - name: Deploy infrastrucutre
