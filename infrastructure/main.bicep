@@ -23,6 +23,10 @@ param basicAppSettings array = [
     name: 'WEBSITE_RUN_FROM_PACKAGE'
     value: '1'
   }
+  {
+    name: 'Secret'
+    value: jwtSignatureSecret
+  }
 ]
 
 var tables = [
