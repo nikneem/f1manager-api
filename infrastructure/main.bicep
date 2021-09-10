@@ -192,6 +192,6 @@ module websiteConfiguration 'Web/sites/config.bicep' = {
   scope: targetResourceGroup
   params: {
     webAppName: webAppModule.outputs.webAppName
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration) //, keyVaultSecretsModule.outputs.keyVaultReferences)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, keyVaultSecretsModule.outputs.keyVaultReferences)
   }
 }
