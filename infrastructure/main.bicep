@@ -46,7 +46,7 @@ resource eventGrid 'Microsoft.EventGrid/domains@2021-06-01-preview' existing = {
 }
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  name: 'F1DeployTimeKeyVault'
+  name: 'f1man-deploytime-kv'
   scope: resourceGroup('F1Manager-DeployTime')
 }
 
