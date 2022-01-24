@@ -23,12 +23,8 @@ jobs:
         run: dotnet test ./src --no-build --verbosity normal
       - name: Publish
         run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
-      - name: "Zip published content"
-        uses: vimtor/action-zip@1
-        with:
-          files: ./published/
-          recursive: true
-          dest: artifact.zip
+      - name: Zip Folder
+        run: zip -r artifact.zip ./published/
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
