@@ -16,10 +16,6 @@ namespace F1Manager.Teams.Mappings
 
             return new TeamDriver(entity.Id,
                 entity.DriverId,
-                entity.Name,
-                entity.PictureUrl,
-                entity.Country,
-                entity.BirthDate,
                 entity.PurchasePrice,
                 entity.SellingPrice,
                 entity.PointsGained,
@@ -37,10 +33,6 @@ namespace F1Manager.Teams.Mappings
                 DriverId = domainModel.DriverId,
                 PurchasePrice = domainModel.BoughtFor,
                 BoughtOn = domainModel.BoughtOn,
-                Country= domainModel.Country,
-                BirthDate = domainModel.BirthDate,
-                Name = domainModel.Name,
-                PictureUrl = domainModel.PictureUrl,
                 IsFirstDriver = domainModel.IsFirstDriver,
             };
             entity.SellingPrice = domainModel.SoldFor;

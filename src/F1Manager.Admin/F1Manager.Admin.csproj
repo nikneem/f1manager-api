@@ -1,20 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\F1Manager.Shared\F1Manager.Shared.csproj" />
+    <ProjectReference Include="..\F1Manager.SqlData\F1Manager.SqlData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="Results\Repositories\" />
   </ItemGroup>
 
 </Project>

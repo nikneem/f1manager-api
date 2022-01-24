@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
@@ -10,7 +8,6 @@ using F1Manager.Admin.DataTransferObjects;
 using F1Manager.Admin.Exceptions;
 using F1Manager.Shared.Constants;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace F1Manager.Admin.Services

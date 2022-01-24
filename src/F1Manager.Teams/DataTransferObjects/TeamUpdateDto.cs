@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace F1Manager.Teams.DataTransferObjects
+﻿namespace F1Manager.Teams.DataTransferObjects
 {
     public class TeamUpdateDto
     {

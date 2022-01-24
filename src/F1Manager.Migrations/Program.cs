@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using F1Manager.SqlData;
+using F1Manager.SqlData.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.CommandLineUtils;
@@ -125,7 +126,7 @@ namespace F1Manager.Migrations
                         optionsBuilder.EnableDetailedErrors();
 
                         var svcApiDbContext = new F1ManagerDbContext(optionsBuilder.Options);
-                        //SeedDatabase(svcApiDbContext);
+                        SeedDatabase(svcApiDbContext);
 
 
                         return 0;
@@ -148,36 +149,19 @@ namespace F1Manager.Migrations
 
         }
 
-        //private static void SeedDatabase(F1ManagerDbContext ddc)
-        //{
-        //    SeedSeasons(ddc);
-        //    SeedCircuits(ddc);
-        //    SeedCalendar(ddc);
-        //    SeedDriverPointsTable(ddc);
-        //    SeedDrivers(ddc);
-        //    SeedEngines(ddc);
-        //    SeedChassis(ddc);
-        //}
+        private static void SeedDatabase(F1ManagerDbContext ddc)
+        {
+            //SeedSeasons(ddc);
+            //SeedCircuits(ddc);
+            //SeedCalendar(ddc);
+            SeedDriverPointsTable(ddc);
+            SeedEnginePointsTable(ddc);
+            SeedChassisPointsTable(ddc);
+//            SeedDrivers(ddc);
+            //SeedEngines(ddc);
+            //SeedChassis(ddc);
+        }
 
-        //private static void SeedSeasons(F1ManagerDbContext ddc)
-        //{
-        //    var startDate = new DateTime(2021, 2, 1);
-        //    var season21 = ddc.Seasons.FirstOrDefault(x => x.ActiveFrom < startDate && x.ActiveUntil > startDate);
-        //    if (season21 == null)
-        //    {
-
-        //        season21 = new SeasonEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Name = "Formula 1 Schedule 2021",
-        //            ActiveFrom = new DateTimeOffset(new DateTime(2021, 1, 1)),
-        //            ActiveUntil = new DateTimeOffset(new DateTime(2021, 12, 31))
-        //        };
-        //        ddc.Add(season21);
-        //        Console.WriteLine($"Seeding season {season21.ActiveFrom.Year}...");
-        //        ddc.SaveChanges();
-        //    }
-        //}
         //private static void SeedCircuits(F1ManagerDbContext ddc)
         //{
         //    var circuits = new List<CircuitEntity>
@@ -247,27 +231,99 @@ namespace F1Manager.Migrations
         //        }
         //    }
         //}
-        //private static void SeedDriverPointsTable(F1ManagerDbContext ddc)
-        //{
-        //    var pointsTableEntities = ddc.DriverPointsTable.ToList();
-        //    foreach (var dp in DriverPointsTable.GetDriverPointsTable())
-        //    {
-        //        var p = pointsTableEntities.FirstOrDefault(x => x.Id == dp.Id);
-        //        if (p == null)
-        //        {
-        //            p = new DriverPointsTableEntity(dp.Qualification, dp.Race);
-        //            ddc.Add(p);
-        //        }
-        //        else
-        //        {
-        //            p.Qualification = dp.Qualification;
-        //            p.Race = dp.Race;
-        //            ddc.Entry(p).State = EntityState.Modified;
-        //        }
-        //    }
+        private static void SeedDriverPointsTable(F1ManagerDbContext ddc)
+        {
+            var pointsTableEntities = ddc.DriverPoints.ToList();
+            if (pointsTableEntities.Count == 0)
+            {
+                ddc.DriverPoints.Add(new DriverPointEntity(1, 25, 60, 10));
+                ddc.DriverPoints.Add(new DriverPointEntity(2, 24, 54, 9));
+                ddc.DriverPoints.Add(new DriverPointEntity(3, 23, 49, 8));
+                ddc.DriverPoints.Add(new DriverPointEntity(4, 22, 44, 7));
+                ddc.DriverPoints.Add(new DriverPointEntity(5, 21, 39, 6));
+                ddc.DriverPoints.Add(new DriverPointEntity(6, 10, 35, 5));
+                ddc.DriverPoints.Add(new DriverPointEntity(7, 19, 31, 4));
+                ddc.DriverPoints.Add(new DriverPointEntity(8, 18, 28, 3));
+                ddc.DriverPoints.Add(new DriverPointEntity(9, 17, 25, 2));
+                ddc.DriverPoints.Add(new DriverPointEntity(10, 16, 22, 1));
+                ddc.DriverPoints.Add(new DriverPointEntity(11, 15, 20, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(12, 14, 18, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(13, 13, 16, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(14, 12, 14, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(15, 11, 12, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(16, 10, 10, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(17, 09, 8, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(18, 08, 6, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(19, 06, 4, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(20, 04, 3, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(21, 02, 2, 0));
+                ddc.DriverPoints.Add(new DriverPointEntity(22, 01, 1, 0));
+            }
 
-        //    ddc.SaveChanges();
-        //}
+            ddc.SaveChanges();
+        }
+        private static void SeedEnginePointsTable(F1ManagerDbContext ddc)
+        {
+            var pointsTableEntities = ddc.EnginePoints.ToList();
+            if (pointsTableEntities.Count == 0)
+            {
+                ddc.EnginePoints.Add(new EnginePointEntity(1, 25, 40, 5));
+                ddc.EnginePoints.Add(new EnginePointEntity(2, 22, 34, 4));
+                ddc.EnginePoints.Add(new EnginePointEntity(3, 20, 30, 3));
+                ddc.EnginePoints.Add(new EnginePointEntity(4, 18, 26, 2));
+                ddc.EnginePoints.Add(new EnginePointEntity(5, 16, 23, 1));
+                ddc.EnginePoints.Add(new EnginePointEntity(6, 14, 20, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(7, 12, 18, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(8, 10, 16, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(9, 09, 14, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(10, 08, 12, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(11, 07, 10, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(12, 06, 9, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(13, 05, 7, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(14, 04, 7, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(15, 03, 6, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(16, 03, 5, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(17, 02, 4, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(18, 02, 3, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(19, 01, 2, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(20, 01, 2, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(21, 00, 1, 0));
+                ddc.EnginePoints.Add(new EnginePointEntity(22, 00, 1, 0));
+            }
+
+            ddc.SaveChanges();
+        }
+        private static void SeedChassisPointsTable(F1ManagerDbContext ddc)
+        {
+            var pointsTableEntities = ddc.ChassisPoints.ToList();
+            if (pointsTableEntities.Count == 0)
+            {
+                ddc.ChassisPoints.Add(new ChassisPointEntity(1, 25, 40, 5));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(2, 22, 34, 4));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(3, 20, 30, 3));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(4, 18, 26, 2));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(5, 16, 23, 1));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(6, 14, 20, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(7, 12, 18, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(8, 10, 16, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(9, 09, 14, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(10, 08, 12, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(11, 07, 10, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(12, 06, 9, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(13, 05, 7, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(14, 04, 7, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(15, 03, 6, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(16, 03, 5, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(17, 02, 4, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(18, 02, 3, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(19, 01, 2, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(20, 01, 2, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(21, 00, 1, 0));
+                ddc.ChassisPoints.Add(new ChassisPointEntity(22, 00, 1, 0));
+            }
+
+            ddc.SaveChanges();
+        }
         //private static void SeedEngines(F1ManagerDbContext ddc)
         //{
         //    Console.WriteLine($"Seeding engines");
@@ -302,23 +358,7 @@ namespace F1Manager.Migrations
         //    var affected = ddc.SaveChanges();
         //    Console.WriteLine($"{affected} Chassis have been inserted");
         //}
-        //private static void SeedDrivers(F1ManagerDbContext ddc)
-        //{
-        //    Console.WriteLine($"Seeding drivers");
 
-        //    var drivers = ddc.Drivers.ToList();
-        //    foreach (var dp in Drivers.GetDrivers())
-        //    {
-        //        var driverEntity = drivers.FirstOrDefault(x => x.Id == dp.Id);
-        //        if (driverEntity == null)
-        //        {
-        //            ddc.Add(dp);
-        //        }
-        //    }
-
-        //    var affected = ddc.SaveChanges();
-        //    Console.WriteLine($"{affected} Drivers have been inserted");
-        //}
 
     }
 }

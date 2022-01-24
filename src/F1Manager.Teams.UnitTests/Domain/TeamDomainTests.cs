@@ -76,7 +76,6 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.FirstDriver);
             Assert.Equal(team.FirstDriver.BoughtFor, driver.Value);
-            Assert.Equal(team.FirstDriver.Name, driver.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }
@@ -91,7 +90,6 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.SecondDriver);
             Assert.Equal(driver.Value, team.SecondDriver.BoughtFor);
-            Assert.Equal(driver.Name, team.SecondDriver.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }
@@ -159,7 +157,6 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.Engine);
             Assert.Equal(team.Engine.BoughtFor, engine.Value);
-            Assert.Equal(team.Engine.Name, engine.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }
@@ -174,7 +171,6 @@ namespace F1Manager.Teams.UnitTests.Domain
 
             Assert.NotNull(team.Chassis);
             Assert.Equal(team.Chassis.BoughtFor, chassis.Value);
-            Assert.Equal(team.Chassis.Name, chassis.Name);
             Assert.Equal(expectedMoney, team.Money);
             Assert.Equal(TrackingState.Modified, team.TrackingState);
         }

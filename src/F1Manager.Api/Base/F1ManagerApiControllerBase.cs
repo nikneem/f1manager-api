@@ -2,7 +2,6 @@
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Claims;
-using F1Manager.Shared.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace F1Manager.Api.Base

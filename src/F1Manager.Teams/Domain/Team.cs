@@ -76,7 +76,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.PictureUrl, driver.Country, driver.DateOfBirth, driver.Value, true);
+            var teamDriver = new TeamDriver(driver.Id,  driver.Value, true);
             FirstDriver = teamDriver;
             Money -= driver.Value;
             SetState(TrackingState.Modified);
@@ -109,7 +109,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamDriver = new TeamDriver(driver.Id, driver.Name, driver.PictureUrl, driver.Country, driver.DateOfBirth, driver.Value, false);
+            var teamDriver = new TeamDriver(driver.Id,  driver.Value, false);
             SecondDriver = teamDriver;
             Money -= driver.Value;
             SetState(TrackingState.Modified);
@@ -136,7 +136,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamEngine = new TeamEngine(engine.Id, engine.Name, engine.Value);
+            var teamEngine = new TeamEngine(engine.Id,  engine.Value);
             Engine = teamEngine;
             Money -= engine.Value;
             SetState(TrackingState.Modified);
@@ -164,7 +164,7 @@ namespace F1Manager.Teams.Domain
                     Money);
             }
 
-            var teamChassis = new TeamChassis(chassis.Id, chassis.Name, chassis.Value);
+            var teamChassis = new TeamChassis(chassis.Id,  chassis.Value);
             Chassis = teamChassis;
             Money -= chassis.Value;
             SetState(TrackingState.Modified);

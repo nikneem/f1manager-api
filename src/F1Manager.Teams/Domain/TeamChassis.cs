@@ -8,10 +8,6 @@ namespace F1Manager.Teams.Domain
     public sealed class TeamChassis : DomainModel<Guid>
     {
         public Guid ChassisId { get; }
-        public string Name { get; }
-        public string PictureUrl { get; }
-        public string Manufacturer { get; }
-        public string Model { get; }
         public decimal BoughtFor { get; }
         public decimal? SoldFor { get; private set; }
         public int TotalPointsGained { get; private set; }
@@ -39,10 +35,6 @@ namespace F1Manager.Teams.Domain
 
         public TeamChassis(Guid id,
             Guid chassisId,
-            string name,
-            string pictureUrl,
-            string manufacturer,
-            string model,
             decimal boughtFor,
             decimal? soldFor,
             int totalPointsGained,
@@ -51,10 +43,6 @@ namespace F1Manager.Teams.Domain
             DateTimeOffset? soldOn) : base(id)
         {
             ChassisId = chassisId;
-            Name = name;
-            PictureUrl = pictureUrl;
-            Manufacturer = manufacturer;
-            Model = model;
             BoughtFor = boughtFor;
             SoldFor = soldFor;
             TotalPointsGained = totalPointsGained;
@@ -64,11 +52,9 @@ namespace F1Manager.Teams.Domain
         }
 
         public TeamChassis(Guid chassisId,
-            string name,
             decimal boughtFor) : base(Guid.NewGuid(), TrackingState.New)
         {
             ChassisId = chassisId;
-            Name = name;
             BoughtFor = boughtFor;
             TotalPointsGained = 0;
             WarnOffPercentage = 0M;

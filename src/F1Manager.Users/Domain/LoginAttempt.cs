@@ -12,7 +12,7 @@ namespace F1Manager.Users.Domain
         public string RsaPrivateKey { get; }
         public string RsaPublicKey { get; }
 
-
+        [Obsolete("TODO: Find a different front-end / backend encryption / decryption method")]
         public UserLoginRequestDto DecryptUsernameAndPassword(UserLoginRequestDto dto)
         {
             using var importedRsa = new RSACng();

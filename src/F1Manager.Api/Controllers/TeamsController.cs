@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using F1Manager.Api.Base;
-using Microsoft.AspNetCore.Authorization;
 
 namespace F1Manager.Api.Controllers
 {

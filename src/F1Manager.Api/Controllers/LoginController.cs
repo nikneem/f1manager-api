@@ -2,7 +2,6 @@
 using F1Manager.Api.Base;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.DataTransferObjects;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace F1Manager.Api.Controllers

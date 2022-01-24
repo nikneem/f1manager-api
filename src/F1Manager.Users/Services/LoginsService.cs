@@ -122,18 +122,6 @@ namespace F1Manager.Users.Services
         }
 
 
-        static string DecryptStringFromBytes(byte[] cipherText, byte[] key, byte[] iv)
-        {
-            using var rijAlg = new RijndaelManaged {Key = key, IV = iv};
-
-            var decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
-            using var msDecrypt = new MemoryStream(cipherText);
-            using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
-            using var srDecrypt = new StreamReader(csDecrypt);
-            return srDecrypt.ReadToEnd();
-        }
-
-
         public LoginsService(
             ILoginsRepository loginsRepository,
             IUsersRepository usersRepository,

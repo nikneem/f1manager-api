@@ -8,7 +8,6 @@ using F1Manager.Users.Configuration;
 using F1Manager.Users.Entities;
 using F1Manager.Users.Exceptions;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace F1Manager.Users.Repositories

@@ -14,7 +14,15 @@ namespace F1Manager.SqlData
             
         }
 
+        public DbSet<DriverPointEntity> DriverPoints { get; set; }
+        public DbSet<EnginePointEntity> EnginePoints { get; set; }
+        public DbSet<ChassisPointEntity> ChassisPoints { get; set; }
+
         public DbSet<CircuitEntity> Circuits { get; set; }
+        public DbSet<RaceWeekendEntity> RaceWeekends { get; set; }
+
+        public DbSet<RaceResultEntity> RaceResults { get; set; }
+        public DbSet<RaceDriverResultsEntity> RaceDriverResults { get; set; }
 
         public DbSet<TeamEntity> Teams { get; set; }
         public DbSet<TeamEngineEntity> TeamEngines { get; set; }

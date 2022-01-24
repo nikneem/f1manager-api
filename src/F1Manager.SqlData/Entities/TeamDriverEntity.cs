@@ -8,10 +8,6 @@ namespace F1Manager.SqlData.Entities
     {
         public Guid TeamId { get; set; }
         public Guid DriverId { get; set; }
-        public string Name { get; set; }
-        public string PictureUrl { get; set; }
-        public string Country { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
         public int PointsGained { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
@@ -25,6 +21,7 @@ namespace F1Manager.SqlData.Entities
 
         [ForeignKey("TeamId")]
         public TeamEntity Team { get; set; }
+
 
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using F1Manager.Shared.Base;
 using F1Manager.Shared.Constants;
-using F1Manager.Shared.Helpers;
 using F1Manager.Teams.Abstractions;
 using F1Manager.Teams.Configuration;
 using F1Manager.Teams.DataTransferObjects;
