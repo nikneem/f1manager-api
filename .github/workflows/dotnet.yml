@@ -24,7 +24,7 @@ jobs:
       - name: Publish
         run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
       - name: "Zip published content"
-        uses: papeloto/action-zip@v1
+        uses: vimtor/action-zip@1
         with:
           files: ./published/
           recursive: true
