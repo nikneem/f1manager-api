@@ -78,12 +78,12 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_TEMP }}
-      - name: Deploy Infrastructure
-        id: arm
-        uses: Azure/cli@1.0.4
+      - uses: azure/arm-deploy@v1
         with:
-          azcliversion: 2.23.0
-          inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json
+          scope: subscription
+          region: westeurope
+          template: ./infrastructure/main.json
+          parameters: ./infrastructure/parameters.dev.json
 
   deploy-api-dev:
     needs: [compile-api, infrastructure-incremental-dev]
