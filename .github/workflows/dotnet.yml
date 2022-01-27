@@ -77,7 +77,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_TEMP }}
+          creds: ${{ secrets.AZURE_DEV }}
       - uses: azure/arm-deploy@v1
         with:
           scope: subscription
@@ -97,14 +97,14 @@ jobs:
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_TEMP }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
         with:
           resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
           appName: "f1man-api-dev-weu-app"
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_TEMP }}
+          creds: ${{ secrets.AZURE_DEV }}
       - name: "Deploy web app"
         uses: azure/webapps-deploy@v2
         with:
@@ -134,7 +134,14 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_TEMP }}
+          creds: ${{ secrets.AZURE_DEV }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "f1man-deploytime-kv"
+          secrets: "SqlServerPassword"
+        id: myGetSecretAction
+
       - name: Get secrets
         id: getsecretsdevmig
         uses: Azure/get-keyvault-secrets@v1
@@ -153,23 +160,3 @@ jobs:
         run: |
           chmod 777 ./Migrations
           ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "phfqommi7mbwg" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
-
-  # infrastructure-complete-dev:
-  #   needs: [deploy-api-dev, migrate-sql-database]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: bicep-templates
-  #         path: ./infrastructure
-  #     - name: Azure Login
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_TEMP }}
-  #     - name: Deploy Infrastructure
-  #       id: arm
-  #       uses: Azure/cli@1.0.4
-  #       with:
-  #         azcliversion: 2.23.0
-  #         inlineScript: az deployment sub create --location westeurope --template-file ./infrastructure/main.json --parameters ./infrastructure/parameters.dev.json
