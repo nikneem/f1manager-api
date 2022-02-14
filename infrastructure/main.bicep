@@ -37,6 +37,8 @@ param basicAppSettings array = [
   }
 ]
 
+param deploymentLocation string = deployment().location
+
 var tables = [
   'Users'
   'Logins'
@@ -44,18 +46,18 @@ var tables = [
   'Components'
 ]
 
-var resourceGroupName = '${systemName}-${environmentName}-${azureRegion.abbreviation}'
-var standardAppName = toLower('${systemName}-${environmentName}-${azureRegion.abbreviation}')
+var resourceGroupName = toLower('${systemName}-${environmentName}-${azureRegion.abbreviation}')
+var standardAppName = resourceGroupName
 
 resource targetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  location: deployment().location
+  location: deploymentLocation
   name: resourceGroupName
 }
 
-resource eventGrid 'Microsoft.EventGrid/domains@2021-06-01-preview' existing = {
-  name: '${systemName}-${environmentName}-${azureRegion}-eg'
-  scope: resourceGroup('F1Manager-${environmentName}-Integration')
-}
+// resource eventGrid 'Microsoft.EventGrid/domains@2021-06-01-preview' existing = {
+//   name: '${systemName}-${environmentName}-${azureRegion}-eg'
+//   scope: resourceGroup('F1Manager-${environmentName}-Integration')
+// }
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: 'f1man-deploytime-kv'
