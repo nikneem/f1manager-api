@@ -46,6 +46,10 @@ var tables = [
   'Components'
 ]
 
+var deployTimeSubscription = '16fa3d0c-8ec3-488a-bff3-b37c932cba84'
+var deployTimeKeyVaultName = 'f1man-deploytime-kv'
+var deployTimeResourceGroup = 'F1Manager-DeployTime'
+
 var resourceGroupName = toLower('${systemName}-${environmentName}-${azureRegion.abbreviation}')
 var standardAppName = resourceGroupName
 
@@ -60,8 +64,8 @@ resource targetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // }
 
 resource deployTimeKeyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  name: 'f1man-deploytime-kv'
-  scope: resourceGroup('F1Manager-DeployTime')
+  name: deployTimeKeyVaultName
+  scope: resourceGroup(deployTimeSubscription, deployTimeResourceGroup)
 }
 
 module redisCacheModule 'Cache/redis.bicep' = {
