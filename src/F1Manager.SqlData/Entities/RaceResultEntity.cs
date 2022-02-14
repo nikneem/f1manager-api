@@ -15,7 +15,7 @@ namespace F1Manager.SqlData.Entities
         public DateTimeOffset ModifiedOn { get; set; }
         
         [ForeignKey(nameof(RaceWeekendId))]
-        public RaceWeekendEntity RaceWeekend { get; set; }
+        public RaceEventEntity RaceEvent { get; set; }
 
     }
 }

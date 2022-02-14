@@ -19,7 +19,7 @@ namespace F1Manager.SqlData.Entities
         public decimal RaceDistance { get; set; }
         public string LapRecord { get; set; }
 
-        public List<RaceWeekendEntity> RaceWeekends { get; set; }
+        public List<RaceEventEntity> RaceEvents { get; set; }
 
     }
 }
