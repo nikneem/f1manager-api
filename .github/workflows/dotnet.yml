@@ -87,18 +87,13 @@ jobs:
 
   deploy-api-dev:
     needs: [compile-api, infrastructure-incremental-dev]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - name: Install Azure CLI
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.33.1
-          inlineScript: az version
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: api-artifact
-      - name: Get FunctionApp publish profile
+      - name: Get Web App publish profile
         id: publishprofile
         uses: aliencube/publish-profile-actions@v1
         env:
