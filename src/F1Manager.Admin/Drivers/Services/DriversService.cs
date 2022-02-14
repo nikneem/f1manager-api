@@ -8,12 +8,10 @@ using F1Manager.Admin.Drivers.DomainModels;
 using F1Manager.Admin.Exceptions;
 using F1Manager.Shared.Base;
 using F1Manager.Shared.Constants;
-using F1Manager.Shared.Helpers;
 using F1Manager.Shared.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 
 namespace F1Manager.Admin.Drivers.Services
 {

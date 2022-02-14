@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace F1Manager.Leagues.Configuration
+﻿namespace F1Manager.Leagues.Configuration
 {
     public class LeaguesOptions
     {

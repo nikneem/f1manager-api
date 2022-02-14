@@ -88,16 +88,16 @@ namespace F1Manager.Users.UnitTests.Domain
 
 
 
-        [Fact]
-        public void WhenPasswordIsValid_ItSucceeds()
-        {
-            var expectedPassword = "SecretPassword01";
-            var user = WithRandomUser();
+        //[Fact]
+        //public void WhenPasswordIsValid_ItSucceeds()
+        //{
+        //    var expectedPassword = "SecretPassword01";
+        //    var user = WithRandomUser();
 
-             user.SetPassword(expectedPassword);
-            Assert.True(user.Password.Validate(expectedPassword));
-            Assert.Equal(TrackingState.Modified, user.TrackingState);
-        }
+        //     user.SetPassword(expectedPassword);
+        //    Assert.True(user.Password.Validate(expectedPassword));
+        //    Assert.Equal(TrackingState.Modified, user.TrackingState);
+        //}
         [Theory]
         [InlineData(null)]
         [InlineData("")]

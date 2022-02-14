@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using F1Manager.Leagues.DomainModels;
+﻿using F1Manager.Leagues.DomainModels;
 using F1Manager.Leagues.Entities;
 using F1Manager.Leagues.Repository;
 

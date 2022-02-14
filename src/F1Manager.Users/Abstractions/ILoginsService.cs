@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using F1Manager.Users.DataTransferObjects;
 using F1Manager.Users.Domain;

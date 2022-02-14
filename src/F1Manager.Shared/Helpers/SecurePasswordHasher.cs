@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace F1Manager.Shared.Helpers
 {
@@ -25,24 +26,15 @@ namespace F1Manager.Shared.Helpers
         /// <returns>The hash.</returns>
         public static string Hash(string password, int iterations)
         {
-            // Create salt
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+            byte[] salt = new byte[128 / 8];
+            RandomNumberGenerator.Fill(salt);
 
-            // Create hash
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(HashSize);
-
-            // Combine salt and hash
-            var hashBytes = new byte[SaltSize + HashSize];
-            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
-            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
-
-            // Convert to base64
-            var base64Hash = Convert.ToBase64String(hashBytes);
-
-            // Format hash with extra information
-            return string.Format("{0}{1}${2}", CurrentVersion, iterations, base64Hash);
+            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
         }
 
         /// <summary>

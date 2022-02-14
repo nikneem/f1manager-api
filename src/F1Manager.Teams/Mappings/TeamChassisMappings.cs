@@ -17,10 +17,6 @@ namespace F1Manager.Teams.Mappings
             return new TeamChassis(
                 entity.Id,
                 entity.ChassisId,
-                entity.Name,
-                entity.PictureUrl,
-                entity.Manufacturer,
-                entity.Model,
                 entity.BoughtFor,
                 entity.SoldFor,
                 entity.PointsGained,
@@ -38,11 +34,6 @@ namespace F1Manager.Teams.Mappings
                 ChassisId = domainModel.ChassisId,
                 BoughtFor = domainModel.BoughtFor,
                 BoughtOn = domainModel.BoughtOn,
-                Manufacturer = domainModel.Manufacturer,
-                Model = domainModel.Model,
-                Name = domainModel.Name,
-                PictureUrl = domainModel.PictureUrl,
-
             };
             entity.SoldFor = domainModel.SoldFor;
             entity.SoldOn = domainModel.SoldOn;

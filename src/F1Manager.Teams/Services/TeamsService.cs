@@ -7,7 +7,6 @@ using F1Manager.Teams.DataTransferObjects;
 using F1Manager.Teams.Domain;
 using F1Manager.Teams.Exceptions;
 using Microsoft.Extensions.Logging;
-using Microsoft.OData.Edm;
 
 namespace F1Manager.Teams.Services
 {
@@ -107,8 +106,6 @@ namespace F1Manager.Teams.Services
                 return new TeamDriverDetailsDto
                 {
                     Id = team.FirstDriver.Id,
-                    Name = team.FirstDriver.Name,
-                    PictureUrl = team.FirstDriver.PictureUrl,
                     BoughtOn = team.FirstDriver.BoughtOn,
                     BoughtFor = team.FirstDriver.BoughtFor,
                     CurrentPrice = driver.Value,
@@ -133,8 +130,6 @@ namespace F1Manager.Teams.Services
                 return new TeamDriverDetailsDto
                 {
                     Id = team.SecondDriver.Id,
-                    Name = team.SecondDriver.Name,
-                    PictureUrl = team.SecondDriver.PictureUrl,
                     BoughtOn = team.SecondDriver.BoughtOn,
                     BoughtFor = team.SecondDriver.BoughtFor,
                     CurrentPrice = driver.Value,
@@ -158,14 +153,11 @@ namespace F1Manager.Teams.Services
                     _logger.LogInformation("Team {id}, ({name}) succesfully bought driver {driverId} (driverName)",
                         team.Id,
                         team.Name,
-                        team.FirstDriver.DriverId,
-                        team.FirstDriver.Name);
+                        team.FirstDriver.DriverId);
 
                     return new TeamDriverDetailsDto
                     {
                         Id = team.FirstDriver.Id,
-                        Name = team.FirstDriver.Name,
-                        PictureUrl = team.FirstDriver.PictureUrl,
                         BoughtOn = team.FirstDriver.BoughtOn,
                         BoughtFor = team.FirstDriver.BoughtFor,
                         CurrentPrice = team.FirstDriver.BoughtFor,
@@ -188,14 +180,11 @@ namespace F1Manager.Teams.Services
                     _logger.LogInformation("Team {id}, ({name}) succesfully bought driver {driverId} (driverName)",
                         team.Id,
                         team.Name,
-                        team.FirstDriver.DriverId,
-                        team.FirstDriver.Name);
+                        team.FirstDriver.DriverId);
 
                     return new TeamDriverDetailsDto
                     {
                         Id = team.SecondDriver.Id,
-                        Name = team.SecondDriver.Name,
-                        PictureUrl = team.SecondDriver.PictureUrl,
                         BoughtOn = team.SecondDriver.BoughtOn,
                         BoughtFor = team.SecondDriver.BoughtFor,
                         CurrentPrice = team.SecondDriver.BoughtFor,
@@ -224,11 +213,10 @@ namespace F1Manager.Teams.Services
 
                 var driver = await _domainService.GetDriverById(teamDriver.DriverId);
 
-                _logger.LogInformation("Team driver '{driverName}' gathering information to sell", teamDriver.Name);
+                _logger.LogInformation("Team driver '{teamDriverId}' gathering information to sell", teamDriverId);
                 return new SellConfirmationDto
                 {
                     Id = teamDriver.Id,
-                    Name = teamDriver.Name,
                     CurrentValue = driver.Value,
                     WearOffPercentage = 0,
                     SellingPrice = driver.Value
@@ -256,8 +244,8 @@ namespace F1Manager.Teams.Services
                 }
 
                 _logger.LogInformation(
-                    "Selling driver {driverName} with value {currentValue} for '{sellingPrice}'",
-                    teamDriver.Name,
+                    "Selling driver {teamDriverId} with value {currentValue} for '{sellingPrice}'",
+                    teamDriverId,
                     driver.Value,
                     driver.Value);
                 if (firstDriver)
@@ -292,10 +280,6 @@ namespace F1Manager.Teams.Services
                 return new TeamEngineDetailsDto
                 {
                     Id = team.Engine.Id,
-                    Name = team.Engine.Name,
-                    Manufacturer = engine.Manufacturer,
-                    Model = engine.Model,
-                    PictureUrl = team.Engine.PictureUrl,
                     BoughtOn = team.Engine.BoughtOn,
                     BoughtFor = team.Engine.BoughtFor,
                     CurrentPrice = engine.Value,
@@ -317,15 +301,11 @@ namespace F1Manager.Teams.Services
                 var boughtEngine = await team.BuyEngine(engineId,_domainService);
                 if (await _teamsRepository.Update(team))
                 {
-                    _logger.LogInformation("Engine '{engineId}' ({engineName}) successfully bought for team '{teamName}'", engineId, team.Engine.Name, team.Name);
+                    _logger.LogInformation("Engine '{engineId}' successfully bought for team '{teamName}'", engineId, team.Name);
 
                     return new TeamEngineDetailsDto
                     {
                         Id = team.Engine.Id,
-                        Name = team.Engine.Name,
-                        Manufacturer = boughtEngine.Manufacturer,
-                        Model = boughtEngine.Model,
-                        PictureUrl = boughtEngine.PictureUrl,
                         BoughtOn = team.Engine.BoughtOn,
                         BoughtFor = team.Engine.BoughtFor,
                         CurrentPrice = boughtEngine.Value,
@@ -354,11 +334,10 @@ namespace F1Manager.Teams.Services
                 }
 
                 var engine = await _domainService.GetEngineById(team.Engine.EngineId);
-                _logger.LogInformation("Team is engine '{engineName}' gathering information to sell", team.Engine.Name);
+                _logger.LogInformation("Team is engine '{teamEngineId}' gathering information to sell", teamEngineId);
                 return new SellConfirmationDto
                 {
                     Id = team.Engine.Id,
-                    Name = team.Engine.Name,
                     CurrentValue = engine.Value,
                     WearOffPercentage = team.Engine.WarnOffPercentage,
                     SellingPrice = team.Engine.GetSellingPrice(engine.Value)
@@ -385,8 +364,8 @@ namespace F1Manager.Teams.Services
                 
                 var engine = await _domainService.GetEngineById(team.Engine.EngineId);
                 _logger.LogInformation(
-                    "Selling engine {engineName} with value {currentValue} warn off for '{warnOffPercentage}' for '{sellingPrice}'",
-                    team.Engine.Name,
+                    "Selling engine {teamEngineId} with value {currentValue} warn off for '{warnOffPercentage}' for '{sellingPrice}'",
+                    teamEngineId,
                     engine.Value,
                     team.Engine.WarnOffPercentage,
                     team.Engine.GetSellingPrice(engine.Value));
@@ -416,8 +395,6 @@ namespace F1Manager.Teams.Services
                 return new TeamChassisDetailsDto
                 {
                     Id = team.Id,
-                    Name = team.Chassis.Name,
-                    PictureUrl = team.Chassis.PictureUrl,
                     BoughtOn = team.Chassis.BoughtOn,
                     BoughtFor = team.Chassis.BoughtFor,
                     CurrentPrice = chassis.Value,
@@ -440,15 +417,11 @@ namespace F1Manager.Teams.Services
                 var boughtChassis = await team.BuyChassis(chassisId, _domainService);
                 if (await _teamsRepository.Update(team))
                 {
-                    _logger.LogInformation("Chassis '{chassisId}' ({chassisName}) successfully bought for team '{teamName}'", chassisId, team.Chassis.Name, team.Name);
+                    _logger.LogInformation("Chassis '{chassisId}' successfully bought for team '{teamName}'", chassisId, team.Name);
 
                     return new TeamChassisDetailsDto
                     {
                         Id = team.Chassis.Id,
-                        Name = team.Chassis.Name,
-                        Manufacturer = boughtChassis.Manufacturer,
-                        Model = boughtChassis.Model,
-                        PictureUrl = boughtChassis.PictureUrl,
                         BoughtOn = team.Chassis.BoughtOn,
                         BoughtFor = team.Chassis.BoughtFor,
                         CurrentPrice = boughtChassis.Value,
@@ -478,11 +451,10 @@ namespace F1Manager.Teams.Services
                 }
 
                 var chassis = await _domainService.GetChassisById(team.Chassis.ChassisId);
-                _logger.LogInformation("Team is selling chassis '{chassisName}' gathering information to sell", team.Chassis.Name);
+                _logger.LogInformation("Team is selling chassis '{teamChassisId}' gathering information to sell", teamChassisId);
                 return new SellConfirmationDto
                 {
                     Id = team.Chassis.Id,
-                    Name = team.Chassis.Name,
                     CurrentValue = chassis.Value,
                     WearOffPercentage = team.Chassis.WarnOffPercentage,
                     SellingPrice = team.Chassis.GetSellingPrice(chassis.Value)
@@ -510,8 +482,8 @@ namespace F1Manager.Teams.Services
 
                 var chassis = await _domainService.GetChassisById(team.Chassis.ChassisId);
                 _logger.LogInformation(
-                    "Selling chassis {chassisName} with value {currentValue} warn off for '{warnOffPercentage}' for '{sellingPrice}'",
-                    team.Chassis.Name,
+                    "Selling chassis {teamChassisId} with value {currentValue} warn off for '{warnOffPercentage}' for '{sellingPrice}'",
+                    teamChassisId,
                     chassis.Value,
                     team.Chassis.WarnOffPercentage,
                     team.Chassis.GetSellingPrice(chassis.Value));

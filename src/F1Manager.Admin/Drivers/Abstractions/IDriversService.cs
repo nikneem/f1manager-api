@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using F1Manager.Admin.Drivers.DataTransferObjects;
-using F1Manager.Shared.DataTransferObjects;
 
 namespace F1Manager.Admin.Drivers.Abstractions
 {

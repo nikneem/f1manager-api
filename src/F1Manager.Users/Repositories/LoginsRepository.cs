@@ -5,7 +5,6 @@ using F1Manager.Shared.ExtensionMethods;
 using F1Manager.Shared.Helpers;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.Configuration;
-using F1Manager.Users.DataTransferObjects;
 using F1Manager.Users.Domain;
 using F1Manager.Users.Entities;
 using F1Manager.Users.Exceptions;

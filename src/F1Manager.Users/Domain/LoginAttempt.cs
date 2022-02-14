@@ -12,17 +12,16 @@ namespace F1Manager.Users.Domain
         public string RsaPrivateKey { get; }
         public string RsaPublicKey { get; }
 
-
         public UserLoginRequestDto DecryptUsernameAndPassword(UserLoginRequestDto dto)
         {
-            using var importedRsa = new RSACng();
+            using var rsa = RSA.Create();
             var span = (ReadOnlySpan<byte>) Convert.FromBase64String(RsaPrivateKey);
-            importedRsa.ImportPkcs8PrivateKey(span, out int _);
+            rsa.ImportPkcs8PrivateKey(span, out int _);
             var usernameBytes = Convert.FromBase64String(dto.Username);
             var passwordBytes = Convert.FromBase64String(dto.Password);
 
-            var decryptedUsername = importedRsa.Decrypt(usernameBytes, RSAEncryptionPadding.OaepSHA256);
-            var decryptedPassword = importedRsa.Decrypt(passwordBytes, RSAEncryptionPadding.OaepSHA256);
+            var decryptedUsername = rsa.Decrypt(usernameBytes, RSAEncryptionPadding.OaepSHA256);
+            var decryptedPassword = rsa.Decrypt(passwordBytes, RSAEncryptionPadding.OaepSHA256);
 
             return new UserLoginRequestDto
             {
