@@ -67,21 +67,18 @@ jobs:
 
   infrastructure-incremental-dev:
     needs: publish-bicep
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update
-          sudo apt-get install azure-cli
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: bicep-templates
           path: ./infrastructure
+      - name: Install Azure CLI
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.33.1
+          inlineScript: az version
       - name: Azure Login
         uses: azure/login@v1
         with:
