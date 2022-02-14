@@ -94,6 +94,11 @@ jobs:
     needs: [compile-api, infrastructure-incremental-dev]
     runs-on: ubuntu-latest
     steps:
+      - name: Install Azure CLI
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az version
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
