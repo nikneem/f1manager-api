@@ -96,11 +96,22 @@ module storageAccountTables 'Storage/tableServices/tables.bicep' = {
   }
 }
 
+module logAnalyticsModule 'OperationalInsights/workspaces.bicep' = {
+  name: 'logAnalyticsModule'
+  scope: targetResourceGroup
+  params: {
+    standardAppName: standardAppName
+    targetLocation: targetResourceGroup.location
+  }
+}
+
 module applicationInsightsModule 'Insights/components.bicep' = {
   name: 'applicationInsightsDeploy'
   scope: targetResourceGroup
   params: {
     standardAppName: standardAppName
+    logAnalyticsResourceId: logAnalyticsModule.outputs.resourceId
+    targetLocation: targetResourceGroup.location
   }
 }
 
