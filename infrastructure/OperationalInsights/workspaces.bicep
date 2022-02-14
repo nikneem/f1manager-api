@@ -7,7 +7,7 @@ resource logAnalyticsWorkSpaces 'Microsoft.OperationalInsights/workspaces@2021-1
   location: targetLocation
   name: resourceName
   properties: {
-    retentionInDays: 15
+    retentionInDays: 30
   }
 }
 
