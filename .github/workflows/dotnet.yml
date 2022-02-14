@@ -74,11 +74,6 @@ jobs:
         with:
           name: bicep-templates
           path: ./infrastructure
-      - name: Install Azure CLI
-        uses: Azure/cli@1.0.4
-        with:
-          azcliversion: 2.33.1
-          inlineScript: az version
       - name: Azure Login
         uses: azure/login@v1
         with:
