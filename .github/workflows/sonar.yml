@@ -49,4 +49,12 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"nikneem_f1manager-api" /o:"nikneem" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ./src --no-restore
+          dotnet test ./src `
+            --collect:"XPlat Code Coverage" `           # cross platform code coverage
+            --results-directory TestResults/ `          # Test Result directory
+            --logger "trx;LogFileName=unittests.trx" `  # Use standard trx format for logger output
+            --no-build `
+            --no-restore `
+            --configuration release `
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover # Special open cover data collector
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
