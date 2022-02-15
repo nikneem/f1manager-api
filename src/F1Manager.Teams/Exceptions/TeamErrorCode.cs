@@ -4,40 +4,22 @@ namespace F1Manager.Teams.Exceptions
 {
     public abstract class TeamErrorCode : ErrorCode
     {
-        public static readonly TeamErrorCode NameNullOrEmpty;
-        public static readonly TeamErrorCode InvalidName;
-        public static readonly TeamErrorCode NameAlreadyTaken;
+        public static readonly TeamErrorCode NameNullOrEmpty = new NameNullOrEmpty();
+        public static readonly TeamErrorCode NameAlreadyTaken = new NameAlreadyTaken();
+        public static readonly TeamErrorCode InvalidName = new InvalidName();
 
-        public static readonly TeamErrorCode NotYourTeam;
-        public static readonly TeamErrorCode UserAlreadyHasTeam;
+        public static readonly TeamErrorCode NotYourTeam = new NotYourTeam();
+        public static readonly TeamErrorCode UserAlreadyHasTeam = new UserAlreadyHasTeam();
 
-        public static readonly TeamErrorCode NotEnoughMoney;
-        public static readonly TeamErrorCode InvalidTransfer;
-        public static readonly TeamErrorCode DriverAlreadyInTeam;
-        public static readonly TeamErrorCode ComponentNotFound;
-        public static readonly TeamErrorCode ComponentAlreadyFilled;
-        public static readonly TeamErrorCode ComponentNotInPosession;
+        public static readonly TeamErrorCode NotEnoughMoney = new NotEnoughMoney();
+        public static readonly TeamErrorCode InvalidTransfer = new InvalidTransfer();
+        public static readonly TeamErrorCode DriverAlreadyInTeam = new DriverAlreadyInTeam();
+        public static readonly TeamErrorCode ComponentNotFound = new ComponentNotFound();
+        public static readonly TeamErrorCode ComponentAlreadyFilled = new ComponentAlreadyFilled();
+        public static readonly TeamErrorCode ComponentNotInPossession = new ComponentNotInPosession();
 
-        public static readonly TeamErrorCode PersistenceFailed;
+        public static readonly TeamErrorCode PersistenceFailed = new PersistenceFailed();
 
-        static TeamErrorCode()
-        {
-            NameNullOrEmpty = new NameNullOrEmpty();
-            NameAlreadyTaken = new NameAlreadyTaken();
-            InvalidName = new InvalidName();
-
-            NotYourTeam = new NotYourTeam();
-            UserAlreadyHasTeam = new UserAlreadyHasTeam();
-
-            NotEnoughMoney = new NotEnoughMoney();
-            InvalidTransfer = new InvalidTransfer();
-            DriverAlreadyInTeam = new DriverAlreadyInTeam();
-            ComponentNotFound = new ComponentNotFound();
-            ComponentAlreadyFilled = new ComponentAlreadyFilled();
-            ComponentNotInPosession = new ComponentNotInPosession();
-
-            PersistenceFailed = new PersistenceFailed();
-        }
     }
 
     public class NameNullOrEmpty : TeamErrorCode
@@ -92,8 +74,8 @@ namespace F1Manager.Teams.Exceptions
     }
     public class ComponentNotInPosession : TeamErrorCode
     {
-        public override string Code => "Teams.Errors.ComponentNotInPosession";
-        public override string TranslationKey => "Teams.Errors.ComponentNotInPosession";
+        public override string Code => "Teams.Errors.ComponentNotInPossession";
+        public override string TranslationKey => "Teams.Errors.ComponentNotInPossession";
     }
     
     public class PersistenceFailed : TeamErrorCode

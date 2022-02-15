@@ -207,7 +207,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell driver {expectedTeamDriverId}, but team doesn't own a driver with that ID",
                         teamDriverId);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell driver {teamDriver} but this driver is not in the team");
                 }
 
@@ -239,7 +239,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell driver {expectedTeamDriverId}, but team doesn't own a driver with that ID",
                         teamDriverId);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell driver {teamDriver} but this driver is not in the team");
                 }
 
@@ -329,7 +329,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell engine {expectedTeamEngineId}, but team owns team engine ID {actualTeamEngineId}",
                         teamEngineId, team.Engine.Id);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell engine {teamEngineId} but this engine is not in the team");
                 }
 
@@ -358,7 +358,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell engine {expectedTeamEngineId}, but team owns team engine ID {actualTeamEngineId}",
                         teamEngineId, team.Engine.Id);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell engine {teamEngineId} but this engine is not in the team");
                 }
                 
@@ -446,7 +446,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell chassis {expectedTeamChassisId}, but team owns team chassis ID {actualTeamEngineId}",
                         teamChassisId, team.Chassis.Id);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell chassis {teamChassisId} but this chassis is not in the team");
                 }
 
@@ -476,7 +476,7 @@ namespace F1Manager.Teams.Services
                     _logger.LogWarning(
                         "Incoming request to sell chassis {expectedTeamEngineId}, but team owns team chassis ID {teamChassisId}",
                         teamChassisId, team.Engine.Id);
-                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPosession,
+                    throw new F1ManagerTeamException(TeamErrorCode.ComponentNotInPossession,
                         $"Team tries to sell chassis {teamChassisId} but this chassis is not in the team");
                 }
 

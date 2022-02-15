@@ -4,33 +4,17 @@ namespace F1Manager.Admin.Exceptions
 {
     public abstract class MaintenanceErrorCode : ErrorCode
     {
-        public static MaintenanceErrorCode UserIsNotAnAdmin;
-        public static MaintenanceErrorCode ObjectIsDeleted;
-        public static MaintenanceErrorCode NameIsNullOrEmpty;
-        public static MaintenanceErrorCode CountryIsNullOrEmpty;
-        public static MaintenanceErrorCode ValueOutOfRange;
-        public static MaintenanceErrorCode ObjectActiveRangeInvalid;
-        public static MaintenanceErrorCode PictureUrlInvalid;
-        public static MaintenanceErrorCode ManufacturerNullOrEmpty;
-        public static MaintenanceErrorCode ModelNullOrEmpty;
-        public static MaintenanceErrorCode WeeklyWearOffInvalid;
-        public static MaintenanceErrorCode MaxWearOffInvalid;
-
-
-        static MaintenanceErrorCode()
-        {
-            UserIsNotAnAdmin = new UserIsNotAnAdmin();
-            ObjectIsDeleted = new ObjectIsDeleted();
-            NameIsNullOrEmpty = new NameIsNullOrEmpty();
-            CountryIsNullOrEmpty = new CountryIsNullOrEmpty();
-            ValueOutOfRange = new ValueOutOfRange();
-            ObjectActiveRangeInvalid = new ObjectActiveRangeInvalid();
-            PictureUrlInvalid = new PictureUrlInvalid();
-            ManufacturerNullOrEmpty = new ManufacturerNullOrEmpty();
-            ModelNullOrEmpty = new ModelNullOrEmpty();
-            WeeklyWearOffInvalid  =new WeeklyWearOffInvalid();
-            MaxWearOffInvalid = new MaxWearOffInvalid();
-        }
+        public static readonly MaintenanceErrorCode UserIsNotAnAdmin = new UserIsNotAnAdmin();
+        public static readonly MaintenanceErrorCode ObjectIsDeleted = new ObjectIsDeleted();
+        public static readonly MaintenanceErrorCode NameIsNullOrEmpty = new NameIsNullOrEmpty();
+        public static readonly MaintenanceErrorCode CountryIsNullOrEmpty = new CountryIsNullOrEmpty();
+        public static readonly MaintenanceErrorCode ValueOutOfRange = new ValueOutOfRange();
+        public static readonly MaintenanceErrorCode ObjectActiveRangeInvalid = new ObjectActiveRangeInvalid();
+        public static readonly MaintenanceErrorCode PictureUrlInvalid = new PictureUrlInvalid();
+        public static readonly MaintenanceErrorCode ManufacturerNullOrEmpty = new ManufacturerNullOrEmpty();
+        public static readonly MaintenanceErrorCode ModelNullOrEmpty = new ModelNullOrEmpty();
+        public static readonly MaintenanceErrorCode WeeklyWearOffInvalid = new WeeklyWearOffInvalid();
+        public static readonly MaintenanceErrorCode MaxWearOffInvalid = new MaxWearOffInvalid();
     }
 
 
