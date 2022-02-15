@@ -22,6 +22,7 @@ namespace F1Manager.Users.UnitTests.Factories
                     f.Person.FullName,
                     f.Person.UserName,
                     f.Random.String(8, 16),
+                    f.Random.String(8, 16),
                     f.Person.Email,
                     f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),
                     f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),
