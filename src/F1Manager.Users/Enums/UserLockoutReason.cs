@@ -3,25 +3,18 @@
     public abstract class UserLockoutReason
     {
 
-        public static UserLockoutReason EmailNotVerified;
-        public static UserLockoutReason SystemAbuse;
-        public static UserLockoutReason UnknownLoginOrigin;
-        public static UserLockoutReason[] All;
+        public static readonly UserLockoutReason EmailNotVerified;
+        public static readonly UserLockoutReason SystemAbuse;
+        public static readonly UserLockoutReason UnknownLoginOrigin;
+        public static readonly UserLockoutReason[] All = new[]
+        {
+            EmailNotVerified = new EmailNotVerified(),
+            SystemAbuse = new SystemAbuse(),
+            UnknownLoginOrigin = new UnknownLoginOrigin()
+        };
 
         public abstract string Key { get; }
         public abstract string TranslationKey { get; }
-
-
-        static UserLockoutReason()
-        {
-            All = new[]
-            {
-                EmailNotVerified = new EmailNotVerified(),
-                SystemAbuse = new SystemAbuse(),
-                UnknownLoginOrigin = new UnknownLoginOrigin()
-            };
-        }
-
     }
 
     public class EmailNotVerified : UserLockoutReason
