@@ -4,25 +4,13 @@ namespace F1Manager.Users.Exceptions
 {
     public abstract class LoginErrorCode : ErrorCode
     {
-        public static LoginErrorCode FailedToRegisterLoginAttempt;
-        public static LoginErrorCode LoginAttemptFailedOrExpired;
-        public static LoginErrorCode InvalidRefreshTokenOperation;
-        public static LoginErrorCode InvalidRefreshToken;
-        public static LoginErrorCode InactiveRefreshToken;
-        public static LoginErrorCode RevokedRefreshToken;
-        public static LoginErrorCode ExpiredRefreshToken;
-
-
-        static LoginErrorCode()
-        {
-            FailedToRegisterLoginAttempt = new FailedToRegisterLoginAttempt();
-            LoginAttemptFailedOrExpired = new LoginAttemptFailedOrExpired();
-            InvalidRefreshTokenOperation = new InvalidRefreshTokenOperation();
-            InvalidRefreshToken = new InvalidRefreshToken();
-            InactiveRefreshToken = new InactiveRefreshToken();
-            RevokedRefreshToken = new RevokedRefreshToken();
-            ExpiredRefreshToken = new ExpiredRefreshToken();
-        }
+        public static readonly LoginErrorCode FailedToRegisterLoginAttempt = new FailedToRegisterLoginAttempt();
+        public static readonly LoginErrorCode LoginAttemptFailedOrExpired = new LoginAttemptFailedOrExpired();
+        public static readonly LoginErrorCode InvalidRefreshTokenOperation = new InvalidRefreshTokenOperation();
+        public static readonly LoginErrorCode InvalidRefreshToken = new InvalidRefreshToken();
+        public static readonly LoginErrorCode InactiveRefreshToken = new InactiveRefreshToken();
+        public static readonly LoginErrorCode RevokedRefreshToken = new RevokedRefreshToken();
+        public static readonly LoginErrorCode ExpiredRefreshToken = new ExpiredRefreshToken();
     }
 
 

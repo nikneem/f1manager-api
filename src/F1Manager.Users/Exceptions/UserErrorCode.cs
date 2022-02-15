@@ -5,28 +5,16 @@ namespace F1Manager.Users.Exceptions
 
     public abstract class UserErrorCode : ErrorCode
     {
-        public static UserErrorCode DisplayNameNullOrEmpty;
-        public static UserErrorCode UsernameNullOrEmpty;
-        public static UserErrorCode InvalidUsername;
-        public static UserErrorCode UsernameNotUnique;
-        public static UserErrorCode PasswordNullOrEmpty;
-        public static UserErrorCode InvalidPassword;
-        public static UserErrorCode EmailNullOrEmpty;
-        public static UserErrorCode InvalidEmail;
-        public static UserErrorCode UserRegistrationFailed;
+        public static readonly UserErrorCode             DisplayNameNullOrEmpty = new DisplayNameNullOrEmpty();
+        public static readonly UserErrorCode             UsernameNullOrEmpty = new UsernameNullOrEmpty();
+        public static readonly UserErrorCode             InvalidUsername = new InvalidUsername();
+        public static readonly UserErrorCode             UsernameNotUnique = new InvalidUsername();
+        public static readonly UserErrorCode             PasswordNullOrEmpty = new PasswordNullOrEmpty();
+        public static readonly UserErrorCode             InvalidPassword = new InvalidPassword();
+        public static readonly UserErrorCode             EmailNullOrEmpty = new EmailNullOrEmpty();
+        public static readonly UserErrorCode             InvalidEmail = new InvalidEmail();
+        public static readonly UserErrorCode UserRegistrationFailed = new UserRegistrationFailed();
 
-        static UserErrorCode()
-        {
-            DisplayNameNullOrEmpty = new DisplayNameNullOrEmpty();
-            UsernameNullOrEmpty = new UsernameNullOrEmpty();
-            InvalidUsername = new InvalidUsername();
-            UsernameNotUnique = new InvalidUsername();
-            PasswordNullOrEmpty = new PasswordNullOrEmpty();
-            InvalidPassword = new InvalidPassword();
-            EmailNullOrEmpty = new EmailNullOrEmpty();
-            InvalidEmail = new InvalidEmail();
-            UserRegistrationFailed = new UserRegistrationFailed();
-        }
     }
 
 
