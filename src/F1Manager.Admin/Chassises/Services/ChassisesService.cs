@@ -48,7 +48,7 @@ namespace F1Manager.Admin.Chassises.Services
             MapDtoToDomainModel(dto, domainModel);
             if (await _chassisRepository.Create(domainModel))
             {
-                await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
+                await InvalidateCache(CacheKeyPrefixes.ActiveChassisList);
                 return DomainModelToDto(domainModel);
             }
 
@@ -62,8 +62,8 @@ namespace F1Manager.Admin.Chassises.Services
             MapDtoToDomainModel(dto, domainModel);
             if (await _chassisRepository.Update(domainModel))
             {
-                await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
-                await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
+                await InvalidateCache(CacheKeyPrefixes.ActiveChassisList);
+                await InvalidateCache($"{CacheKeyPrefixes.Chassis}-{id}");
                 return DomainModelToDto(domainModel);
             }
 
@@ -77,8 +77,8 @@ namespace F1Manager.Admin.Chassises.Services
             domainModel.Delete();
             if (await _chassisRepository.Update(domainModel))
             {
-                await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
-                await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
+                await InvalidateCache(CacheKeyPrefixes.ActiveChassisList);
+                await InvalidateCache($"{CacheKeyPrefixes.Chassis}-{id}");
                 return true;
             }
 
@@ -92,8 +92,8 @@ namespace F1Manager.Admin.Chassises.Services
             domainModel.Undelete();
             if (await _chassisRepository.Update(domainModel))
             {
-                await InvalidateCache(CacheKeyPrefixes.ActiveEnginesList);
-                await InvalidateCache($"{CacheKeyPrefixes.Engines}-{id}");
+                await InvalidateCache(CacheKeyPrefixes.ActiveChassisList);
+                await InvalidateCache($"{CacheKeyPrefixes.Chassis}-{id}");
                 return true;
             }
 

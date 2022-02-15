@@ -23,43 +23,43 @@ namespace F1Manager.Api.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> List([FromQuery] ChassisListFilterDto filter)
         {
-            var engines = await _chassisesService.List(filter);
-            return Ok(engines);
+            var chassis = await _chassisesService.List(filter);
+            return Ok(chassis);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Single(Guid id)
         {
-            var engines = await _chassisesService.Get(id);
-            return Ok(engines);
+            var chassis = await _chassisesService.Get(id);
+            return Ok(chassis);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(ChassisDetailsDto dto)
         {
-            var createdEngine = await _chassisesService.Create(dto);
-            return createdEngine != null ? Ok(createdEngine) : BadRequest();
+            var createdChassis = await _chassisesService.Create(dto);
+            return createdChassis != null ? Ok(createdChassis) : BadRequest();
         }
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, ChassisDetailsDto dto)
         {
-            var updatedEngine = await _chassisesService.Update(id, dto);
-            return updatedEngine != null ? Ok(updatedEngine) : BadRequest();
+            var updatedChassis = await _chassisesService.Update(id, dto);
+            return updatedChassis != null ? Ok(updatedChassis) : BadRequest();
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var deletedEngine = await _chassisesService.Delete(id);
-            return deletedEngine ? Ok() : BadRequest();
+            var deletedChassis = await _chassisesService.Delete(id);
+            return deletedChassis ? Ok() : BadRequest();
         }
 
         [HttpDelete("{id:guid}/undelete")]
         public async Task<IActionResult> Undelete(Guid id)
         {
-            var undeletedEngine = await _chassisesService.Undelete(id);
-            return undeletedEngine ? Ok() : BadRequest();
+            var undeletedChassis = await _chassisesService.Undelete(id);
+            return undeletedChassis ? Ok() : BadRequest();
         }
 
         public ChassisController(IChassisesService chassisesService)

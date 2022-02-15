@@ -80,6 +80,7 @@ namespace F1Manager.Users.Repositories
                 entity.DisplayName,
                 entity.RowKey,
                 entity.Password,
+                entity.Salt,
                 entity.EmailAddress,
                 entity.DateEmailVerified,
                 entity.DueDateEmailVerified,

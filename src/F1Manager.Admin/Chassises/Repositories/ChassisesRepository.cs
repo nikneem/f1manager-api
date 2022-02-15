@@ -79,7 +79,7 @@ namespace F1Manager.Admin.Chassises.Repositories
                 ).ToList();
             }
 
-            if (!filter.IncludeDeleted)
+            if (!filter.Deleted)
             {
                 driverEntities = driverEntities.Where(x => !x.IsDeleted).ToList();
             }

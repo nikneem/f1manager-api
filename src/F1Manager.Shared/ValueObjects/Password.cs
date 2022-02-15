@@ -5,27 +5,31 @@ namespace F1Manager.Shared.ValueObjects
     public sealed class Password
     {
         public string EncryptedPassword { get; private set; }
+        public string Salt { get; private set; }
 
         public bool Validate(string plainTextPassword)
         {
-            return SecurePasswordHasher.Verify(plainTextPassword, EncryptedPassword);
+            return SecurePasswordHasher.Verify(plainTextPassword, EncryptedPassword, Salt);
         }
 
         public void SetPassword(string plainTextPassword)
         {
-            EncryptedPassword = SecurePasswordHasher.Hash(plainTextPassword);
+            Salt = SecurePasswordHasher.GenerateSalt();
+            EncryptedPassword = SecurePasswordHasher.Hash(plainTextPassword, Salt);
         }
 
 
-        public Password(string hashedPassword)
+        public Password(string hashedPassword, string salt)
         {
             EncryptedPassword = hashedPassword;
+            Salt = salt;
         }
 
         public static Password Create(string plainTextPassword)
         {
-            var hashedPassword = SecurePasswordHasher.Hash(plainTextPassword);
-            return new Password(hashedPassword);
+            var salt = SecurePasswordHasher.GenerateSalt();
+            var hashedPassword = SecurePasswordHasher.Hash(plainTextPassword, salt);
+            return new Password(hashedPassword, salt);
         }
 
     }

@@ -70,7 +70,7 @@ namespace F1Manager.Admin.Drivers.Repositories
                     x.Name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase)
                 ).ToList();
             }
-            if (!filter.IncludeDeleted)
+            if (!filter.Deleted)
             {
                 driverEntities = driverEntities.Where(x => !x.IsDeleted).ToList();
             }
