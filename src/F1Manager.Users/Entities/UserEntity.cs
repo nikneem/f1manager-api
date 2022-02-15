@@ -7,7 +7,8 @@ namespace F1Manager.Users.Entities
     {
         public Guid SubjectId { get; set; }
         public string DisplayName { get;  set; }
-        public string Password { get;  set; }
+        public string Password { get; set; }
+        public string Salt { get; set; }
 
         public string EmailAddress { get;  set; }
         public string EmailVerificationCode { get;  set; }

@@ -1,8 +1,7 @@
-﻿namespace F1Manager.Admin.Engines.DataTransferObjects
+﻿namespace F1Manager.Admin.Engines.DataTransferObjects;
+
+public class EnginesListFilterDto
 {
-public    class EnginesListFilterDto
-    {
-        public string Name { get; set; }
-        public bool IncludeDeleted { get; set; }
-    }
+    public string Name { get; set; }
+    public bool Deleted { get; set; }
 }

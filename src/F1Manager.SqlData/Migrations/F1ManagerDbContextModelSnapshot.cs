@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace F1Manager.SqlData.Migrations
 {
     [DbContext(typeof(F1ManagerDbContext))]
@@ -15,9 +17,33 @@ namespace F1Manager.SqlData.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.ChassisPointEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualificationPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RacePoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SprintRacePoints")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChassisPoints");
+                });
 
             modelBuilder.Entity("F1Manager.SqlData.Entities.CircuitEntity", b =>
                 {
@@ -48,6 +74,169 @@ namespace F1Manager.SqlData.Migrations
                     b.ToTable("Circuits");
                 });
 
+            modelBuilder.Entity("F1Manager.SqlData.Entities.DriverPointEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualificationPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RacePoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SprintRacePoints")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DriverPoints");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.EnginePointEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QualificationPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RacePoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SprintRacePoints")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnginePoints");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceDriverResultsEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChassisId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EngineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("ModifiedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("QualificationResult")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RaceResult")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("RaceWeekendId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("SprintRaceResult")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaceWeekendId");
+
+                    b.ToTable("RaceDriverResults");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceEventEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CircuitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Practice01")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("Practice02")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("Practice03")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("Qualification")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("Race")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("SeasonId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("SprintRace")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CircuitId");
+
+                    b.ToTable("RaceEvents");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceResultEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("FastestLapDriverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("HasHalfPoints")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("ModifiedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RaceWeekendId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaceWeekendId");
+
+                    b.ToTable("RaceResults");
+                });
+
             modelBuilder.Entity("F1Manager.SqlData.Entities.TeamChassisEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -63,18 +252,6 @@ namespace F1Manager.SqlData.Migrations
                     b.Property<Guid>("ChassisId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Manufacturer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("PointsGained")
                         .HasColumnType("int");
 
@@ -88,7 +265,7 @@ namespace F1Manager.SqlData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("WarnOffPercentage")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -103,26 +280,14 @@ namespace F1Manager.SqlData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("BirthDate")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<DateTimeOffset>("BoughtOn")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("DriverId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsFirstDriver")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PointsGained")
                         .HasColumnType("int");
@@ -161,18 +326,6 @@ namespace F1Manager.SqlData.Migrations
                     b.Property<Guid>("EngineId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Manufacturer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("PointsGained")
                         .HasColumnType("int");
 
@@ -186,7 +339,7 @@ namespace F1Manager.SqlData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("WarnOffPercentage")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -226,6 +379,39 @@ namespace F1Manager.SqlData.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceDriverResultsEntity", b =>
+                {
+                    b.HasOne("F1Manager.SqlData.Entities.RaceEventEntity", "RaceEvent")
+                        .WithMany("DriverResults")
+                        .HasForeignKey("RaceWeekendId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RaceEvent");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceEventEntity", b =>
+                {
+                    b.HasOne("F1Manager.SqlData.Entities.CircuitEntity", "Circuit")
+                        .WithMany("RaceEvents")
+                        .HasForeignKey("CircuitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Circuit");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceResultEntity", b =>
+                {
+                    b.HasOne("F1Manager.SqlData.Entities.RaceEventEntity", "RaceEvent")
+                        .WithMany("Results")
+                        .HasForeignKey("RaceWeekendId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RaceEvent");
+                });
+
             modelBuilder.Entity("F1Manager.SqlData.Entities.TeamChassisEntity", b =>
                 {
                     b.HasOne("F1Manager.SqlData.Entities.TeamEntity", "Team")
@@ -257,6 +443,18 @@ namespace F1Manager.SqlData.Migrations
                         .IsRequired();
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.CircuitEntity", b =>
+                {
+                    b.Navigation("RaceEvents");
+                });
+
+            modelBuilder.Entity("F1Manager.SqlData.Entities.RaceEventEntity", b =>
+                {
+                    b.Navigation("DriverResults");
+
+                    b.Navigation("Results");
                 });
 
             modelBuilder.Entity("F1Manager.SqlData.Entities.TeamEntity", b =>

@@ -1,4 +1,7 @@
 ﻿using F1Manager.Admin.Abstractions;
+using F1Manager.Admin.Chassises.Abstractions;
+using F1Manager.Admin.Chassises.Repositories;
+using F1Manager.Admin.Chassises.Services;
 using F1Manager.Admin.Drivers.Abstractions;
 using F1Manager.Admin.Drivers.Repositories;
 using F1Manager.Admin.Drivers.Services;
@@ -27,9 +30,11 @@ namespace F1Manager.Admin.Configuration
             serviceCollection.AddScoped<IUploadService, UploadService>();
             serviceCollection.AddScoped<IDriversService, DriversService>();
             serviceCollection.AddScoped<IEnginesService, EnginesService>();
+            serviceCollection.AddScoped<IChassisesService, ChassisesService>();
 
             serviceCollection.AddScoped<IDriversRepository, DriversRepository>();
-            serviceCollection.AddScoped<IChassisRepository, EnginesRepository>();
+            serviceCollection.AddScoped<IEnginesRepository, EnginesRepository>();
+            serviceCollection.AddScoped<IChassisesRepository, ChassisesRepository>();
 
         }
 

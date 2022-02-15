@@ -6,7 +6,7 @@ using F1Manager.Admin.Engines.DomainModels;
 
 namespace F1Manager.Admin.Engines.Abstractions
 {
-    public interface IChassisRepository
+    public interface IEnginesRepository
     {
         Task<List<EngineDetailsDto>> GetActive();
         Task<List<EngineDetailsDto>> GetList(EnginesListFilterDto filter);

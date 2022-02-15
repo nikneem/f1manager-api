@@ -106,6 +106,7 @@ namespace F1Manager.Teams.Services
                 return new TeamDriverDetailsDto
                 {
                     Id = team.FirstDriver.Id,
+                    DriverId = team.FirstDriver.DriverId,
                     BoughtOn = team.FirstDriver.BoughtOn,
                     BoughtFor = team.FirstDriver.BoughtFor,
                     CurrentPrice = driver.Value,
@@ -130,6 +131,7 @@ namespace F1Manager.Teams.Services
                 return new TeamDriverDetailsDto
                 {
                     Id = team.SecondDriver.Id,
+                    DriverId = team.SecondDriver.DriverId,
                     BoughtOn = team.SecondDriver.BoughtOn,
                     BoughtFor = team.SecondDriver.BoughtFor,
                     CurrentPrice = driver.Value,

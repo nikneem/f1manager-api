@@ -67,6 +67,7 @@ namespace F1Manager.Users.Repositories
             {
                 var segment = await cloudTable.ExecuteQuerySegmentedAsync(query, ct);
                 expiredLoginAttempts.AddRange(segment.Results);
+                ct = segment.ContinuationToken;
             } while (ct != null);
 
 

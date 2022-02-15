@@ -114,6 +114,7 @@ namespace F1Manager.Users.Domain
             string displayName,
             string username,
             string password,
+            string salt,
             string emailAddress,
             DateTimeOffset? emailVerified,
             DateTimeOffset dueEmailVerification,
@@ -124,7 +125,7 @@ namespace F1Manager.Users.Domain
         {
             DisplayName = displayName;
             Username = username;
-            Password = new Password(password);
+            Password = new Password(password, salt);
             EmailAddress = emailAddress;
             DateEmailVerified = emailVerified;
             DueDateEmailVerified = dueEmailVerification;

@@ -1,8 +1,7 @@
-﻿namespace F1Manager.Admin.Chassises.DataTransferObjects
+﻿namespace F1Manager.Admin.Chassises.DataTransferObjects;
+
+public class ChassisListFilterDto
 {
-public    class ChassisListFilterDto
-    {
-        public string Name { get; set; }
-        public bool IncludeDeleted { get; set; }
-    }
+    public string Name { get; set; }
+    public bool Deleted { get; set; }
 }

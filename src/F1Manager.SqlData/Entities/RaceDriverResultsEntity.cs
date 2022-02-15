@@ -5,7 +5,7 @@ using F1Manager.SqlData.Base;
 namespace F1Manager.SqlData.Entities
 {
 
-    [Table("RaceResults")]
+    [Table("RaceDriverResults")]
     public class RaceDriverResultsEntity : Entity<Guid>
     {
         public Guid RaceWeekendId { get; set; }

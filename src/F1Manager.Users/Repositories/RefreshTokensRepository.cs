@@ -154,6 +154,7 @@ namespace F1Manager.Users.Repositories
             {
                 var segment = await cloudTable.ExecuteQuerySegmentedAsync(query, ct);
                 oldRefreshTokens.AddRange(segment.Results);
+                ct = segment.ContinuationToken;
             } while (ct != null);
 
 

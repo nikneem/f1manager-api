@@ -17,7 +17,7 @@ namespace F1Manager.Admin.Engines.Services
 {
     public sealed class EnginesService : CachedServiceBase<EnginesService>, IEnginesService
     {
-        private readonly IChassisRepository _enginesRepository;
+        private readonly IEnginesRepository _enginesRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public Task<List<EngineDetailsDto>> GetActive()
@@ -150,7 +150,7 @@ namespace F1Manager.Admin.Engines.Services
 
 
 
-        public EnginesService(IChassisRepository enginesRepository,
+        public EnginesService(IEnginesRepository enginesRepository,
             ILogger<EnginesService> logger,
             IOptions<AdminOptions> options,
             IHttpContextAccessor httpContextAccessor)

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace F1Manager.Admin.Engines.Repositories
 {
-    public sealed class EnginesRepository : IChassisRepository
+    public sealed class EnginesRepository : IEnginesRepository
     {
 
         private const string TableName = "Components";
@@ -79,7 +79,7 @@ namespace F1Manager.Admin.Engines.Repositories
                 ).ToList();
             }
 
-            if (!filter.IncludeDeleted)
+            if (!filter.Deleted)
             {
                 driverEntities = driverEntities.Where(x => !x.IsDeleted).ToList();
             }

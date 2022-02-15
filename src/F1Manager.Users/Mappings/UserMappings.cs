@@ -16,6 +16,7 @@ namespace F1Manager.Users.Mappings
                 SubjectId = domainModel.Id,
                 DisplayName = domainModel.DisplayName,
                 Password = domainModel.Password.EncryptedPassword,
+                Salt = domainModel.Password.Salt,
                 DateEmailVerified = domainModel.DateEmailVerified,
                 DueDateEmailVerified = domainModel.DueDateEmailVerified,
                 EmailAddress = domainModel.EmailAddress,
