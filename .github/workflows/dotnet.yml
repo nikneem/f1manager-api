@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: api-artifact
-          path: artifact.zip
+          path: ./published/artifact.zip
 
   compile-migrations:
     runs-on: ubuntu-latest
