@@ -136,12 +136,9 @@ namespace F1Manager.Admin.Engines.Services
         private void AssertPlayerIsAdministrator()
         {
             var claimsPrincipal = _httpContextAccessor.HttpContext?.User;
-            if (claimsPrincipal != null)
+            if (claimsPrincipal != null && claimsPrincipal.HasClaim("admin", "true"))
             {
-                if (claimsPrincipal.HasClaim("admin", "true"))
-                {
-                    return;
-                }
+                return;
             }
 
             throw new F1ManagerMaintenanceException(MaintenanceErrorCode.UserIsNotAnAdmin,

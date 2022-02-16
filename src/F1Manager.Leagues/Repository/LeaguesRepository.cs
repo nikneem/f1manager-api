@@ -21,7 +21,7 @@ public sealed class LeaguesRepository : ILeaguesRepository
 
     private const string LeaguesTableName = "Leagues";
     public const string LeaguesPartitionKey = "league";
-    private CloudTable _leaguesTable;
+    private readonly CloudTable _leaguesTable;
 
 
     public async Task< List<LeagueListDto>> List(Guid teamId)

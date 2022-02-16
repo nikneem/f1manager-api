@@ -17,7 +17,7 @@ public class LeagueInvitationsRepository : ILeagueInvitationsRepository
 {
     private const string TableName = "LeagueInvitations";
 
-    private CloudTable _table;
+    private readonly CloudTable _table;
 
     public async Task<LeagueInvitation> Get(Guid leagueId, Guid teamId)
     {

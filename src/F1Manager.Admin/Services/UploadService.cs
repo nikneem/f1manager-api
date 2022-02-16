@@ -53,21 +53,6 @@ namespace F1Manager.Admin.Services
             return null;
         }
 
-        private void AssertPlayerIsAdministrator()
-        {
-            var claimsPrincipal = _httpContextAccessor.HttpContext?.User;
-            if (claimsPrincipal != null)
-            {
-                if (claimsPrincipal.HasClaim("admin", "true"))
-                {
-                    return;
-                }
-            }
-
-            throw new F1ManagerMaintenanceException(MaintenanceErrorCode.UserIsNotAnAdmin,
-                "The current logged in user is not an administrator");
-        }
-
         public UploadService(IOptions<AdminOptions> options, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;

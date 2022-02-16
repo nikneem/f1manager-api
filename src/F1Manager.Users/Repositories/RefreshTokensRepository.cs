@@ -17,43 +17,41 @@ namespace F1Manager.Users.Repositories
 
         public const string TableName = "RefreshTokens";
         private const string PartitionKey = "tokens";
-        private CloudTable _table;
+        private readonly CloudTable _table;
 
 
         public async Task<Guid> ValidateRefreshToken(string token)
         {
             var operation = TableOperation.Retrieve<RefreshTokenEntity>(PartitionKey, token);
             var result = await _table.ExecuteAsync(operation);
-            if (result.HttpStatusCode.IsSuccess())
+            if (result.HttpStatusCode.IsSuccess() &&
+                result.Result is RefreshTokenEntity entity)
             {
-                if (result.Result is RefreshTokenEntity entity)
+                if (!entity.IsActive)
                 {
-                    if (!entity.IsActive)
-                    {
-                        throw new F1ManagerLoginException(LoginErrorCode.InactiveRefreshToken,
-                            "The token is inactive and cannot be used anymore");
-                    }
+                    throw new F1ManagerLoginException(LoginErrorCode.InactiveRefreshToken,
+                        "The token is inactive and cannot be used anymore");
+                }
 
-                    if (entity.IsRevoked)
-                    {
-                        throw new F1ManagerLoginException(LoginErrorCode.RevokedRefreshToken,
-                            "This refresh token is revoked and now handled as compromised");
-                    }
+                if (entity.IsRevoked)
+                {
+                    throw new F1ManagerLoginException(LoginErrorCode.RevokedRefreshToken,
+                        "This refresh token is revoked and now handled as compromised");
+                }
 
-                    if (entity.ExpiresOn <= DateTimeOffset.UtcNow)
-                    {
-                        throw new F1ManagerLoginException(LoginErrorCode.ExpiredRefreshToken,
-                            "The refresh token is expired. User needs to log on manually");
-                    }
+                if (entity.ExpiresOn <= DateTimeOffset.UtcNow)
+                {
+                    throw new F1ManagerLoginException(LoginErrorCode.ExpiredRefreshToken,
+                        "The refresh token is expired. User needs to log on manually");
+                }
 
-                    entity.IsActive = false;
-                    entity.ExpiresOn = DateTimeOffset.UtcNow;
-                    var updateOperation = TableOperation.Replace(entity);
-                    var updateResult = await _table.ExecuteAsync(updateOperation);
-                    if (updateResult.HttpStatusCode.IsSuccess())
-                    {
-                        return entity.UserId;
-                    }
+                entity.IsActive = false;
+                entity.ExpiresOn = DateTimeOffset.UtcNow;
+                var updateOperation = TableOperation.Replace(entity);
+                var updateResult = await _table.ExecuteAsync(updateOperation);
+                if (updateResult.HttpStatusCode.IsSuccess())
+                {
+                    return entity.UserId;
                 }
             }
 
