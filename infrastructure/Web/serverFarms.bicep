@@ -8,7 +8,7 @@ param standardAppName string
 param kind string = 'app'
 
 param sku object = {
-  name: 'B1'
+  name: 'S1'
   capacity: 1
 }
 
