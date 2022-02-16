@@ -11,5 +11,8 @@
         public const string ActiveEnginesList = "ActiveEngines";
         public const string ActiveChassisList = "ActiveChassis";
 
+        public const string LeagueDetails = "League";
+        public const string LeaguesByTeam = "TeamLeagues";
+
     }
 }

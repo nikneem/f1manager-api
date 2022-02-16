@@ -24,7 +24,8 @@ jobs:
       - name: Publish
         run: dotnet publish ./src/F1Manager.Api/F1Manager.Api.csproj -c Release -o ./published --no-restore --nologo
       - name: Zip Folder
-        run: zip -r artifact.zip ./published/
+        run: zip -r ../artifact.zip ./*
+        working-directory: ./published
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:

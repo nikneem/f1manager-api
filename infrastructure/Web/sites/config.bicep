@@ -7,5 +7,6 @@ resource config 'Microsoft.Web/sites/config@2020-12-01' = {
     alwaysOn: true
     ftpState: 'Disabled'
     appSettings: appSettings
+    netFrameworkVersion: 'v6.0'
   }
 }
