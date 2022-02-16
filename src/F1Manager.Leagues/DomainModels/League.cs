@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using F1Manager.Leagues.Abstractions;
@@ -48,6 +50,19 @@ namespace F1Manager.Leagues.DomainModels
                 SetState(TrackingState.Modified);
             }
         }
+
+        public void AddMember(Guid teamId)
+        {
+            if (_members.Any(m => m.TeamId == teamId))
+            {
+                throw new Exception();
+            }
+
+            var member = LeagueMember.Create(teamId);
+            member.SetMaintainer(_members.Count==1);
+            _members.Add(member);
+        }
+
 
         public League(Guid id, Guid ownerId, string name, DateTimeOffset createdOn, List<LeagueMember> members): base(id)
         {
