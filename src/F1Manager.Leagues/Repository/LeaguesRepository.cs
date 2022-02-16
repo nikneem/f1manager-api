@@ -54,9 +54,10 @@ public sealed class LeaguesRepository : ILeaguesRepository
     {
         if (domainModel.TrackingState == TrackingState.New)
         {
+            
             var batchOperation = new TableBatchOperation();
             var leagueEntity = domainModel.ToEntity();
-            batchOperation.Add(TableOperation.Insert(leagueEntity));
+            var leagueOperation = TableOperation.Insert(leagueEntity);
 
             foreach (var member in domainModel.Members.Where(x => x.TrackingState == TrackingState.New))
             {
@@ -64,8 +65,9 @@ public sealed class LeaguesRepository : ILeaguesRepository
                 batchOperation.Add(TableOperation.Insert(memberEntity));
             }
 
-            var result = await _leaguesTable.ExecuteBatchAsync(batchOperation);
-            return result.All(x => x.HttpStatusCode.IsSuccess());
+            var leagueResult = await _leaguesTable.ExecuteAsync(leagueOperation);
+            var membersResult = await _leaguesTable.ExecuteBatchAsync(batchOperation);
+            return leagueResult.HttpStatusCode.IsSuccess() && membersResult.All(x => x.HttpStatusCode.IsSuccess());
         }
 
         return false;
