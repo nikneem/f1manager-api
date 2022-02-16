@@ -104,6 +104,25 @@ public sealed class LeaguesRepository : ILeaguesRepository
         return false;
     }
 
+    public async Task<bool> IsUniqueName(string name, int season)
+    {
+        var nameFilter = TableQuery.GenerateFilterCondition(nameof(LeagueEntity.Name), QueryComparisons.Equal, name);
+        var seasonFilter = TableQuery.GenerateFilterConditionForInt(nameof(LeagueEntity.SeasonId), QueryComparisons.Equal, season);
+        var finalFilter = TableQuery.CombineFilters(nameFilter, TableOperators.And, seasonFilter);
+        TableQuery<LeagueEntity> query = new TableQuery<LeagueEntity>().Where(finalFilter).Take(1);
+
+        var leagues = new List<LeagueEntity>();
+        TableContinuationToken ct = null;
+        do
+        {
+            var segment = await _leaguesTable.ExecuteQuerySegmentedAsync(query, ct);
+            leagues.AddRange(segment.Results);
+            ct = segment.ContinuationToken;
+        } while (ct != null);
+
+        return leagues.Count == 0;
+    }
+
     private async Task<List<LeagueEntity>> GetEntitiesByIds(List<Guid> leagueIds)
     {
         if (leagueIds.Count > 0)

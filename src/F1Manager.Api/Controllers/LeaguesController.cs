@@ -73,6 +73,15 @@ namespace F1Manager.Api.Controllers
             return NotFound();
         }
 
+        [HttpPost("validate")]
+        [Authorize]
+        public async Task<IActionResult> Validate(CreateLeagueDto dto)
+        {
+            var leagueDetails = await _leaguesService.Validate(dto);
+            return leagueDetails ? Ok() : BadRequest();
+        }
+
+
         [HttpGet("{leagueId:guid}/invite/{teamId:guid}")]
         [Authorize]
         public async Task<IActionResult> CreateInvite(Guid leagueId, Guid teamId)

@@ -120,6 +120,11 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
         return updatedSuccessfully;
     }
 
+    public Task<bool> Validate(CreateLeagueDto dto)
+    {
+        return _repository.IsUniqueName(dto.Name, DateTimeOffset.UtcNow.Year);
+    }
+
     private Task<List<LeagueListDto>> GetLeaguesByMembership(Guid teamId)
     {
         return _repository.List(teamId);
@@ -155,7 +160,7 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     }
 
     public LeaguesService(
-        ILeaguesRepository repository, 
+        ILeaguesRepository repository,
         ILeagueInvitationsRepository invitationsRepository,
         ILeaguesDomainService domainService,
         ILogger<LeaguesService> logger,
@@ -167,5 +172,6 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
         _domainService = domainService;
         _logger = logger;
     }
+
 
 }

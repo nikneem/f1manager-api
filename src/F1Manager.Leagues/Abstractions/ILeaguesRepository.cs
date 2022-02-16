@@ -12,4 +12,5 @@ public interface ILeaguesRepository
     Task<League> Get(Guid leagueId);
     Task<bool> Create(League domainModel);
     Task<bool> Update(League domainModel);
+    Task<bool> IsUniqueName(string name, int season);
 }

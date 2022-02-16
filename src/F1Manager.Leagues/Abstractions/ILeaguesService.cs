@@ -14,4 +14,5 @@ public interface ILeaguesService
     Task<bool> Invite(Guid leagueId, Guid userId, Guid teamId, Guid inviteTeamId);
     Task<bool> AcceptInvitation(Guid leagueId, Guid teamId);
     Task<bool> DeclineInvitation(Guid leagueId, Guid teamId);
+    Task<bool> Validate(CreateLeagueDto dto);
 }
