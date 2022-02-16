@@ -19,7 +19,7 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
 {
     private const string TableName = "LeagueRequests";
 
-    private CloudTable _table;
+    private readonly CloudTable _table;
 
     public async Task<List<LeagueInvitation>> Get(Guid leagueId)
     {

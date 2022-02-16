@@ -41,17 +41,14 @@ namespace F1Manager.Users.Services
         {
             dto = await ValidateLogin(dto);
             var user = await _usersRepository.GetByUsername(dto.Username);
-            if (user != null)
+            if (user != null && user.Password.Validate(dto.Password))
             {
-                if (user.Password.Validate(dto.Password))
-                {
-                    return await GenerateUserLoginSuccessResponse(user, ipAddress) ??
-                           new UserLoginResponseDto
-                           {
-                               Success = false,
-                               ErrorMessage = user.LockoutReason
-                           };
-                }
+                return await GenerateUserLoginSuccessResponse(user, ipAddress) ??
+                       new UserLoginResponseDto
+                       {
+                           Success = false,
+                           ErrorMessage = user.LockoutReason
+                       };
             }
 
             return new UserLoginResponseDto

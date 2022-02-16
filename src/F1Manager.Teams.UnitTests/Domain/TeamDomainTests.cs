@@ -13,7 +13,7 @@ namespace F1Manager.Teams.UnitTests.Domain
     public class TeamDomainTests
     {
 
-        private Mock<ITeamsDomainService> _teamsDomainServiceMock;
+        private readonly Mock<ITeamsDomainService> _teamsDomainServiceMock;
 
         [Fact]
         public async void WhenTeamNameIsValid_ItSucceeds()

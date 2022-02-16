@@ -44,6 +44,9 @@ var tables = [
   'Logins'
   'RefreshTokens'
   'Components'
+  'Leagues'
+  'LeagueInvitations'
+  'LeagueRequests'
 ]
 
 var deployTimeSubscription = '16fa3d0c-8ec3-488a-bff3-b37c932cba84'

@@ -32,6 +32,7 @@ namespace F1Manager.Leagues.DomainModels
         private LeagueMember( Guid teamId) : base( TrackingState.New)
         {
             TeamId = teamId;
+            CreatedOn = DateTimeOffset.UtcNow;
         }
 
         public static LeagueMember Create( Guid teamId)

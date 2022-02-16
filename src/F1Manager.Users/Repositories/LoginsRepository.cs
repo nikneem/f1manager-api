@@ -17,7 +17,7 @@ namespace F1Manager.Users.Repositories
     {
         public const string TableName = "Logins";
         private const string PartitionKey = "attempts";
-        private CloudTable _table;
+        private readonly CloudTable _table;
 
         public async Task<bool> RegisterLoginAttempt(LoginAttempt attempt)
         {

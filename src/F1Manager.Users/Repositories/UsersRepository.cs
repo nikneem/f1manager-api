@@ -18,7 +18,7 @@ namespace F1Manager.Users.Repositories
 
         private const string TableName = "Users";
         public const string PartitionKey = "user";
-        private CloudTable _table;
+        private readonly CloudTable _table;
 
         public async Task<bool> GetIsUsernameUnique(Guid id, string username)
         {

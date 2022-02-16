@@ -20,6 +20,7 @@ namespace F1Manager.Leagues.Configuration
             serviceCollection.ConfigureAndValidate<LeaguesOptions, LeaguesOptionsValidator>(configuration);
 
             serviceCollection.AddScoped<ILeaguesService, LeaguesService>();
+            serviceCollection.AddScoped<ILeaguesDomainService, LeaguesDomainService>();
 
             serviceCollection.AddScoped<ILeaguesRepository, LeaguesRepository>();
             serviceCollection.AddScoped<ILeagueInvitationsRepository, LeagueInvitationsRepository>();

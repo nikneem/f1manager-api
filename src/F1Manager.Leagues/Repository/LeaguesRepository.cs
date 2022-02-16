@@ -21,7 +21,7 @@ public sealed class LeaguesRepository : ILeaguesRepository
 
     private const string LeaguesTableName = "Leagues";
     public const string LeaguesPartitionKey = "league";
-    private CloudTable _leaguesTable;
+    private readonly CloudTable _leaguesTable;
 
 
     public async Task< List<LeagueListDto>> List(Guid teamId)
@@ -54,9 +54,10 @@ public sealed class LeaguesRepository : ILeaguesRepository
     {
         if (domainModel.TrackingState == TrackingState.New)
         {
+            
             var batchOperation = new TableBatchOperation();
             var leagueEntity = domainModel.ToEntity();
-            batchOperation.Add(TableOperation.Insert(leagueEntity));
+            var leagueOperation = TableOperation.Insert(leagueEntity);
 
             foreach (var member in domainModel.Members.Where(x => x.TrackingState == TrackingState.New))
             {
@@ -64,8 +65,9 @@ public sealed class LeaguesRepository : ILeaguesRepository
                 batchOperation.Add(TableOperation.Insert(memberEntity));
             }
 
-            var result = await _leaguesTable.ExecuteBatchAsync(batchOperation);
-            return result.All(x => x.HttpStatusCode.IsSuccess());
+            var leagueResult = await _leaguesTable.ExecuteAsync(leagueOperation);
+            var membersResult = await _leaguesTable.ExecuteBatchAsync(batchOperation);
+            return leagueResult.HttpStatusCode.IsSuccess() && membersResult.All(x => x.HttpStatusCode.IsSuccess());
         }
 
         return false;
@@ -102,6 +104,25 @@ public sealed class LeaguesRepository : ILeaguesRepository
         }
 
         return false;
+    }
+
+    public async Task<bool> IsUniqueName(string name, int season)
+    {
+        var nameFilter = TableQuery.GenerateFilterCondition(nameof(LeagueEntity.Name), QueryComparisons.Equal, name);
+        var seasonFilter = TableQuery.GenerateFilterConditionForInt(nameof(LeagueEntity.SeasonId), QueryComparisons.Equal, season);
+        var finalFilter = TableQuery.CombineFilters(nameFilter, TableOperators.And, seasonFilter);
+        TableQuery<LeagueEntity> query = new TableQuery<LeagueEntity>().Where(finalFilter).Take(1);
+
+        var leagues = new List<LeagueEntity>();
+        TableContinuationToken ct = null;
+        do
+        {
+            var segment = await _leaguesTable.ExecuteQuerySegmentedAsync(query, ct);
+            leagues.AddRange(segment.Results);
+            ct = segment.ContinuationToken;
+        } while (ct != null);
+
+        return leagues.Count == 0;
     }
 
     private async Task<List<LeagueEntity>> GetEntitiesByIds(List<Guid> leagueIds)

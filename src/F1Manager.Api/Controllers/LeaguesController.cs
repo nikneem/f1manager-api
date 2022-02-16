@@ -16,7 +16,7 @@ namespace F1Manager.Api.Controllers
         private readonly ILeaguesService _leaguesService;
         private readonly ITeamsService _teamsService;
 
-        [HttpGet]
+        [HttpGet("mine")]
         [Authorize]
         public async Task<IActionResult> List()
         {
@@ -72,6 +72,15 @@ namespace F1Manager.Api.Controllers
 
             return NotFound();
         }
+
+        [HttpPost("validate")]
+        [Authorize]
+        public async Task<IActionResult> Validate(CreateLeagueDto dto)
+        {
+            var leagueDetails = await _leaguesService.Validate(dto);
+            return leagueDetails ? Ok() : BadRequest();
+        }
+
 
         [HttpGet("{leagueId:guid}/invite/{teamId:guid}")]
         [Authorize]
