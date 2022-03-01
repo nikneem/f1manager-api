@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Shared.Enums;
 using F1Manager.Shared.ExtensionMethods;
@@ -30,6 +31,14 @@ namespace F1Manager.Teams.Repositories
             {
                 query = query.Where(ent => ent.Name.Contains(filter.Name));
             }
+            if (filter.TeamIds?.Count > 0)
+            {
+                query = query.Where(ent => filter.TeamIds.Contains(ent.Id));
+            }
+            if (filter.ExcludeTeamIds?.Count > 0)
+            {
+                query = query.Where(ent => filter.ExcludeTeamIds.All(x => ent.Id != x));
+            }
 
             var totalEntries = await query.CountAsync();
 
@@ -38,9 +47,10 @@ namespace F1Manager.Teams.Repositories
                 .Take(filter.CalculatedPageSize)
                 .Select(ent => new TeamListItemDto
                 {
-                    Id = ent.Id,
+                    TeamId = ent.Id,
                     Name = ent.Name,
-                    Points = ent.Points
+                    Points = ent.Points,
+                    Money = ent.Money
                 }).ToListAsync();
 
             return new CollectionResult<TeamListItemDto>

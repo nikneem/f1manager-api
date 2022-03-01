@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Shared.Helpers;
@@ -20,6 +21,7 @@ namespace F1Manager.Teams.Services
         {
             return _teamsRepository.GetList(SeasonsHelper.GetSeasonId(), filter);
         }
+
         public async Task<TeamDetailsDto> Create(Guid userId, TeamCreateDto dto)
         {
             var season = SeasonsHelper.GetSeasonId();
@@ -396,7 +398,7 @@ namespace F1Manager.Teams.Services
                 var chassis = await _domainService.GetChassisById(team.Chassis.ChassisId);
                 return new TeamChassisDetailsDto
                 {
-                    Id = team.Id,
+                    Id = team.Chassis.Id,
                     BoughtOn = team.Chassis.BoughtOn,
                     BoughtFor = team.Chassis.BoughtFor,
                     CurrentPrice = chassis.Value,
@@ -490,7 +492,7 @@ namespace F1Manager.Teams.Services
                     team.Chassis.WarnOffPercentage,
                     team.Chassis.GetSellingPrice(chassis.Value));
 
-                await team.SellEngine(_domainService);
+                await team.SellChassis(_domainService);
                 var soldSuccessfully = await _teamsRepository.Update(team);
                 _logger.LogInformation("Chassis sold successfully: {successfully}", soldSuccessfully);
                 return soldSuccessfully;

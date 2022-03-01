@@ -26,10 +26,10 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
         var cachekey = $"{CacheKeyPrefixes.LeaguesByTeam}{teamId}";
         return GetFromCache(cachekey, () => GetLeaguesByMembership(teamId));
     }
-    public async Task<LeagueDto> Get(Guid leagueId, Guid teamId)
+    public async Task<LeagueDto> Get(Guid leagueId, Guid teamId, Guid userId)
     {
         var cachekey = $"{CacheKeyPrefixes.LeagueDetails}{leagueId}";
-        var leagueDetails = await GetFromCache(cachekey, () => GetLeagueDetails(leagueId));
+        var leagueDetails = await GetFromCache(cachekey, () => GetLeagueDetails(leagueId, teamId, userId));
         if (leagueDetails.Members.Any(x => x.TeamId == teamId))
         {
             return leagueDetails;
@@ -45,7 +45,7 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
         league.AddMember(teamId);
         if (await _repository.Create(league))
         {
-            return ToDto(league);
+            return ToDto(league,teamId, userId);
         }
 
         return null;
@@ -53,13 +53,14 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     public async Task<LeagueDto> Update(LeagueDto dto, Guid userId, Guid teamId)
     {
         await InvalidateLeaguesListCache(teamId);
+        await InvalidateLeaguesDetailsCache(dto.Id);
         var league = await _repository.Get(dto.Id);
         if (IsOwnerOrMaintainer(userId, teamId, league))
         {
             await league.SetName(dto.Name, _domainService);
             if (await _repository.Update(league))
             {
-                return ToDto(league);
+                return ToDto(league, teamId, userId);
             }
         }
 
@@ -129,10 +130,10 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     {
         return _repository.List(teamId);
     }
-    private async Task<LeagueDto> GetLeagueDetails(Guid leagueId)
+    private async Task<LeagueDto> GetLeagueDetails(Guid leagueId, Guid teamId, Guid userId)
     {
         var domainModel = await  _repository.Get(leagueId);
-        return ToDto(domainModel);
+        return ToDto(domainModel, teamId, userId);
     }
 
     private static bool IsOwnerOrMaintainer(Guid userId, Guid teamId, League league)
@@ -142,12 +143,13 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     }
 
 
-    private static LeagueDto ToDto(League league)
+    private static LeagueDto ToDto(League league, Guid teamId, Guid userId)
     {
         return new LeagueDto
         {
             Id = league.Id,
             Name = league.Name,
+            IsMaintainer = IsOwnerOrMaintainer(userId, teamId, league),
             Members = league.Members.Select(m => new LeagueMemberDto
                 { TeamId = m.TeamId, IsMaintainer = m.IsMaintainer }).ToList()
         };
@@ -156,6 +158,11 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     private async Task InvalidateLeaguesListCache(Guid teamId)
     {
         var cachekey = $"{CacheKeyPrefixes.LeaguesByTeam}{teamId}";
+        await InvalidateCache(cachekey);
+    }
+    private async Task InvalidateLeaguesDetailsCache(Guid leagueId)
+    {
+        var cachekey = $"{CacheKeyPrefixes.LeagueDetails}{leagueId}";
         await InvalidateCache(cachekey);
     }
 

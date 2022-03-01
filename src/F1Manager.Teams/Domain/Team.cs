@@ -226,7 +226,7 @@ namespace F1Manager.Teams.Domain
                 throw new F1ManagerTeamException(TeamErrorCode.InvalidTransfer, "Team does not own this component");
             }
 
-            var chassis = await domainService.GetEngineById(Chassis.ChassisId);
+            var chassis = await domainService.GetChassisById(Chassis.ChassisId);
             if (chassis == null)
             {
                 throw new TeamComponentNotFoundException(TeamComponent.Chassis, Chassis.ChassisId);

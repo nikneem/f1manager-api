@@ -22,7 +22,15 @@ namespace F1Manager.Api.Controllers
             var team = await _teamsService.GetByUserId(userId);
             return team == null ? NotFound() : Ok(team);
         }
-        
+
+        [HttpPost("search")]
+        [Authorize]
+        public async Task<IActionResult> Search(TeamsListFilterDto dto)
+        {
+            var teams = await _teamsService.List( dto);
+            return Ok(teams);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post(TeamCreateDto dto)

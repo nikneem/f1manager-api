@@ -38,7 +38,7 @@ namespace F1Manager.Api.Controllers
             var team = await _teamsService.GetByUserId(userId);
             if (team != null)
             {
-                var leagueDetails = await _leaguesService.Get(leagueId, team.Id);
+                var leagueDetails = await _leaguesService.Get(leagueId, team.Id, userId);
                 return Ok(leagueDetails);
             }
 

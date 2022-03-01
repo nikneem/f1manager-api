@@ -24,7 +24,7 @@ public sealed class LeaguesRepository : ILeaguesRepository
     private readonly CloudTable _leaguesTable;
 
 
-    public async Task< List<LeagueListDto>> List(Guid teamId)
+    public async Task<List<LeagueListDto>> List(Guid teamId)
     {
         var memberships = await GetMemberships(teamId);
         var leagueIds = memberships.Select(m => Guid.Parse(m.PartitionKey)).ToList();
@@ -32,10 +32,10 @@ public sealed class LeaguesRepository : ILeaguesRepository
         return leagueEntities.Select(league => new LeagueListDto
         {
             Id = Guid.Parse(league.RowKey),
-             Name = league.Name,
-             CreatedOn = league.CreatedOn
-        }).ToList();
-
+            Name = league.Name,
+            Members = league.MembersCount,
+            CreatedOn = league.CreatedOn
+        }).OrderBy(l => l.Name).ToList();
     }
 
     public async Task<League> Get(Guid leagueId)
