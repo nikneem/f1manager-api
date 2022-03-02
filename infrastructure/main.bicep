@@ -39,6 +39,16 @@ param basicAppSettings array = [
 
 param deploymentLocation string = deployment().location
 
+var containers = [
+  {
+    name: 'upload'
+    publicAccess: 'None'
+  }
+  {
+    name: 'images'
+    publicAccess: 'Blob'
+  }
+]
 var tables = [
   'Users'
   'Logins'
@@ -83,19 +93,10 @@ module storageAccountModule 'Storage/storageAccounts.bicep' = {
   name: 'storageAccountModule'
   scope: targetResourceGroup
   params: {
+    location: targetResourceGroup.location
     standardAppName: standardAppName
-  }
-}
-
-module storageAccountTables 'Storage/tableServices/tables.bicep' = {
-  dependsOn: [
-    storageAccountModule
-  ]
-  scope: targetResourceGroup
-  name: 'storageAccountTables'
-  params: {
-    storageAccountName: storageAccountModule.outputs.storageAccountName
     tableNames: tables
+    containerNames: containers
   }
 }
 
