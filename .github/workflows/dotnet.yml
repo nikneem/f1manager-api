@@ -44,7 +44,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./src/F1Manager.Migrations/F1Manager.Migrations.csproj
       - name: Build
-        run: dotnet build ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./migrations-artifact
+        run: dotnet publish ./src/F1Manager.Migrations/F1Manager.Migrations.csproj -c Release -o ./migrations-artifact -r linux-x64 --self-contained false
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -173,44 +173,44 @@ jobs:
           publish-profile: ${{ steps.publishprofile.outputs.profile }}
           package: "functions.zip"
 
-  # migrate-sql-database:
-  #   needs: [compile-migrations, infrastructure-incremental-dev]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: migrations-artifact
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v1
-  #       with:
-  #         dotnet-version: 6.0.x
-  #     - name: Azure Login
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_DEV }}
+  migrate-sql-database:
+    needs: [compile-migrations, infrastructure-incremental-dev]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: migrations-artifact
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_DEV }}
 
-  #     - uses: Azure/get-keyvault-secrets@v1
-  #       with:
-  #         keyvault: "f1man-deploytime-kv"
-  #         secrets: "SqlServerPassword"
-  #       id: myGetSecretAction
+      - uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "f1man-deploytime-kv"
+          secrets: "SqlServerPassword"
+        id: myGetSecretAction
 
-  #     - name: Get secrets
-  #       id: getsecretsdevmig
-  #       uses: Azure/get-keyvault-secrets@v1
-  #       with:
-  #         keyvault: "f1man-deploytime-kv"
-  #         secrets: "SqlServerPassword"
-  #     - name: Get Public IP address
-  #       id: ip
-  #       uses: haythem/public-ip@v1.2
-  #     - name: Register IP address in FW
-  #       uses: Azure/cli@1.0.4
-  #       with:
-  #         azcliversion: 2.23.0
-  #         inlineScript: az sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-api-dev-weu-sql"
-  #     - name: Execute database migrations
-  #       run: |
-  #         chmod 777 ./Migrations
-  #         ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "phfqommi7mbwg" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
+      - name: Get secrets
+        id: getsecretsdevmig
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "f1man-deploytime-kv"
+          secrets: "SqlServerPassword"
+      - name: Get Public IP address
+        id: ip
+        uses: haythem/public-ip@v1.2
+      - name: Register IP address in FW
+        uses: Azure/cli@1.0.4
+        with:
+          azcliversion: 2.23.0
+          inlineScript: az sql server firewall-rule create --start-ip-address "${{ steps.ip.outputs.ipv4 }}" --end-ip-address "${{ steps.ip.outputs.ipv4 }}" --name "Github Action Runner" --resource-group ${{ secrets.AZURE_DEV_RESOURCE_GROUP }} --server "f1man-api-dev-weu-sql"
+      - name: Execute database migrations
+        run: |
+          chmod 777 ./Migrations
+          ./Migrations migrate -n "f1man-api-dev-weu-sqldb" -s "f1man-api-dev-weu-sql" -u "phfqommi7mbwg" -p ${{ steps.getsecretsdevmig.outputs.SqlServerPassword }}
