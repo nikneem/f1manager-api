@@ -63,12 +63,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./src/F1Manager.Functions/F1Manager.Functions.csproj
       - name: Build
-        run: dotnet build ./src/F1Manager.Functions/F1Manager.Functions.csproj -c Release -o ./functions-artifact
+        run: dotnet publish ./src/F1Manager.Functions/F1Manager.Functions.csproj -c Release -o ./functions-artifact
+      - name: Zip Folder
+        run: zip -r ../functions.zip ./*
+        working-directory: ./functions-artifact
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
           name: functions-artifact
-          path: ./functions-artifact
+          path: functions.zip
 
   publish-bicep:
     runs-on: ubuntu-latest
@@ -142,6 +145,33 @@ jobs:
           follow-redirect: no
           max-attempts: 3
           retry-delay: 5s
+
+  deploy-functions-dev:
+    needs: [compile-functions, infrastructure-incremental-dev]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: functions-artifact
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_DEV }}
+      - name: Get Web App publish profile
+        id: publishprofile
+        uses: aliencube/publish-profile-actions@v1
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_DEV }}
+        with:
+          resourceGroupName: ${{ secrets.AZURE_DEV_RESOURCE_GROUP }}
+          appName: "f1man-api-dev-weu-fnc-app"
+      - name: "Deploy web app"
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "f1man-api-dev-weu-fnc-app"
+          publish-profile: ${{ steps.publishprofile.outputs.profile }}
+          package: "functions.zip"
 
   # migrate-sql-database:
   #   needs: [compile-migrations, infrastructure-incremental-dev]
