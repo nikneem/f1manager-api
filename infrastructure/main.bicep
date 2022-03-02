@@ -132,6 +132,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
   params: {
     standardAppName: standardAppName
     sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
+    location: targetResourceGroup.location
   }
 }
 
@@ -152,6 +153,21 @@ module appServicePlanModule 'Web/serverFarms.bicep' = {
   scope: targetResourceGroup
   params: {
     standardAppName: standardAppName
+    location: targetResourceGroup.location
+  }
+}
+module functionsAppServicePlanModule 'Web/serverFarms.bicep' = {
+  name: 'functionsAppServicePlanModule'
+  scope: targetResourceGroup
+  params: {
+    standardAppName: '${standardAppName}-fnc'
+    location: targetResourceGroup.location
+    kind: 'functionapp'
+    sku: {
+      name: 'Y1'
+      tier: 'Dynamic'
+      capacity: 0
+    }
   }
 }
 
@@ -164,6 +180,22 @@ module webAppModule 'Web/sites.bicep' = {
   params: {
     standardAppName: standardAppName
     appServicePlanId: appServicePlanModule.outputs.id
+    kind: 'app'
+    location: targetResourceGroup.location
+  }
+}
+module functionAppModule 'Web/sites.bicep' = {
+  dependsOn: [
+    appServicePlanModule
+  ]
+  name: 'functionAppModule'
+  scope: targetResourceGroup
+  params: {
+    standardAppName: '${standardAppName}-fnc'
+    appServicePlanId: functionsAppServicePlanModule.outputs.id
+    location: targetResourceGroup.location
+    kind: 'functionapp,linux'
+    alwaysOn: false
   }
 }
 
