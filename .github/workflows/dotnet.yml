@@ -51,6 +51,25 @@ jobs:
           name: migrations-artifact
           path: ./migrations-artifact
 
+  compile-functions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore ./src/F1Manager.Functions/F1Manager.Functions.csproj
+      - name: Build
+        run: dotnet build ./src/F1Manager.Functions/F1Manager.Functions.csproj -c Release -o ./functions-artifact
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: functions-artifact
+          path: ./functions-artifact
+
   publish-bicep:
     runs-on: ubuntu-latest
     steps:
