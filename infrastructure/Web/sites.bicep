@@ -21,19 +21,6 @@ param ftpState string = 'Disabled'
 
 var resourceName = '${standardAppName}-app'
 
-var siteConfig = contains(kind, 'linux') ? {
-  linuxFxVersion: linuxFxVersion
-  alwaysOn: alwaysOn
-  ftpsState: ftpState
-  http20Enabled: http20Enabled
-} : {
-  alwaysOn: alwaysOn
-  ftpsState: ftpState
-  http20Enabled: http20Enabled
-}
-
-var linuxFxVersion = 'DOTNET|6.0'
-
 resource webApp 'Microsoft.Web/sites@2020-12-01' = {
   name: resourceName
   location: location
@@ -42,7 +29,11 @@ resource webApp 'Microsoft.Web/sites@2020-12-01' = {
     serverFarmId: appServicePlanId
     httpsOnly: true
     clientAffinityEnabled: false
-    siteConfig: siteConfig
+    siteConfig: {
+      alwaysOn: alwaysOn
+      ftpsState: ftpState
+      http20Enabled: http20Enabled
+    }
   }
   identity: {
     type: 'SystemAssigned'
