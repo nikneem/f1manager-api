@@ -21,7 +21,7 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
 
     private readonly CloudTable _table;
 
-    public async Task<List<LeagueInvitation>> Get(Guid leagueId)
+    public async Task<List<LeagueRequest>> List(Guid leagueId)
     {
         var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(LeagueInvitationEntity.PartitionKey), QueryComparisons.Equal, leagueId.ToString());
         var query = new TableQuery<LeagueInvitationEntity>().Where(partitionKeyFilter);
@@ -35,7 +35,7 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
             ct = segment.ContinuationToken;
         } while (ct != null);
 
-        return driverEntities.Select(ent => new LeagueInvitation(
+        return driverEntities.Select(ent => new LeagueRequest(
             Guid.Parse(ent.PartitionKey),
             Guid.Parse(ent.RowKey),
             ent.AcceptedOn,
@@ -44,12 +44,12 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
             ent.ExpiresOn))
             .ToList();
     }
-    public async Task<LeagueInvitation> Get(Guid leagueId, Guid teamId)
+    public async Task<LeagueRequest> Get(Guid leagueId, Guid teamId)
     {
         var entity = await GetEntityById(leagueId, teamId);
         if (entity != null)
         {
-            return new LeagueInvitation(
+            return new LeagueRequest(
                 Guid.Parse(entity.PartitionKey),
                 Guid.Parse(entity.RowKey),
                 entity.AcceptedOn,

@@ -39,11 +39,13 @@ namespace F1Manager.Shared.Base
             }
 
             var initializedObject = await initializeFunction();
-            var jsonValue = JsonConvert.SerializeObject(initializedObject);
-
-            if (_cacheIsAvailable)
+            if (initializedObject != null)
             {
-                await _database.StringSetAsync(cacheKey, jsonValue);
+                var jsonValue = JsonConvert.SerializeObject(initializedObject);
+                if (_cacheIsAvailable)
+                {
+                    await _database.StringSetAsync(cacheKey, jsonValue);
+                }
             }
 
             return initializedObject;

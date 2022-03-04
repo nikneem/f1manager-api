@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using F1Manager.Api.Base;
 using F1Manager.Leagues.Abstractions;
@@ -16,9 +17,16 @@ namespace F1Manager.Api.Controllers
         private readonly ILeaguesService _leaguesService;
         private readonly ITeamsService _teamsService;
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> List([FromQuery]LeaguesListFilterDto filter = null)
+        {
+            var leaguesList = await _leaguesService.List(filter);
+            return Ok(leaguesList);
+        }
         [HttpGet("mine")]
         [Authorize]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> Mine()
         {
             var userId = GetUserId();
             var team = await _teamsService.GetByUserId(userId);
@@ -119,6 +127,67 @@ namespace F1Manager.Api.Controllers
             if (team != null)
             {
                 var leagueDetails = await _leaguesService.DeclineInvitation(leagueId, team.Id);
+                return Ok(leagueDetails);
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet("{leagueId:guid}/request")]
+        [Authorize]
+        public async Task<IActionResult> CreateRequest(Guid leagueId)
+        {
+            var userId = GetUserId();
+            var team = await _teamsService.GetByUserId(userId);
+            if (team != null)
+            {
+                var leagueDetails = await _leaguesService.Request(leagueId, userId, team.Id);
+                return Ok(leagueDetails);
+            }
+            return NotFound();
+        }
+        [HttpGet("{leagueId:guid}/requests")]
+        [Authorize]
+        public async Task<IActionResult> ListRequests(Guid leagueId)
+        {
+            var userId = GetUserId();
+            var team = await _teamsService.GetByUserId(userId);
+            if (team != null)
+            {
+                var leagueDetails = await _leaguesService.ListRequests(leagueId, userId, team.Id);
+                var teamInfoList = await _teamsService.GetTeamInfo(leagueDetails.Select(x => x.TeamId).ToList());
+                foreach (var dto in leagueDetails)
+                {
+                    var teamInfo =  teamInfoList.FirstOrDefault(info => info.TeamId == dto.TeamId);
+                    dto.TeamName = teamInfo?.Name;
+                }
+                return Ok(leagueDetails);
+            }
+            return NotFound();
+        }
+        [HttpGet("{leagueId:guid}/request/accept/{teamId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> AcceptRequest(Guid leagueId, Guid teamId)
+        {
+            var userId = GetUserId();
+            var team = await _teamsService.GetByUserId(userId);
+            if (team != null)
+            {
+                var leagueDetails = await _leaguesService.AcceptRequest(leagueId, userId, team.Id, teamId);
+                return Ok(leagueDetails);
+            }
+
+            return NotFound();
+        }
+        [HttpGet("{leagueId:guid}/request/decline/{teamId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> DeclineRequest(Guid leagueId, Guid teamId)
+        {
+            var userId = GetUserId();
+            var team = await _teamsService.GetByUserId(userId);
+            if (team != null)
+            {
+                var leagueDetails = await _leaguesService.DeclineRequest(leagueId, userId,team.Id, teamId);
                 return Ok(leagueDetails);
             }
 

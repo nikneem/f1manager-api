@@ -19,7 +19,7 @@ namespace F1Manager.Api.Filters
                 context.Result = new ObjectResult(new ErrorMessageDto
                 {
                     ErrorCode = exception.ErrorCode.Code,
-                    TranslationKey = exception.ErrorCode.TranslationKey,
+                    TranslationKey = exception.ErrorCode.TranslationKey.ToLower(),
                     ErrorMessage = exception.Message,
                     Substitutions = exception.Substitutes
                 })

@@ -41,7 +41,7 @@ param deploymentLocation string = deployment().location
 
 var containers = [
   {
-    name: 'upload'
+    name: 'uploads'
     publicAccess: 'None'
   }
   {

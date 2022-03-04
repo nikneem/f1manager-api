@@ -11,5 +11,7 @@ namespace F1Manager.Shared.DataTransferObjects
         public int TotalEntries { get; set; }
         public List<T> Entities { get; set; }
 
+
+
     }
 }

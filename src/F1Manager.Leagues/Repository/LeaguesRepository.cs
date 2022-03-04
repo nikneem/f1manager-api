@@ -8,6 +8,7 @@ using F1Manager.Leagues.DataTransferObjects;
 using F1Manager.Leagues.DomainModels;
 using F1Manager.Leagues.Entities;
 using F1Manager.Leagues.Mappings;
+using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Shared.Enums;
 using F1Manager.Shared.ExtensionMethods;
 using F1Manager.Shared.Helpers;
@@ -23,6 +24,30 @@ public sealed class LeaguesRepository : ILeaguesRepository
     public const string LeaguesPartitionKey = "league";
     private readonly CloudTable _leaguesTable;
 
+
+    public async Task<List<LeagueListDto>> List()
+    {
+        var leagues = new List<LeagueListDto>();
+        var seasonFilter = TableQuery.GenerateFilterConditionForInt(nameof(LeagueEntity.SeasonId),
+            QueryComparisons.Equal, SeasonsHelper.GetSeasonId());
+        TableQuery<LeagueEntity> query = new TableQuery<LeagueEntity>().Where(seasonFilter);
+        TableContinuationToken ct = null;
+        do
+        {
+            var segment = await _leaguesTable.ExecuteQuerySegmentedAsync(query, ct);
+
+            leagues.AddRange(segment.Results.Select(e => new LeagueListDto
+            {
+                Id = Guid.Parse(e.RowKey),
+                Name = e.Name,
+                Members = e.MembersCount,
+                CreatedOn = e.CreatedOn
+            }));
+            ct = segment.ContinuationToken;
+        } while (ct != null);
+
+        return leagues;
+    }
 
     public async Task<List<LeagueListDto>> List(Guid teamId)
     {
@@ -158,7 +183,7 @@ public sealed class LeaguesRepository : ILeaguesRepository
             return leagues;
         }
 
-        return null;
+        return new List<LeagueEntity>();
     }
     private async Task<LeagueEntity> GetEntityById(Guid leagueId)
     {

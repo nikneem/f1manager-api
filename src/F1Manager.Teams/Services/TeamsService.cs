@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using F1Manager.Shared.Base;
+using F1Manager.Shared.Constants;
 using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Shared.Helpers;
 using F1Manager.Teams.Abstractions;
+using F1Manager.Teams.Configuration;
 using F1Manager.Teams.DataTransferObjects;
 using F1Manager.Teams.Domain;
 using F1Manager.Teams.Exceptions;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace F1Manager.Teams.Services
 {
-    public class TeamsService : ITeamsService
+    public class TeamsService : CachedServiceBase<TeamsService>, ITeamsService
     {
         private readonly ITeamsRepository _teamsRepository;
         private readonly ITeamsDomainService _domainService;
@@ -501,8 +506,27 @@ namespace F1Manager.Teams.Services
             throw new F1ManagerTeamException(TeamErrorCode.PersistenceFailed, $"Failed to sell chassis with ID {teamChassisId}");
         }
 
+        public  Task<List<TeamListItemDto>> GetTeamInfo(List<Guid> teamIds)
+        {
+            return GetTeamInfoFromRepository(teamIds);
+        }
+
         #endregion
 
+        public async Task<TeamListItemDto> GetTeamInfo(Guid teamId)
+        {
+            var cacheKey = $"{CacheKeyPrefixes.TeamName}{teamId}";
+            return await GetFromCache(cacheKey, () => GetTeamInfoFromRepository(teamId));
+        }
+
+        private Task<TeamListItemDto> GetTeamInfoFromRepository(Guid teamId)
+        {
+            return  _teamsRepository.GetTeamInfo(teamId);
+        }
+        private Task<List<TeamListItemDto>> GetTeamInfoFromRepository(List<Guid> teamId)
+        {
+            return _teamsRepository.GetTeamInfo(teamId);
+        }
 
         private static TeamDetailsDto DomainModelToDto(Team team, Guid playerId)
         {
@@ -527,7 +551,8 @@ namespace F1Manager.Teams.Services
 
         public TeamsService(ITeamsRepository teamsRepository, 
             ITeamsDomainService domainService,
-            ILogger<TeamsService> logger)
+            ILogger<TeamsService> logger,
+            IOptions<TeamsOptions> options) : base(options.Value.CacheConnectionString, logger)
         {
             _teamsRepository = teamsRepository;
             _domainService = domainService;

@@ -3,6 +3,8 @@
     public class CacheKeyPrefixes
     {
 
+        public const string TeamName = "TeamName";
+
         public const string Drivers = "Drivers";
         public const string Engines = "Engines";
         public const string Chassis = "Chassis";
@@ -11,6 +13,7 @@
         public const string ActiveEnginesList = "ActiveEngines";
         public const string ActiveChassisList = "ActiveChassis";
 
+        public const string LeagueAll = "AllLeagues";
         public const string LeagueDetails = "League";
         public const string LeaguesByTeam = "TeamLeagues";
 
