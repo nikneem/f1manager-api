@@ -220,8 +220,8 @@ module functionAppModule 'Web/sites.bicep' = {
   }
 }
 
-module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
-  name: 'keyVaultAccessPolicyDeploy'
+module keyVaultAccessPolicyModuleWebApp 'KeyVault/vaults/accessPolicies.bicep' = {
+  name: 'keyVaultAccessPolicyModuleWebApp'
   dependsOn: [
     keyVaultModule
     webAppModule
@@ -232,13 +232,26 @@ module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
     principalId: webAppModule.outputs.servicePrincipal
   }
 }
+module keyVaultAccessPolicyModuleFunctionsApp 'KeyVault/vaults/accessPolicies.bicep' = {
+  name: 'keyVaultAccessPolicyModuleFunctionsApp'
+  dependsOn: [
+    keyVaultModule
+    functionAppModule
+  ]
+  scope: targetResourceGroup
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    principalId: functionAppModule.outputs.servicePrincipal
+  }
+}
 
 @batchSize(1)
 module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for developer in developerObjectIds: {
   name: 'developer${developer}'
   dependsOn: [
     keyVaultModule
-    keyVaultAccessPolicyModule
+    keyVaultAccessPolicyModuleWebApp
+    keyVaultAccessPolicyModuleFunctionsApp
   ]
   scope: targetResourceGroup
   params: {
@@ -304,7 +317,7 @@ module websiteConfiguration 'Web/sites/config.bicep' = {
   name: 'websiteConfiguration'
   dependsOn: [
     keyVaultModule
-    keyVaultAccessPolicyModule
+    keyVaultAccessPolicyModuleWebApp
     storageAccountSecretModule
     sqlServerSecretModule
     redisCacheSecretModule
@@ -321,7 +334,7 @@ module functionsConfiguration 'Web/sites/config.bicep' = {
   name: 'functionsConfiguration'
   dependsOn: [
     keyVaultModule
-    keyVaultAccessPolicyModule
+    keyVaultAccessPolicyModuleFunctionsApp
     storageAccountSecretModule
     sqlServerSecretModule
     redisCacheSecretModule
