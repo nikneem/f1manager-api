@@ -17,7 +17,7 @@ namespace F1Manager.Api.Controllers
         private readonly ILeaguesService _leaguesService;
         private readonly ITeamsService _teamsService;
 
-        [HttpGet]
+        [HttpGet("mine")]
         [Authorize]
         public async Task<IActionResult> List([FromQuery]LeaguesListFilterDto filter = null)
         {
