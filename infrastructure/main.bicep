@@ -294,8 +294,9 @@ module mailServerSecretModule 'KeyVault/vaults/secret.bicep' = {
   scope: targetResourceGroup
   params: {
     keyVault: keyVaultModule.outputs.keyVaultName
-    name: 'EmailService:Password'
+    name: 'EmailServicePassword'
     value: deployTimeKeyVault.getSecret('SendGridApiKey')
+    configurationName: 'EmailService:Password'
   }
 }
 
