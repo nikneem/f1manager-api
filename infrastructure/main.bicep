@@ -331,6 +331,7 @@ module functionsConfiguration 'Web/sites/config.bicep' = {
   scope: targetResourceGroup
   params: {
     webAppName: functionAppModule.outputs.webAppName
+    alwaysOn: false
     appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
   }
 }
