@@ -24,7 +24,10 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
     public async Task<List<LeagueRequest>> List(Guid leagueId)
     {
         var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(LeagueInvitationEntity.PartitionKey), QueryComparisons.Equal, leagueId.ToString());
-        var query = new TableQuery<LeagueInvitationEntity>().Where(partitionKeyFilter);
+        var expirationFilter = TableQuery.GenerateFilterConditionForDate(nameof(LeagueInvitationEntity.ExpiresOn), QueryComparisons.GreaterThan, DateTimeOffset.UtcNow);
+        var finalFilter = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And, expirationFilter);
+
+        var query = new TableQuery<LeagueInvitationEntity>().Where(finalFilter);
 
         TableContinuationToken ct = null;
         var driverEntities = new List<LeagueInvitationEntity>();
@@ -35,7 +38,7 @@ public class LeagueRequestsRepository : ILeagueRequestsRepository
             ct = segment.ContinuationToken;
         } while (ct != null);
 
-        return driverEntities.Select(ent => new LeagueRequest(
+        return driverEntities.Where(ent => !ent.AcceptedOn.HasValue && !ent.DeclinedOn.HasValue).Select(ent => new LeagueRequest(
             Guid.Parse(ent.PartitionKey),
             Guid.Parse(ent.RowKey),
             ent.AcceptedOn,

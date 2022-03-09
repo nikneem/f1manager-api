@@ -135,7 +135,7 @@ namespace F1Manager.Users.Domain
             LastLoginOn = lastLogin;
         }
 
-        internal User() : base(Guid.NewGuid(), TrackingState.New)
+        private User() : base(Guid.NewGuid(), TrackingState.New)
         {
             DueDateEmailVerified = DateTimeOffset.UtcNow.AddDays(Defaults.EmailVerificationPeriodInDays);
             RegisteredOn = DateTimeOffset.UtcNow;

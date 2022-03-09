@@ -29,11 +29,27 @@ param basicAppSettings array = [
   }
   {
     name: 'Audience'
-    value: 'https://api-${environmentName}.f1mgr.com'
+    value: toLower('https://api-${environmentName}.f1mgr.com')
   }
   {
     name: 'Issuer'
-    value: 'https://api-${environmentName}.f1mgr.com'
+    value: toLower('https://api-${environmentName}.f1mgr.com')
+  }
+  {
+    name: 'EmailService:SmtpHost'
+    value: 'smtp.sendgrid.net'
+  }
+  {
+    name: 'EmailService:SmtpPort'
+    value: 587
+  }
+  {
+    name: 'EmailService:UseSsl'
+    value: true
+  }
+  {
+    name: 'EmailService:Username'
+    value: 'apikey'
   }
 ]
 
@@ -47,6 +63,10 @@ var containers = [
   {
     name: 'images'
     publicAccess: 'Blob'
+  }
+  {
+    name: 'mails'
+    publicAccess: 'None'
   }
 ]
 var tables = [
@@ -266,6 +286,19 @@ module redisCacheSecretModule 'KeyVault/vaults/secrets.bicep' = {
   }
 }
 
+module mailServerSecretModule 'KeyVault/vaults/secret.bicep' = {
+  dependsOn: [
+    keyVaultModule
+  ]
+  name: 'mailServerSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    name: 'EmailService:Password'
+    value: deployTimeKeyVault.getSecret('SendGridApiKey')
+  }
+}
+
 module websiteConfiguration 'Web/sites/config.bicep' = {
   name: 'websiteConfiguration'
   dependsOn: [
@@ -275,10 +308,28 @@ module websiteConfiguration 'Web/sites/config.bicep' = {
     sqlServerSecretModule
     redisCacheSecretModule
     applicationInsightsModule
+    mailServerSecretModule
   ]
   scope: targetResourceGroup
   params: {
     webAppName: webAppModule.outputs.webAppName
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
+  }
+}
+module functionsConfiguration 'Web/sites/config.bicep' = {
+  name: 'functionsConfiguration'
+  dependsOn: [
+    keyVaultModule
+    keyVaultAccessPolicyModule
+    storageAccountSecretModule
+    sqlServerSecretModule
+    redisCacheSecretModule
+    applicationInsightsModule
+    mailServerSecretModule
+  ]
+  scope: targetResourceGroup
+  params: {
+    webAppName: functionAppModule.outputs.webAppName
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
   }
 }

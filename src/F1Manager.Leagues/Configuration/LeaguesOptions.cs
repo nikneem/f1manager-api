@@ -1,9 +1,8 @@
-﻿namespace F1Manager.Leagues.Configuration
+﻿namespace F1Manager.Leagues.Configuration;
+
+public class LeaguesOptions
 {
-    public class LeaguesOptions
-    {
-        public string AzureStorageAccount { get; set; }
-        public string CacheConnectionString { get; set; }
+    public string AzureStorageAccount { get; set; }
+    public string CacheConnectionString { get; set; }
         
-    }
 }

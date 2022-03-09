@@ -50,7 +50,7 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
     }
     public async Task<LeagueDto> Get(Guid leagueId, Guid teamId, Guid userId)
     {
-        var cachekey = $"{CacheKeyPrefixes.LeagueDetails}{leagueId}";
+        var cachekey = $"{CacheKeyPrefixes.LeagueDetails}{leagueId}{teamId}";
         var leagueDetails = await GetFromCache(cachekey, () => GetLeagueDetails(leagueId, teamId, userId));
         if (leagueDetails.Members.Any(x => x.TeamId == teamId))
         {
@@ -184,7 +184,6 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
             //return false;
         }
     }
-
     public async Task<bool> AcceptRequest(Guid leagueId, Guid userId, Guid teamId, Guid requestTeamId)
     {
         bool updatedSuccessfully = false;
@@ -197,12 +196,12 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
             updatedSuccessfully = await _requestsRepository.Update(request);
             updatedSuccessfully &= await _repository.Update(league);
             await InvalidateLeaguesListCache(teamId);
+            await InvalidateLeaguesDetailsCache(teamId);
             await InvalidateAllLeaguesList();
         }
 
         return updatedSuccessfully;
     }
-
     public async Task<bool> DeclineRequest(Guid leagueId, Guid userId, Guid teamId, Guid requestTeamId)
     {
         bool updatedSuccessfully = false;
@@ -216,7 +215,6 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
 
         return updatedSuccessfully;
     }
-
 
     public Task<bool> Validate(CreateLeagueDto dto)
     {
@@ -238,7 +236,6 @@ public class LeaguesService : CachedServiceBase<LeaguesService>, ILeaguesService
         var membership = league.Members.FirstOrDefault(m => m.TeamId == teamId);
         return league.OwnerId == userId || membership is {IsMaintainer: true};
     }
-
 
     private static LeagueDto ToDto(League league, Guid teamId, Guid userId)
     {

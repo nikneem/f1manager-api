@@ -22,4 +22,16 @@ output appConfiguration array = [
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
     value: applicationInsights.properties.InstrumentationKey
   }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: applicationInsights.properties.ConnectionString
+  }
+  {
+    name: 'APPINSIGHTS_PROFILERFEATURE_VERSION'
+    value: '1.0.0'
+  }
+  {
+    name: 'APPINSIGHTS_SNAPSHOTFEATURE_VERSION'
+    value: '1.0.0'
+  }
 ]
