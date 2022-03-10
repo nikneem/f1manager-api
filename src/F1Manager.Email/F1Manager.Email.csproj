@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
-    <PackageReference Include="HexMaster.Email" Version="1.0.4" />
+    <PackageReference Include="HexMaster.Email" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
