@@ -73,7 +73,6 @@ namespace F1Manager.Migrations
                             Console.WriteLine("Done. Database updated successfully");
                         }
 
-                        Console.ReadKey();
                         return 0;
                     }
                     catch (Exception ex)

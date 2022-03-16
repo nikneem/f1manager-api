@@ -1,12 +1,6 @@
 param standardAppName string
 
 @allowed([
-  'Standard'
-  'Premium'
-])
-param skuTier string = 'Standard'
-
-@allowed([
   'Premium_LRS'
   'Premium_ZRS'
   'Standard_GRS'
@@ -18,15 +12,35 @@ param skuTier string = 'Standard'
 ])
 param skuName string = 'Standard_LRS'
 
+param location string = resourceGroup().location
+
+param tableNames array = []
+param containerNames array = []
+
 var resourceName = toLower(replace(standardAppName, '-', ''))
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: resourceName
   kind: 'StorageV2'
-  location: resourceGroup().location
+  location: location
   sku: {
     name: skuName
-    tier: skuTier
+  }
+}
+
+module tables 'tableServices/tables.bicep' = {
+  name: 'storageTables'
+  params: {
+    storageAccountName: storageAccount.name
+    tableNames: tableNames
+  }
+}
+
+module containers 'blobServices/containers.bicep' = {
+  name: 'storageContainers'
+  params: {
+    storageAccountName: storageAccount.name
+    containerNames: containerNames
   }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Teams.DataTransferObjects;
@@ -27,5 +28,7 @@ namespace F1Manager.Teams.Abstractions
         Task<TeamChassisDetailsDto> BuyChassis(Guid userId,  Guid chassisId);
         Task<SellConfirmationDto> SellChassisConfirmation(Guid userId, Guid teamChassisId);
         Task<bool> SellChassis(Guid userId, Guid teamChassisId);
+        Task<List<TeamListItemDto>> GetTeamInfo(List<Guid> teamIds);
+        Task<TeamListItemDto> GetTeamInfo(Guid teamId);
     }
 }

@@ -29,16 +29,46 @@ param basicAppSettings array = [
   }
   {
     name: 'Audience'
-    value: 'https://api-${environmentName}.f1mgr.com'
+    value: toLower('https://api-${environmentName}.f1mgr.com')
   }
   {
     name: 'Issuer'
-    value: 'https://api-${environmentName}.f1mgr.com'
+    value: toLower('https://api-${environmentName}.f1mgr.com')
+  }
+  {
+    name: 'EmailService:SmtpHost'
+    value: 'smtp.sendgrid.net'
+  }
+  {
+    name: 'EmailService:SmtpPort'
+    value: 587
+  }
+  {
+    name: 'EmailService:UseSsl'
+    value: true
+  }
+  {
+    name: 'EmailService:Username'
+    value: 'apikey'
   }
 ]
 
 param deploymentLocation string = deployment().location
 
+var containers = [
+  {
+    name: 'uploads'
+    publicAccess: 'None'
+  }
+  {
+    name: 'images'
+    publicAccess: 'Blob'
+  }
+  {
+    name: 'mails'
+    publicAccess: 'None'
+  }
+]
 var tables = [
   'Users'
   'Logins'
@@ -83,19 +113,10 @@ module storageAccountModule 'Storage/storageAccounts.bicep' = {
   name: 'storageAccountModule'
   scope: targetResourceGroup
   params: {
+    location: targetResourceGroup.location
     standardAppName: standardAppName
-  }
-}
-
-module storageAccountTables 'Storage/tableServices/tables.bicep' = {
-  dependsOn: [
-    storageAccountModule
-  ]
-  scope: targetResourceGroup
-  name: 'storageAccountTables'
-  params: {
-    storageAccountName: storageAccountModule.outputs.storageAccountName
     tableNames: tables
+    containerNames: containers
   }
 }
 
@@ -132,6 +153,7 @@ module sqlServerModule 'Sql/servers.bicep' = {
   params: {
     standardAppName: standardAppName
     sqlServerPassword: deployTimeKeyVault.getSecret('SqlServerPassword')
+    location: targetResourceGroup.location
   }
 }
 
@@ -152,6 +174,21 @@ module appServicePlanModule 'Web/serverFarms.bicep' = {
   scope: targetResourceGroup
   params: {
     standardAppName: standardAppName
+    location: targetResourceGroup.location
+  }
+}
+module functionsAppServicePlanModule 'Web/serverFarms.bicep' = {
+  name: 'functionsAppServicePlanModule'
+  scope: targetResourceGroup
+  params: {
+    standardAppName: '${standardAppName}-fnc'
+    location: targetResourceGroup.location
+    kind: 'functionapp'
+    sku: {
+      name: 'Y1'
+      tier: 'Dynamic'
+      capacity: 0
+    }
   }
 }
 
@@ -164,11 +201,27 @@ module webAppModule 'Web/sites.bicep' = {
   params: {
     standardAppName: standardAppName
     appServicePlanId: appServicePlanModule.outputs.id
+    kind: 'app'
+    location: targetResourceGroup.location
+  }
+}
+module functionAppModule 'Web/sites.bicep' = {
+  dependsOn: [
+    appServicePlanModule
+  ]
+  name: 'functionAppModule'
+  scope: targetResourceGroup
+  params: {
+    standardAppName: '${standardAppName}-fnc'
+    appServicePlanId: functionsAppServicePlanModule.outputs.id
+    location: targetResourceGroup.location
+    kind: 'functionapp,linux'
+    alwaysOn: false
   }
 }
 
-module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
-  name: 'keyVaultAccessPolicyDeploy'
+module keyVaultAccessPolicyModuleWebApp 'KeyVault/vaults/accessPolicies.bicep' = {
+  name: 'keyVaultAccessPolicyModuleWebApp'
   dependsOn: [
     keyVaultModule
     webAppModule
@@ -179,13 +232,26 @@ module keyVaultAccessPolicyModule 'KeyVault/vaults/accessPolicies.bicep' = {
     principalId: webAppModule.outputs.servicePrincipal
   }
 }
+module keyVaultAccessPolicyModuleFunctionsApp 'KeyVault/vaults/accessPolicies.bicep' = {
+  name: 'keyVaultAccessPolicyModuleFunctionsApp'
+  dependsOn: [
+    keyVaultModule
+    functionAppModule
+  ]
+  scope: targetResourceGroup
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    principalId: functionAppModule.outputs.servicePrincipal
+  }
+}
 
 @batchSize(1)
 module developerAccessPolicies 'KeyVault/vaults/accessPolicies.bicep' = [for developer in developerObjectIds: {
   name: 'developer${developer}'
   dependsOn: [
     keyVaultModule
-    keyVaultAccessPolicyModule
+    keyVaultAccessPolicyModuleWebApp
+    keyVaultAccessPolicyModuleFunctionsApp
   ]
   scope: targetResourceGroup
   params: {
@@ -233,19 +299,52 @@ module redisCacheSecretModule 'KeyVault/vaults/secrets.bicep' = {
   }
 }
 
+module mailServerSecretModule 'KeyVault/vaults/secret.bicep' = {
+  dependsOn: [
+    keyVaultModule
+  ]
+  name: 'mailServerSecretModule'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    name: 'EmailServicePassword'
+    value: deployTimeKeyVault.getSecret('SendGridApiKey')
+    configurationName: 'EmailService:Password'
+  }
+}
+
 module websiteConfiguration 'Web/sites/config.bicep' = {
   name: 'websiteConfiguration'
   dependsOn: [
     keyVaultModule
-    keyVaultAccessPolicyModule
+    keyVaultAccessPolicyModuleWebApp
     storageAccountSecretModule
     sqlServerSecretModule
     redisCacheSecretModule
     applicationInsightsModule
+    mailServerSecretModule
   ]
   scope: targetResourceGroup
   params: {
     webAppName: webAppModule.outputs.webAppName
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, sqlServerSecretModule.outputs.keyVaultReference, redisCacheSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
+  }
+}
+module functionsConfiguration 'Web/sites/config.bicep' = {
+  name: 'functionsConfiguration'
+  dependsOn: [
+    keyVaultModule
+    keyVaultAccessPolicyModuleFunctionsApp
+    storageAccountSecretModule
+    sqlServerSecretModule
+    redisCacheSecretModule
+    applicationInsightsModule
+    mailServerSecretModule
+  ]
+  scope: targetResourceGroup
+  params: {
+    webAppName: functionAppModule.outputs.webAppName
+    alwaysOn: false
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
   }
 }

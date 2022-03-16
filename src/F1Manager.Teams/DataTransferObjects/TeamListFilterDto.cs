@@ -1,4 +1,6 @@
-﻿using F1Manager.Shared.Base;
+﻿using System;
+using System.Collections.Generic;
+using F1Manager.Shared.Base;
 
 namespace F1Manager.Teams.DataTransferObjects
 {
@@ -6,6 +8,9 @@ namespace F1Manager.Teams.DataTransferObjects
     {
 
         public string Name { get; set; }
+        public List<Guid> TeamIds { get; set; }
+        public List<Guid> ExcludeTeamIds { get; set; }
+
 
     }
 }

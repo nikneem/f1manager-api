@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using F1Manager.Shared.DataTransferObjects;
 using F1Manager.Shared.Enums;
 using F1Manager.Shared.ExtensionMethods;
@@ -30,6 +31,14 @@ namespace F1Manager.Teams.Repositories
             {
                 query = query.Where(ent => ent.Name.Contains(filter.Name));
             }
+            if (filter.TeamIds?.Count > 0)
+            {
+                query = query.Where(ent => filter.TeamIds.Contains(ent.Id));
+            }
+            if (filter.ExcludeTeamIds?.Count > 0)
+            {
+                query = query.Where(ent => filter.ExcludeTeamIds.All(x => ent.Id != x));
+            }
 
             var totalEntries = await query.CountAsync();
 
@@ -38,9 +47,10 @@ namespace F1Manager.Teams.Repositories
                 .Take(filter.CalculatedPageSize)
                 .Select(ent => new TeamListItemDto
                 {
-                    Id = ent.Id,
+                    TeamId = ent.Id,
                     Name = ent.Name,
-                    Points = ent.Points
+                    Points = ent.Points,
+                    Money = ent.Money
                 }).ToListAsync();
 
             return new CollectionResult<TeamListItemDto>
@@ -68,7 +78,7 @@ namespace F1Manager.Teams.Repositories
             var drivers = await GetDriverEntity(teamId, context);
             var firstDriver = drivers.FirstOrDefault(d => d.IsFirstDriver);
             var secondDriver = drivers.FirstOrDefault(d => !d.IsFirstDriver);
-            
+
             var engine = await GetEngineEntity(teamId, context);
             var chassis = await GetChassisEntity(teamId, context);
 
@@ -87,6 +97,37 @@ namespace F1Manager.Teams.Repositories
             }
 
             throw new Exception($"Team with ID {teamId} was not found");
+        }
+        public async Task<TeamListItemDto> GetTeamInfo(Guid teamId)
+        {
+            await using var context = new F1ManagerDbContext(_dbContextOptions);
+            var team = await GetTeamEntity(teamId, context);
+
+            if (team != null)
+            {
+                return new TeamListItemDto
+                {
+                    TeamId = team.Id,
+                    Name = team.Name,
+                    Money = team.Money,
+                    Points = team.Points
+                };
+            }
+
+            throw new Exception($"Team with ID {teamId} was not found");
+        }
+        public async Task<List<TeamListItemDto>> GetTeamInfo(List<Guid> teamIds)
+        {
+            await using var context = new F1ManagerDbContext(_dbContextOptions);
+            var teams = await context.Teams.Where(ent => teamIds.Contains(ent.Id)).ToListAsync();
+
+            return teams.Select(ent => new TeamListItemDto
+            {
+                TeamId = ent.Id,
+                Name = ent.Name,
+                Money = ent.Money,
+                Points = ent.Points
+            }).ToList();
         }
 
         public async Task<Team> GetByUserId(int seasonId, Guid userId)

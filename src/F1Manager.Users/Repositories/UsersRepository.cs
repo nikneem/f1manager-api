@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using F1Manager.Shared.Enums;
 using F1Manager.Shared.Helpers;
+using F1Manager.Shared.ValueObjects;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.Configuration;
 using F1Manager.Users.Domain;
@@ -33,6 +34,20 @@ namespace F1Manager.Users.Repositories
             return true;
         }
 
+        public async Task<bool> GetIsEmailAddressUnique(Guid id, string emailAddress)
+        {
+            var loweredEmailAddress = emailAddress.ToLower();
+            var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(UserEntity.PartitionKey),
+                QueryComparisons.NotEqual, PartitionKey);
+            var userSubjectFilter = TableQuery.GenerateFilterCondition(nameof(UserEntity.EmailAddress),
+                QueryComparisons.Equal, loweredEmailAddress);
+            var filterString = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And, userSubjectFilter);
+            TableQuery<UserEntity> query = new TableQuery<UserEntity>().Where(filterString).Take(1);
+            var segment = await _table.ExecuteQuerySegmentedAsync(query, null);
+            var userEntity = segment.Results.FirstOrDefault();
+            return userEntity == null;
+        }
+
         public async Task<User> GetByUsername(string username)
         {
             var loweredUsername = username.ToLower();
@@ -46,6 +61,17 @@ namespace F1Manager.Users.Repositories
             return null;
         }
 
+        public async Task<User> GetByEmailAddress(string emailAddress)
+        {
+            var loweredEmailAddress = emailAddress.ToLower();
+            var emailAddressFilter = TableQuery.GenerateFilterCondition(nameof(UserEntity.EmailAddress),
+                QueryComparisons.Equal, loweredEmailAddress);
+            TableQuery<UserEntity> query = new TableQuery<UserEntity>().Where(emailAddressFilter).Take(1);
+            var segment = await _table.ExecuteQuerySegmentedAsync(query, null);
+            var entity =  segment.Results.FirstOrDefault();
+            return ToDomainModel(entity);
+        }
+
         public async Task<bool> Insert(User userDomainModel)
         {
             if (userDomainModel.TrackingState == TrackingState.New)
@@ -56,6 +82,18 @@ namespace F1Manager.Users.Repositories
                 return result.HttpStatusCode == 204;
             }
 
+            return false;
+        }
+
+        public async Task<bool> Update(User userDomainModel)
+        {
+            if (userDomainModel.TrackingState == TrackingState.Modified)
+            {
+                var userEntity = userDomainModel.ToEntity();
+                var insertOperation = TableOperation.Replace(userEntity);
+                var result = await _table.ExecuteAsync(insertOperation);
+                return result.HttpStatusCode == 204;
+            }
             return false;
         }
 
@@ -81,13 +119,14 @@ namespace F1Manager.Users.Repositories
                 entity.RowKey,
                 entity.Password,
                 entity.Salt,
-                entity.EmailAddress,
-                entity.DateEmailVerified,
-                entity.DueDateEmailVerified,
+                new EmailAddress(entity.EmailAddress, entity.EmailVerificationCode, entity.DateEmailVerified, entity.DueDateEmailVerified),
                 entity.LockoutReason,
                 entity.IsAdministrator,
                 entity.RegisteredOn,
-                entity.LastLoginOn);
+                entity.LastLoginOn,
+                entity.NewPassword,
+                entity.NewPasswordSalt,
+                entity.NewPasswordVerification);
         }
 
         public UsersRepository(IOptions<UsersOptions> config)

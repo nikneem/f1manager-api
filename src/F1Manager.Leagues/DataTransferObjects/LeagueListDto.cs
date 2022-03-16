@@ -6,6 +6,7 @@ namespace F1Manager.Leagues.DataTransferObjects
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int Members { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
     }
 }

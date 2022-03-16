@@ -1,6 +1,7 @@
 using System.Text;
 using F1Manager.Admin.Configuration;
 using F1Manager.Api.Filters;
+using F1Manager.Email.Configuration;
 using F1Manager.Leagues.Configuration;
 using F1Manager.SqlData;
 using F1Manager.Teams.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using F1Manager.Users.Configuration;
+using HexMaster.Email.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,6 +38,9 @@ namespace F1Manager.Api
             var secret = Configuration["Secret"];
 
             var connectionString = Configuration["SqlConnectionString"];
+
+            services.ConfigureMailDispatcher(Configuration);
+            services.ConfigureEmailService(Configuration.GetSection(EmailOptions.SectionName));
 
             services.AddDbContext<F1ManagerDbContext>(options =>
                 options.UseSqlServer(connectionString));

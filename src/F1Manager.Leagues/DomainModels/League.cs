@@ -61,6 +61,7 @@ namespace F1Manager.Leagues.DomainModels
             var member = LeagueMember.Create(teamId);
             member.SetMaintainer(_members.Count==0);
             _members.Add(member);
+            SetState(TrackingState.Touched);
         }
 
 

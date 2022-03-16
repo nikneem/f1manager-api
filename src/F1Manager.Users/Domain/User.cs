@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using F1Manager.Shared.Base;
@@ -18,10 +19,10 @@ namespace F1Manager.Users.Domain
         public string Username { get; private set; }
         public Password Password { get; private set; }
 
-        public string EmailAddress { get; private set; }
-        public string EmailVerificationCode { get; private set; }
-        public DateTimeOffset? DateEmailVerified { get; private set; }
-        public DateTimeOffset DueDateEmailVerified { get; private set; }
+        public Password NewPassword { get; private set; }
+        public string NewPasswordVerification { get; private set; }
+
+        public EmailAddress EmailAddress { get; private set; }
 
         public string LockoutReason { get; private set; }
         public bool IsLockedOut => !string.IsNullOrWhiteSpace(LockoutReason);
@@ -69,7 +70,7 @@ namespace F1Manager.Users.Domain
                 SetState(TrackingState.Modified);
             }
         }
-        public void SetPassword(string value)
+        public Task<bool> SetPassword(string value, string ipAddress, IUsersDomainService domainService)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -82,11 +83,15 @@ namespace F1Manager.Users.Domain
                 throw new F1ManagerUserException(UserErrorCode.InvalidPassword,
                     "The password does not meet the required regular expression");
             }
-
-            Password = Password.Create(value);
-            SetState(TrackingState.Modified);
+            return SetPassword(Password.Create(value), ipAddress, domainService);
         }
-        public void SetEmailAddress(string value)
+        private Task<bool> SetPassword(Password value, string ipAddress, IUsersDomainService domainService)
+        {
+            Password = value;
+            SetState(TrackingState.Modified);
+            return  domainService.PasswordChanged(EmailAddress.Value, ipAddress);
+        }
+        public async Task SetEmailAddress(string value, IUsersDomainService domainService)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -100,44 +105,72 @@ namespace F1Manager.Users.Domain
                     $"The email address '{value}' does not meet the required regular expression");
             }
 
-            if (!Equals(EmailAddress, value))
+            if (!await domainService.GetIsEmailAddressUnique(Id, value))
             {
-                EmailAddress = value;
-                EmailVerificationCode = Randomize.GenerateEmailVerificationCode();
-                DateEmailVerified = null;
-                DueDateEmailVerified = DateTimeOffset.UtcNow.AddDays(Defaults.EmailVerificationPeriodInDays);
+                throw new F1ManagerUserException(UserErrorCode.EmailNotUnique,
+                    $"The email address {value} is not unique");
+            }
+            
+            if (!Equals(EmailAddress?.Value, value))
+            {
+                EmailAddress = EmailAddress.Create(value);
                 SetState(TrackingState.Modified);
             }
         }
+
+        public async Task<bool> ResetPassword(string baseUrl, IUsersDomainService domainService)
+        {
+            var newPassword = Randomize.GeneratePassword();
+            var password = Password.Create(newPassword);
+            NewPassword = password;
+            NewPasswordVerification = Randomize.GenerateEmailVerificationCode();
+            SetState(TrackingState.Modified);
+            return await domainService.PasswordIsReset(baseUrl, EmailAddress.Value, EmailAddress.Value, newPassword, NewPasswordVerification);
+        }
+        public async Task<bool> VerifyNewPassword(string code, string ipAddress, IUsersDomainService domainService)
+        {
+            var response = false;
+
+            if (!string.IsNullOrWhiteSpace(NewPasswordVerification) &&
+                NewPasswordVerification.Equals(code, StringComparison.InvariantCultureIgnoreCase))
+            {
+                response = await SetPassword(NewPassword, ipAddress, domainService);
+                NewPassword = null;
+                NewPasswordVerification = null;
+                SetState(TrackingState.Modified);
+            }
+            return response;
+        }
+
 
         public User(Guid id,
             string displayName,
             string username,
             string password,
             string salt,
-            string emailAddress,
-            DateTimeOffset? emailVerified,
-            DateTimeOffset dueEmailVerification,
+            EmailAddress  emailAddress,
             string lockoutReason,
             bool isAdmin,
             DateTimeOffset registerdOn,
-            DateTimeOffset? lastLogin) : base(id)
+            DateTimeOffset? lastLogin,
+            string newPassword,
+            string newPasswordSalt,
+            string newPasswordVerification) : base(id)
         {
             DisplayName = displayName;
             Username = username;
             Password = new Password(password, salt);
             EmailAddress = emailAddress;
-            DateEmailVerified = emailVerified;
-            DueDateEmailVerified = dueEmailVerification;
             LockoutReason = lockoutReason;
             IsAdministrator = isAdmin;
             RegisteredOn = registerdOn;
             LastLoginOn = lastLogin;
+            NewPassword = new Password(newPassword, newPasswordSalt);
+             NewPasswordVerification = newPasswordVerification;
         }
 
-        internal User() : base(Guid.NewGuid(), TrackingState.New)
+        private User() : base(Guid.NewGuid(), TrackingState.New)
         {
-            DueDateEmailVerified = DateTimeOffset.UtcNow.AddDays(Defaults.EmailVerificationPeriodInDays);
             RegisteredOn = DateTimeOffset.UtcNow;
         }
 
@@ -146,8 +179,8 @@ namespace F1Manager.Users.Domain
             var user = new User();
             user.SetDisplayName(username);
             await user.SetUsername(username, domainService);
-            user.SetPassword(password);
-            user.SetEmailAddress(emailAddress);
+            await user.SetEmailAddress(emailAddress, domainService);
+           await  user.SetPassword(password, null, domainService);
             return user;
         }
 

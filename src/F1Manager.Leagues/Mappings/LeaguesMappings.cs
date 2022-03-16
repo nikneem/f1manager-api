@@ -17,6 +17,7 @@ namespace F1Manager.Leagues.Mappings
                 OwnerId = domainModel.OwnerId,
                 SeasonId = domainModel.SeasonId,
                 Name = domainModel.Name,
+                MembersCount = domainModel.Members.Count,
                 CreatedOn = domainModel.CreatedOn,
                 ETag = "*"
             };

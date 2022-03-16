@@ -15,6 +15,10 @@ namespace F1Manager.Users.Entities
         public DateTimeOffset? DateEmailVerified { get;  set; }
         public DateTimeOffset DueDateEmailVerified { get;  set; }
 
+        public string NewPassword { get; set; }
+        public string NewPasswordSalt { get; set; }
+        public string NewPasswordVerification { get; set; }
+
         public string LockoutReason { get;  set; }
         public bool IsAdministrator { get;  set; }
 

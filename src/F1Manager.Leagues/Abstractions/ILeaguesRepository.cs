@@ -8,6 +8,7 @@ namespace F1Manager.Leagues.Abstractions;
 
 public interface ILeaguesRepository
 {
+    Task<List<LeagueListDto>> List();
     Task<List<LeagueListDto>> List(Guid teamId);
     Task<League> Get(Guid leagueId);
     Task<bool> Create(League domainModel);

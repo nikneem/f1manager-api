@@ -1,4 +1,5 @@
-﻿using F1Manager.Shared.Enums;
+﻿using System.Threading.Tasks;
+using F1Manager.Shared.Enums;
 using F1Manager.Users.Abstractions;
 using F1Manager.Users.Domain;
 using F1Manager.Users.Exceptions;
@@ -102,10 +103,10 @@ namespace F1Manager.Users.UnitTests.Domain
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void WhenPasswordIsNullOrEmpty_ItThrowsF1ManagerUserException(string password)
+        public async Task WhenPasswordIsNullOrEmpty_ItThrowsF1ManagerUserException(string password)
         {
             var user = WithRandomUser();
-            var exception = Assert.Throws<F1ManagerUserException>(() => user.SetPassword(password));
+            var exception = await Assert.ThrowsAsync<F1ManagerUserException>(() => user.SetPassword(password, string.Empty, _usersDomainServiceMock.Object));
             Assert.Equal(exception.ErrorCode, UserErrorCode.PasswordNullOrEmpty);
             Assert.Equal(TrackingState.Pristine, user.TrackingState);
         }
@@ -114,23 +115,25 @@ namespace F1Manager.Users.UnitTests.Domain
         [InlineData("noNumbersInPassword")]
         [InlineData("nocapitals01")]
         [InlineData("NOLOWERCASES01")]
-        public void WhenPasswordIsInvalid_ItThrowsF1ManagerUserException(string password)
+        public async Task WhenPasswordIsInvalid_ItThrowsF1ManagerUserException(string password)
         {
             var user = WithRandomUser();
-            var exception = Assert.Throws<F1ManagerUserException>(() => user.SetPassword(password));
+            var exception = await Assert.ThrowsAsync<F1ManagerUserException>(() => user.SetPassword(password, string.Empty, _usersDomainServiceMock.Object));
             Assert.Equal(exception.ErrorCode, UserErrorCode.InvalidPassword);
             Assert.Equal(TrackingState.Pristine, user.TrackingState);
         }
 
 
         [Fact]
-        public void WhenEmailAddressIsValid_ItSucceeds()
+        public async Task WhenEmailAddressIsValid_ItSucceeds()
         {
             var expectedEmailAddress = "new@email-address.nl";
             var user = WithRandomUser();
 
-            user.SetEmailAddress(expectedEmailAddress);
-            Assert.Equal(expectedEmailAddress, user.EmailAddress);
+            _usersDomainServiceMock.Setup(s => s.GetIsEmailAddressUnique(user.Id, expectedEmailAddress)).ReturnsAsync(true);
+
+            await user.SetEmailAddress(expectedEmailAddress, _usersDomainServiceMock.Object);
+            Assert.Equal(expectedEmailAddress, user.EmailAddress.Value);
             Assert.Equal(TrackingState.Modified, user.TrackingState);
 
         }
@@ -138,10 +141,10 @@ namespace F1Manager.Users.UnitTests.Domain
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void WhenEmailAddressIsNullOrEmpty_ItThrowsF1ManagerUserException(string emailAddress)
+        public async Task WhenEmailAddressIsNullOrEmpty_ItThrowsF1ManagerUserException(string emailAddress)
         {
             var user = WithRandomUser();
-            var exception = Assert.Throws<F1ManagerUserException>(() => user.SetEmailAddress(emailAddress));
+            var exception = await Assert.ThrowsAsync<F1ManagerUserException>(() => user.SetEmailAddress(emailAddress, _usersDomainServiceMock.Object));
             Assert.Equal(exception.ErrorCode, UserErrorCode.EmailNullOrEmpty);
             Assert.Equal(TrackingState.Pristine, user.TrackingState);
         }
@@ -150,10 +153,10 @@ namespace F1Manager.Users.UnitTests.Domain
         [InlineData("@email-adress.nl")]
         [InlineData("email-address.nl")]
         [InlineData("email@addres nl")]
-        public void WhenEmailAddressIsInvalid_ItThrowsF1ManagerUserException(string emailAddress)
+        public async Task WhenEmailAddressIsInvalid_ItThrowsF1ManagerUserException(string emailAddress)
         {
             var user = WithRandomUser();
-            var exception = Assert.Throws<F1ManagerUserException>(() => user.SetEmailAddress(emailAddress));
+            var exception = await Assert.ThrowsAsync<F1ManagerUserException>(() => user.SetEmailAddress(emailAddress, _usersDomainServiceMock.Object));
             Assert.Equal(exception.ErrorCode, UserErrorCode.InvalidEmail);
             Assert.Equal(TrackingState.Pristine, user.TrackingState);
         }

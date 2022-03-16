@@ -7,5 +7,6 @@ public class LeagueDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public bool IsMaintainer { get; set; }
     public List<LeagueMemberDto> Members { get; set; }
 }
