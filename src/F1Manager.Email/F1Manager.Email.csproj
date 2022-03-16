@@ -7,7 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Messages\passwordchanged-en.html" />
+    <None Remove="Messages\resetpassword-en.html" />
     <None Remove="Messages\subscription-en.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Messages\passwordchanged-en.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Messages\resetpassword-en.html" />
   </ItemGroup>
 
   <ItemGroup>

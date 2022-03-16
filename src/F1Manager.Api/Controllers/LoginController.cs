@@ -24,6 +24,7 @@ namespace F1Manager.Api.Controllers
             var response = await _loginsService.Login(dto, GetIpAddress());
             return Ok(response);
         }
+
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(RefreshTokenDto dto)
         {

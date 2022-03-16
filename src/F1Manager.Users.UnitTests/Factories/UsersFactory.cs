@@ -1,5 +1,6 @@
 ﻿using System;
 using Bogus;
+using F1Manager.Shared.ValueObjects;
 using F1Manager.Users.Domain;
 
 namespace F1Manager.Users.UnitTests.Factories
@@ -23,13 +24,17 @@ namespace F1Manager.Users.UnitTests.Factories
                     f.Person.UserName,
                     f.Random.String(8, 16),
                     f.Random.String(8, 16),
+                    new EmailAddress(
                     f.Person.Email,
+                    f.Random.String(8, 16),
                     f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),
-                    f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),
+                    f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1))
+                    ),
                     null,
                     false,
                     f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-2), DateTimeOffset.UtcNow.AddYears(-1)),
-                    f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-1), DateTimeOffset.UtcNow)
+                    f.Date.BetweenOffset(DateTimeOffset.UtcNow.AddYears(-1), DateTimeOffset.UtcNow),
+                    null, null, null
                 ));
         }
 

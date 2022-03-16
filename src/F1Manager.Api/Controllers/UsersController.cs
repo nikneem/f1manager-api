@@ -20,7 +20,29 @@ namespace F1Manager.Api.Controllers
             return Ok(response);
         }
 
-
+        [HttpPost("resetpwd")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            var ipAddress = GetIpAddress();
+            var response = await _service.ResetPassword(dto, ipAddress);
+            return Ok(response);
+        }
+        [HttpPost("resetconfirm")]
+        public async Task<IActionResult> ResetConfirm(ResetPasswordVerificationDto dto)
+        {
+            var ipAddress = GetIpAddress();
+            var response = await _service.VerifyPasswordReset(dto, ipAddress);
+            return response ? Ok() : BadRequest();
+        }
+        [HttpPost("changepassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            var userId = GetUserId();
+            var ipAddress = GetIpAddress();
+            var response = await _service.ChangePassword(userId, dto, ipAddress);
+            return response ? Ok() : BadRequest();
+        }
 
         [HttpGet]
         [Authorize]

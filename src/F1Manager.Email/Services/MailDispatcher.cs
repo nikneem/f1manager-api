@@ -13,7 +13,7 @@ public class MailDispatcher : IMailDispatcher
 {
     private const string DefaultLanguage = "en";
     private const string MailTemplateFileExtension = ".html";
-    private const string MailTitleRegularExpression = "<title>(?<title>[\\w\\s]*)</title>";
+    private const string MailTitleRegularExpression = "<title>(?<title>.*)</title>";
 
     private const string EmailMessagesContainerName = "mails";
     private readonly BlobContainerClient _emailsBlobContainer;
@@ -24,7 +24,7 @@ public class MailDispatcher : IMailDispatcher
         var mailTitle = subject.ToString();
         var mailContent = await DownloadMailTemplate(subject, preferredLanguage);
 
-        var match = Regex.Match(mailContent, MailTitleRegularExpression);
+        var match = Regex.Match(mailContent, MailTitleRegularExpression, RegexOptions.Compiled|RegexOptions.Multiline|RegexOptions.IgnoreCase);
         if (match.Success && match.Groups["title"].Success)
         {
             mailTitle = match.Groups["title"].Value;
