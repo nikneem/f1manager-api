@@ -273,6 +273,21 @@ module storageAccountSecretModule 'KeyVault/vaults/secrets.bicep' = {
   }
 }
 
+module storageAccountSecretModuleFunctions 'KeyVault/vaults/secret.bicep' = {
+  dependsOn: [
+    keyVaultModule
+    storageAccountModule
+  ]
+  name: 'storageAccountSecretModuleFunctions'
+  scope: targetResourceGroup
+  params: {
+    keyVault: keyVaultModule.outputs.keyVaultName
+    name: 'AzureWebJobsStorage'
+    configurationName: 'AzureWebJobsStorage'
+    value: storageAccountModule.outputs.connectionString
+  }
+}
+
 module sqlServerSecretModule 'KeyVault/vaults/secrets.bicep' = {
   dependsOn: [
     keyVaultModule
@@ -345,6 +360,6 @@ module functionsConfiguration 'Web/sites/config.bicep' = {
   params: {
     webAppName: functionAppModule.outputs.webAppName
     alwaysOn: false
-    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
+    appSettings: union(basicAppSettings, applicationInsightsModule.outputs.appConfiguration, storageAccountSecretModuleFunctions.outputs.keyVaultReference, storageAccountSecretModule.outputs.keyVaultReference, mailServerSecretModule.outputs.keyVaultReference)
   }
 }
