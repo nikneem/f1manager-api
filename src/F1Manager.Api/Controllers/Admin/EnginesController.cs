@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using F1Manager.Admin.Engines.Abstractions;
 using F1Manager.Admin.Engines.DataTransferObjects;
 using F1Manager.Api.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace F1Manager.Api.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EnginesController : F1ManagerApiControllerBase
     {
         private readonly IEnginesService _enginesService;

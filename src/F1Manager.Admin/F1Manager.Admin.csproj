@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +18,12 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="ActualTeams\DomainModel\" />
+    <Folder Include="ActualTeams\Abstractions\" />
+    <Folder Include="ActualTeams\Entities\" />
+    <Folder Include="ActualTeams\DataTransferObjects\" />
+    <Folder Include="ActualTeams\Repositories\" />
+    <Folder Include="ActualTeams\Services\" />
     <Folder Include="Results\Repositories\" />
   </ItemGroup>
 

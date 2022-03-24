@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using F1Manager.Admin.Drivers.Abstractions;
 using F1Manager.Admin.Drivers.DataTransferObjects;
 using F1Manager.Api.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace F1Manager.Api.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DriversController : F1ManagerApiControllerBase
     {
         private readonly IDriversService _driversService;

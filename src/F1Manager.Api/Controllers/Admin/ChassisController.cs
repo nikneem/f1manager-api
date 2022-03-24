@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using F1Manager.Admin.Chassises.Abstractions;
 using F1Manager.Admin.Chassises.DataTransferObjects;
 using F1Manager.Api.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace F1Manager.Api.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChassisController : F1ManagerApiControllerBase
     {
         private readonly IChassisesService _chassisesService;

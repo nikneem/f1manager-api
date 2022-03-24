@@ -38,7 +38,7 @@ namespace F1Manager.Users.Repositories
         {
             var loweredEmailAddress = emailAddress.ToLower();
             var partitionKeyFilter = TableQuery.GenerateFilterCondition(nameof(UserEntity.PartitionKey),
-                QueryComparisons.NotEqual, PartitionKey);
+                QueryComparisons.Equal, PartitionKey);
             var userSubjectFilter = TableQuery.GenerateFilterCondition(nameof(UserEntity.EmailAddress),
                 QueryComparisons.Equal, loweredEmailAddress);
             var filterString = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And, userSubjectFilter);
