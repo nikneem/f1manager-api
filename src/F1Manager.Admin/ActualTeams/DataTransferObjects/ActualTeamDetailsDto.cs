@@ -4,7 +4,7 @@ namespace F1Manager.Admin.ActualTeams.DataTransferObjects;
 
 public class ActualTeamDetailsDto
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public string Name { get; set; }
     public string Base { get; set; }
     public string Principal { get; set; }
@@ -14,4 +14,5 @@ public class ActualTeamDetailsDto
     public Guid ChassisId { get; set; }
     public Guid EngineId { get; set; }
     public bool IsAvailable { get; set; }
+    public bool IsDeleted { get; set; }
 }

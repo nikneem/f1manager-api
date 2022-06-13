@@ -129,7 +129,8 @@ public class ActualTeamsService: CachedServiceBase<ActualTeamsService>, IActualT
             SecondDriverId = domainModel.SecondDriverId,
             EngineId = domainModel.EngineId,
             ChassisId = domainModel.ChassisId,
-            IsAvailable = domainModel.IsAvailable
+            IsAvailable = domainModel.IsAvailable,
+            IsDeleted = domainModel.IsDeleted
         };
     }
 

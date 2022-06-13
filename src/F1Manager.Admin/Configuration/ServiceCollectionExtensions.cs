@@ -1,4 +1,7 @@
 ﻿using F1Manager.Admin.Abstractions;
+using F1Manager.Admin.ActualTeams.Abstractions;
+using F1Manager.Admin.ActualTeams.Repositories;
+using F1Manager.Admin.ActualTeams.Services;
 using F1Manager.Admin.Chassises.Abstractions;
 using F1Manager.Admin.Chassises.Repositories;
 using F1Manager.Admin.Chassises.Services;
@@ -28,10 +31,12 @@ namespace F1Manager.Admin.Configuration
             serviceCollection.ConfigureAndValidate<AdminOptions, AdminOptionsValidator>(configuration);
 
             serviceCollection.AddScoped<IUploadService, UploadService>();
+            serviceCollection.AddScoped<IActualTeamsService, ActualTeamsService>();
             serviceCollection.AddScoped<IDriversService, DriversService>();
             serviceCollection.AddScoped<IEnginesService, EnginesService>();
             serviceCollection.AddScoped<IChassisesService, ChassisesService>();
 
+            serviceCollection.AddScoped<IActualTeamsRepository, ActualTeamsRepository>();
             serviceCollection.AddScoped<IDriversRepository, DriversRepository>();
             serviceCollection.AddScoped<IEnginesRepository, EnginesRepository>();
             serviceCollection.AddScoped<IChassisesRepository, ChassisesRepository>();

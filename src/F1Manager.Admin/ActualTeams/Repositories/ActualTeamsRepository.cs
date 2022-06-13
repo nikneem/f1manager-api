@@ -159,7 +159,9 @@ public class ActualTeamsRepository:IActualTeamsRepository
             FirstDriverId = entity.FirstDriverId,
             SecondDriverId = entity.SecondDriverId,
             EngineId = entity.EngineId,
-            ChassisId = entity.ChassisId
+            ChassisId = entity.ChassisId,
+            IsAvailable = entity.IsAvailable,
+            IsDeleted = entity.IsDeleted
         };
     }
 
